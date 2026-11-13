@@ -97,19 +97,18 @@ export const DocumentDistributionPage: React.FC<DocumentDistributionPageProps> =
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-4 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
-        <div className="space-y-1">
-          <div className="text-[11px] font-bold text-secondary flex items-center gap-1.5">
-            <span className="material-symbols-outlined !text-[16px]">verified_user</span>
-            بند ۷.۵ استانداردهای ISO 9001:2015 و ISO/IEC 27001:2022 (کنترل اطلاعات مدون و سطوح محرمانگی)
-          </div>
-          <h1 className="text-lg sm:text-xl font-extrabold text-primary">
-            ماتریس توزیع، کنترل سطوح دسترسی و نسخه‌های تحت کنترل اسناد
-          </h1>
-          <p className="text-xs text-on-surface-variant">
-            سامانه نظارت بر نسخ معتبر، صدور پروانه‌های چاپی مهرشده با واترمارک هولوگرافیک و رهگیری گردش امن اسناد پتروشیمی آپادانا
-          </p>
+      {/* Main Page Title Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline p-5 sm:p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)] text-center">
+        <h1 className="text-lg sm:text-xl font-extrabold text-primary">
+          ماتریس توزیع، کنترل سطوح دسترسی و نسخه‌های تحت کنترل اسناد
+        </h1>
+      </section>
+
+      {/* Actions Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline px-5 py-4 flex flex-wrap items-center justify-between gap-3 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
+        <div className="text-[11px] font-bold text-secondary flex items-center gap-1.5">
+          <span className="material-symbols-outlined !text-[16px]">verified_user</span>
+          بند ۷.۵ استانداردهای ISO 9001:2015 و ISO/IEC 27001:2022 (کنترل اطلاعات مدون و سطوح محرمانگی)
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 shrink-0">

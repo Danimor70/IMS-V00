@@ -228,18 +228,15 @@ export const UserCreatePage: React.FC<UserCreatePageProps> = ({
         </span>
       </div>
 
-      {/* Hero Summary Banner */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] flex flex-col items-center justify-center text-center gap-5">
-        <div className="space-y-2 max-w-3xl mx-auto text-center">
-          <h1 className="text-xl sm:text-2xl font-extrabold text-primary">
-            فرم ثبت دستی، احراز صلاحیت و پیکربندی کاربر جدید در سامانه IMS
-          </h1>
-          <p className="text-xs sm:text-[13px] text-on-surface-variant leading-6">
-            مشخصات فردی، کد پرسنلی پتروشیمی آپادانا، زنجیره گزارش‌دهی مستقیم، الزامات رمز عبور ISO 27001 و سطوح دسترسی ۱۶گانه RBAC کاربر جدید را به صورت کامل تعریف نمایید.
-          </p>
-        </div>
+      {/* Main Page Title Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] text-center">
+        <h1 className="text-xl sm:text-2xl font-extrabold text-primary">
+          فرم ثبت دستی، احراز صلاحیت و پیکربندی کاربر جدید در سامانه IMS
+        </h1>
+      </section>
 
-        {/* Live Preview Card */}
+      {/* Live Preview Card Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline p-5 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] flex justify-center">
         <div className="p-4 rounded-2xl bg-surface-container-low border border-border-hairline min-w-[290px] space-y-2.5 shrink-0 flex flex-col items-center text-center">
           <div className="flex flex-col items-center gap-2">
             <div className="w-11 h-11 rounded-xl bg-primary text-white flex items-center justify-center font-extrabold text-sm shrink-0">

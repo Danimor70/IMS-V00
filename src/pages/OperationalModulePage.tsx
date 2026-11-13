@@ -80,22 +80,14 @@ export const OperationalModulePage: React.FC<OperationalModulePageProps> = ({
         <span className="font-bold text-primary">{config.breadcrumbParent}</span>
       </div>
 
-      {/* Hero Header */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-4 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
-        <div className="space-y-1.5">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="w-9 h-9 rounded-xl bg-sky-50 text-secondary flex items-center justify-center">
-              <span className="material-symbols-outlined">{config.icon}</span>
-            </span>
-            <h1 className="text-lg sm:text-xl font-extrabold text-primary">{config.title}</h1>
-            <span className="font-label-code text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-surface-container-low text-secondary border border-border-hairline">
-              {config.standardCode}
-            </span>
-          </div>
-          <p className="text-xs text-on-surface-variant">{config.subtitle}</p>
-        </div>
+      {/* Main Page Title Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline p-5 sm:p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)] text-center">
+        <h1 className="text-lg sm:text-xl font-extrabold text-primary">{config.title}</h1>
+      </section>
 
-        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+      {/* Actions Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline px-5 py-4 flex flex-wrap items-center justify-center gap-3 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
+        <div className="flex flex-wrap items-center justify-center gap-2.5 shrink-0">
           <button
             type="button"
             onClick={handleExport}

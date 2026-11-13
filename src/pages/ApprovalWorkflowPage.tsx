@@ -6,6 +6,7 @@ import { RouteId, WorkflowDoc } from '../types/ims';
 interface ApprovalWorkflowPageProps {
   workflowDocs: WorkflowDoc[];
   onUpdateWorkflowDoc: (id: string, patch: Partial<WorkflowDoc>) => void;
+  onPromoteRevision?: (doc: WorkflowDoc) => void;
   onNavigate: (route: RouteId) => void;
   onNotify: (title: string, message?: string, type?: 'success' | 'info' | 'warning' | 'error') => void;
 }
@@ -13,6 +14,7 @@ interface ApprovalWorkflowPageProps {
 export const ApprovalWorkflowPage: React.FC<ApprovalWorkflowPageProps> = ({
   workflowDocs,
   onUpdateWorkflowDoc,
+  onPromoteRevision,
   onNavigate,
   onNotify,
 }) => {
@@ -96,7 +98,11 @@ export const ApprovalWorkflowPage: React.FC<ApprovalWorkflowPageProps> = ({
           ...activeDoc.history,
         ],
       });
-      onNotify(`سند ${activeDoc.code} تایید و ارجاع شد`, 'امضای دیجیتال با کلید سخت‌افزاری ثبت گردید.', 'success');
+      if (isFinal && activeDoc.replaceOnApproval && onPromoteRevision) {
+        onPromoteRevision(activeDoc);
+      } else {
+        onNotify(`سند ${activeDoc.code} تایید و ارجاع شد`, 'امضای دیجیتال با کلید سخت‌افزاری ثبت گردید.', 'success');
+      }
     } else if (action === 'return') {
       onUpdateWorkflowDoc(activeDoc.id, {
         currentStage: 1,
@@ -140,22 +146,15 @@ export const ApprovalWorkflowPage: React.FC<ApprovalWorkflowPageProps> = ({
 
   return (
     <div className="space-y-5">
-      {/* Header Banner */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-4 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
-        <div className="space-y-1.5">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-label-code text-[11px] font-bold px-2.5 py-0.5 rounded-md bg-sky-50 text-secondary border border-sky-200">
-              سیستم مدیریت یکپارچه (A-IMS) | DOC-FLOW-SYS-402
-            </span>
-          </div>
-          <h1 className="text-lg sm:text-xl font-extrabold text-primary">
-            کارتابل و جریان گردش تایید و تصویب اسناد IMS
-          </h1>
-          <p className="text-xs text-on-surface-variant">
-            پایش بلادرنگ، اعتبارسنجی فنی و صدور توشیح الکترونیکی برای روش‌های اجرایی و دستورالعمل‌های عملیاتی مجتمع
-          </p>
-        </div>
+      {/* Main Page Title Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline p-5 sm:p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)] text-center">
+        <h1 className="text-lg sm:text-xl font-extrabold text-primary">
+          کارتابل و جریان گردش تایید و تصویب اسناد IMS
+        </h1>
+      </section>
 
+      {/* Status & Quick Actions Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline px-5 py-4 flex flex-wrap items-center justify-between gap-3 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
         <div className="flex flex-wrap items-center gap-2.5 shrink-0">
           <div className="px-3.5 py-2 rounded-xl bg-amber-50 border border-amber-200 text-xs font-bold text-warning-capa flex items-center gap-2">
             <span className="material-symbols-outlined !text-[18px]">assignment_late</span>
@@ -418,6 +417,48 @@ export const ApprovalWorkflowPage: React.FC<ApprovalWorkflowPageProps> = ({
                   </div>
                 </div>
               </div>
+
+              {activeDoc.attachedFiles && activeDoc.attachedFiles.length > 0 && (
+                <div className="rounded-2xl border border-sky-200 bg-sky-50/40 p-4 space-y-2.5 text-xs">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="font-bold text-primary flex items-center gap-1.5">
+                      <span className="material-symbols-outlined !text-[18px] text-secondary">attach_file</span>
+                      اسناد تغییریافته پیوست‌شده برای جایگزینی ({activeDoc.attachedFiles.length.toLocaleString('fa-IR')} فایل)
+                    </div>
+                    {activeDoc.replaceOnApproval && (
+                      <span
+                        className={`px-2.5 py-1 rounded-full text-[10.5px] font-bold border ${
+                          activeDoc.tabGroup === 'approved'
+                            ? 'bg-emerald-50 text-tertiary border-emerald-200'
+                            : 'bg-white text-secondary border-sky-200'
+                        }`}
+                      >
+                        {activeDoc.tabGroup === 'approved'
+                          ? 'تایید نهایی و جایگزین ریویژن قبلی شد'
+                          : 'جایگزینی خودکار با ریویژن قبلی پس از تایید نهایی'}
+                      </span>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {activeDoc.attachedFiles.map((file) => (
+                      <div
+                        key={file.id}
+                        className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-white border border-border-hairline"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="font-label-code uppercase px-2 py-0.5 rounded bg-sky-50 text-secondary font-bold text-[10px] shrink-0">
+                            {file.type}
+                          </span>
+                          <span className="font-label-code font-semibold text-primary truncate" dir="ltr">
+                            {file.name}
+                          </span>
+                        </div>
+                        <span className="text-[10.5px] text-outline shrink-0">{file.size}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Decision Form */}

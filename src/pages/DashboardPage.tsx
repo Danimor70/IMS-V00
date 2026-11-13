@@ -120,54 +120,49 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ documents, capas, 
 
   return (
     <div className="space-y-5">
-      {/* Executive Hero Banner */}
-      <section className="bg-white rounded-2xl border border-border-hairline shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] p-5 sm:p-6 flex flex-col xl:flex-row xl:items-center justify-between gap-5">
-        <div className="space-y-2 max-w-3xl">
-          <h1 className="text-xl sm:text-2xl font-extrabold text-primary leading-snug">
-            سامانه جامع مدیریت یکپارچه (IMS) پتروشیمی آپادانا خلیج فارس
-          </h1>
-          <p className="text-xs sm:text-[13px] text-on-surface-variant leading-6">
-            داشبورد جامع نظارت بر عملکرد سیستم مدیریت یکپارچه، مستندات، پایش فرآیندها، ارزیابی ریسک‌ها و فرصت‌ها، ممیزی‌های دوره‌ای و پیگیری اقدامات اصلاحی (CAPA) بر اساس استانداردهای بین‌المللی ISO 9001، ISO 14001، ISO 45001 و ISO 50001 در شرکت پتروشیمی آپادانا خلیج فارس.
-          </p>
-        </div>
+      {/* Main Page Title Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] p-5 sm:p-6 text-center">
+        <h1 className="text-xl sm:text-2xl font-extrabold text-primary leading-snug">
+          سامانه جامع مدیریت یکپارچه (IMS) پتروشیمی آپادانا خلیج فارس
+        </h1>
+      </section>
 
-        {/* Maturity & Audit Readiness Summary */}
-        <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0">
-          <div className="bg-surface-container-low border border-border-hairline rounded-2xl px-4 py-3.5 flex items-center gap-3 min-w-[200px]">
-            <div className="w-11 h-11 rounded-xl bg-primary text-white flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined !text-[22px]">hub</span>
-            </div>
-            <div>
-              <div className="text-[11px] text-on-surface-variant font-medium">شاخص کل یکپارچگی IMS</div>
-              <div className="flex items-baseline gap-2 mt-0.5">
-                <span className="font-label-code text-xl font-extrabold text-primary">۹۶.۴٪</span>
-                <span className="text-[10.5px] font-bold text-tertiary">بلوغ پیشرفته (L4)</span>
-              </div>
+      {/* Maturity & Audit Readiness Summary */}
+      <section className="bg-white rounded-2xl border border-border-hairline shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] p-4 sm:p-5 flex flex-wrap items-center justify-center gap-4">
+        <div className="bg-surface-container-low border border-border-hairline rounded-2xl px-4 py-3.5 flex items-center gap-3 min-w-[220px]">
+          <div className="w-11 h-11 rounded-xl bg-primary text-white flex items-center justify-center shrink-0">
+            <span className="material-symbols-outlined !text-[22px]">hub</span>
+          </div>
+          <div>
+            <div className="text-[11px] text-on-surface-variant font-medium">شاخص کل یکپارچگی IMS</div>
+            <div className="flex items-baseline gap-2 mt-0.5">
+              <span className="font-label-code text-xl font-extrabold text-primary">۹۶.۴٪</span>
+              <span className="text-[10.5px] font-bold text-tertiary">بلوغ پیشرفته (L4)</span>
             </div>
           </div>
+        </div>
 
-          <div className="bg-surface-container-low border border-border-hairline rounded-2xl px-4 py-3.5 flex items-center gap-3 min-w-[210px]">
-            <div className="relative w-12 h-12 shrink-0 flex items-center justify-center">
-              <svg className="w-12 h-12 -rotate-90" viewBox="0 0 48 48">
-                <circle cx="24" cy="24" r="19" fill="none" stroke="#DDE3E8" strokeWidth="5" />
-                <circle
-                  cx="24"
-                  cy="24"
-                  r="19"
-                  fill="none"
-                  stroke="#16846B"
-                  strokeWidth="5"
-                  strokeDasharray="119.38"
-                  strokeDashoffset="7.16"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <span className="font-label-code absolute text-[11px] font-extrabold text-primary">۹۴٪</span>
-            </div>
-            <div>
-              <div className="text-[11px] text-on-surface-variant font-medium">نرخ انطباق ممیزی‌ها</div>
-              <div className="text-xs font-bold text-primary mt-0.5">ممیزی دوره‌ای و انطباق (Grade A)</div>
-            </div>
+        <div className="bg-surface-container-low border border-border-hairline rounded-2xl px-4 py-3.5 flex items-center gap-3 min-w-[230px]">
+          <div className="relative w-12 h-12 shrink-0 flex items-center justify-center">
+            <svg className="w-12 h-12 -rotate-90" viewBox="0 0 48 48">
+              <circle cx="24" cy="24" r="19" fill="none" stroke="#DDE3E8" strokeWidth="5" />
+              <circle
+                cx="24"
+                cy="24"
+                r="19"
+                fill="none"
+                stroke="#16846B"
+                strokeWidth="5"
+                strokeDasharray="119.38"
+                strokeDashoffset="7.16"
+                strokeLinecap="round"
+              />
+            </svg>
+            <span className="font-label-code absolute text-[11px] font-extrabold text-primary">۹۴٪</span>
+          </div>
+          <div>
+            <div className="text-[11px] text-on-surface-variant font-medium">نرخ انطباق ممیزی‌ها</div>
+            <div className="text-xs font-bold text-primary mt-0.5">ممیزی دوره‌ای و انطباق (Grade A)</div>
           </div>
         </div>
       </section>

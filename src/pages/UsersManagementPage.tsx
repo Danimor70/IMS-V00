@@ -468,14 +468,10 @@ export const UsersManagementPage: React.FC<UsersManagementPageProps> = ({
       />
 
       {/* Page Header Card */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)]">
-        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-5">
-          <div className="max-w-3xl">
-            <h1 className="text-xl sm:text-2xl font-extrabold text-primary tracking-tight">
-              مدیریت کاربران، حساب‌ها و تنظیمات دسترسی سامانه IMS
-            </h1>
-          </div>
-        </div>
+      <section className="bg-white rounded-2xl border border-border-hairline p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] text-center">
+        <h1 className="text-xl sm:text-2xl font-extrabold text-primary tracking-tight">
+          مدیریت کاربران، حساب‌ها و تنظیمات دسترسی سامانه IMS
+        </h1>
       </section>
 
       {/* Dedicated Quick Actions Section */}

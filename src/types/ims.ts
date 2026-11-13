@@ -50,6 +50,14 @@ export interface DocSignoffStep {
   comment?: string;
 }
 
+export interface AttachedRevisionFile {
+  id: string;
+  name: string;
+  size: string;
+  type: 'docx' | 'pdf' | 'xlsx' | 'dwg' | 'other';
+  uploadedAt: string;
+}
+
 export interface ImsDocument {
   id: string;
   code: string;
@@ -71,6 +79,7 @@ export interface ImsDocument {
   expiringSoon?: boolean;
   signoffChain: DocSignoffStep[];
   summary?: string;
+  attachedFiles?: AttachedRevisionFile[];
 }
 
 export interface RevisionItem {
@@ -98,6 +107,9 @@ export interface RevisionItem {
   newHighlight: string;
   newTextSuffix: string;
   newNote: string;
+  sourceDocId?: string;
+  attachedFiles?: AttachedRevisionFile[];
+  replaceOnApproval?: boolean;
 }
 
 export interface WorkflowHistoryEntry {
@@ -143,6 +155,12 @@ export interface WorkflowDoc {
   checklist: WorkflowChecklistItem[];
   history: WorkflowHistoryEntry[];
   tabGroup: 'my-inbox' | 'referred' | 'approved';
+  revisionId?: string;
+  sourceDocId?: string;
+  targetRev?: string;
+  suggestedCode?: string;
+  attachedFiles?: AttachedRevisionFile[];
+  replaceOnApproval?: boolean;
 }
 
 export type PermissionFlags = {

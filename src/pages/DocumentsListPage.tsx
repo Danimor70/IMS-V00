@@ -127,16 +127,16 @@ export const DocumentsListPage: React.FC<DocumentsListPageProps> = ({ documents,
         </span>
       </div>
 
-      {/* Command Header */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-4 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
-        <div>
-          <h1 className="text-lg sm:text-xl font-extrabold text-primary">فهرست جامع مستندات و اطلاعات مدون (Master Document List)</h1>
-          <p className="text-xs text-on-surface-variant mt-1">
-            جستجوی پیشرفته ستونی، پایش تاریخ بازبینی دوره‌ای و مدیریت نسخه‌های معتبر استانداردهای چهارگانه ISO مجتمع
-          </p>
-        </div>
+      {/* Main Page Title Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline p-5 sm:p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)] text-center">
+        <h1 className="text-lg sm:text-xl font-extrabold text-primary">
+          فهرست جامع مستندات و اطلاعات مدون (Master Document List)
+        </h1>
+      </section>
 
-        <div className="flex flex-wrap items-center gap-2">
+      {/* Command Actions Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline px-5 py-4 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
+        <div className="flex flex-wrap items-center justify-center gap-2.5">
           <button
             type="button"
             onClick={handleExportSelected}
@@ -648,6 +648,33 @@ export const DocumentsListPage: React.FC<DocumentsListPageProps> = ({ documents,
                   <p className="text-on-surface-variant leading-6 bg-surface-container-low/60 p-3 rounded-xl">
                     {inspectDoc.summary}
                   </p>
+                </div>
+              )}
+
+              {inspectDoc.attachedFiles && inspectDoc.attachedFiles.length > 0 && (
+                <div>
+                  <h4 className="font-bold text-primary mb-2 flex items-center gap-1.5">
+                    <span className="material-symbols-outlined !text-[17px] text-secondary">attach_file</span>
+                    فایل‌های پیوست ویرایش جاری ({inspectDoc.version})
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {inspectDoc.attachedFiles.map((file) => (
+                      <div
+                        key={file.id}
+                        className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-surface-container-low border border-border-hairline"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="font-label-code uppercase px-2 py-0.5 rounded bg-sky-50 text-secondary font-bold text-[10px] shrink-0">
+                            {file.type}
+                          </span>
+                          <span className="font-label-code font-semibold text-primary truncate" dir="ltr">
+                            {file.name}
+                          </span>
+                        </div>
+                        <span className="text-[10.5px] text-outline shrink-0">{file.size}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 

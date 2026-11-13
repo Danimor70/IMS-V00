@@ -1,8 +1,9 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { exportToCsv } from '../data/imsData';
-import { RevisionItem, RouteId } from '../types/ims';
+import { AttachedRevisionFile, ImsDocument, RevisionItem, RouteId } from '../types/ims';
 
 interface DocumentRevisionPageProps {
+  documents: ImsDocument[];
   revisions: RevisionItem[];
   onAddRevision: (item: RevisionItem) => void;
   onUpdateRevision: (id: string, patch: Partial<RevisionItem>) => void;
@@ -10,7 +11,13 @@ interface DocumentRevisionPageProps {
   onNotify: (title: string, message?: string, type?: 'success' | 'info' | 'warning' | 'error') => void;
 }
 
+const parseRevNumber = (version: string): number => {
+  const match = version.match(/(\d+)/);
+  return match ? Number(match[1]) : 0;
+};
+
 export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
+  documents,
   revisions,
   onAddRevision,
   onUpdateRevision,
@@ -18,6 +25,9 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
   onNotify,
 }) => {
   const diffSectionRef = useRef<HTMLElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const revisionFileInputRef = useRef<HTMLInputElement>(null);
 
   const [tabFilter, setTabFilter] = useState<'all' | 'overdue' | 'moc' | 'capa'>('all');
   const [codeQuery, setCodeQuery] = useState('');
@@ -27,15 +37,158 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
   const [selectedDiffId, setSelectedDiffId] = useState<string>(revisions[0]?.id || 'rev-1');
 
   const [showNewModal, setShowNewModal] = useState(false);
-  const [newForm, setNewForm] = useState({
-    code: 'SOP-OPS-MTH-19',
-    currentRevNum: 2,
-    title: '',
-    dept: 'مدیریت بهره‌برداری',
-    triggerCategory: 'moc' as RevisionItem['triggerCategory'],
-    triggerRef: 'MOC-1403-45',
-    reasonText: '',
+  const [selectedDocId, setSelectedDocId] = useState<string>(documents[0]?.id || '');
+  const [docDropdownOpen, setDocDropdownOpen] = useState(false);
+  const [docSearchQuery, setDocSearchQuery] = useState('');
+  const [attachedFiles, setAttachedFiles] = useState<AttachedRevisionFile[]>([]);
+  const [replaceOnApproval, setReplaceOnApproval] = useState(true);
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const [newForm, setNewForm] = useState(() => {
+    const firstDoc = documents[0];
+    return {
+      code: firstDoc?.code || '',
+      currentRevNum: firstDoc ? parseRevNumber(firstDoc.version) : 0,
+      title: firstDoc?.title || '',
+      dept: firstDoc?.unit || 'مدیریت بهره‌برداری',
+      triggerCategory: 'moc' as RevisionItem['triggerCategory'],
+      triggerRef: 'MOC-1403-45',
+      reasonText: '',
+    };
   });
+
+  const selectedBaseDoc = useMemo(
+    () => documents.find((d) => d.id === selectedDocId) || documents[0],
+    [documents, selectedDocId]
+  );
+
+  const filteredDropdownDocs = useMemo(() => {
+    const q = docSearchQuery.trim().toLowerCase();
+    if (!q) return documents;
+    return documents.filter(
+      (d) =>
+        d.code.toLowerCase().includes(q) ||
+        d.title.toLowerCase().includes(q) ||
+        d.unit.toLowerCase().includes(q) ||
+        d.management.toLowerCase().includes(q)
+    );
+  }, [documents, docSearchQuery]);
+
+  const deptOptions = useMemo(() => {
+    const set = new Set<string>([
+      'مدیریت بهره‌برداری',
+      'واحد HSE و آتش‌نشانی',
+      'آزمایشگاه مرکزی',
+      'حفاظت محیط زیست',
+    ]);
+    documents.forEach((d) => {
+      if (d.unit) set.add(d.unit);
+      if (d.management) set.add(d.management);
+    });
+    if (newForm.dept) set.add(newForm.dept);
+    return Array.from(set);
+  }, [documents, newForm.dept]);
+
+  useEffect(() => {
+    if (!docDropdownOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDocDropdownOpen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setDocDropdownOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    setTimeout(() => searchInputRef.current?.focus(), 20);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [docDropdownOpen]);
+
+  const handleSelectBaseDoc = (doc: ImsDocument) => {
+    setSelectedDocId(doc.id);
+    setNewForm((prev) => ({
+      ...prev,
+      code: doc.code,
+      currentRevNum: parseRevNumber(doc.version),
+      title: doc.title,
+      dept: doc.unit || doc.management || prev.dept,
+    }));
+    setDocDropdownOpen(false);
+    setDocSearchQuery('');
+  };
+
+  const detectFileType = (name: string): AttachedRevisionFile['type'] => {
+    const ext = name.split('.').pop()?.toLowerCase() || '';
+    if (ext === 'pdf') return 'pdf';
+    if (ext === 'doc' || ext === 'docx') return 'docx';
+    if (ext === 'xls' || ext === 'xlsx') return 'xlsx';
+    if (ext === 'dwg') return 'dwg';
+    return 'other';
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes >= 1024 * 1024) {
+      return `${(bytes / (1024 * 1024)).toFixed(2)} مگابایت`;
+    }
+    return `${Math.max(1, Math.round(bytes / 1024)).toLocaleString('fa-IR')} کیلوبایت`;
+  };
+
+  const addFilesToRevision = (fileList: FileList | null) => {
+    if (!fileList || fileList.length === 0) return;
+    const added: AttachedRevisionFile[] = Array.from(fileList).map((file, idx) => ({
+      id: `revfile-${Date.now()}-${idx}`,
+      name: file.name,
+      size: formatFileSize(file.size),
+      type: detectFileType(file.name),
+      uploadedAt: '۱۴۰۳/۰۸/۲۴ - هم‌اکنون',
+    }));
+    setAttachedFiles((prev) => [...prev, ...added]);
+    onNotify(
+      `${added.length.toLocaleString('fa-IR')} فایل تغییریافته پیوست شد`,
+      'فایل‌های اصلاح‌شده پس از تایید نهایی آماده جایگزینی با ریویژن قبلی خواهند بود.',
+      'success'
+    );
+  };
+
+  const handleRevisionFilePick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    addFilesToRevision(e.target.files);
+    e.target.value = '';
+  };
+
+  const handleDropFiles = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    addFilesToRevision(e.dataTransfer.files);
+  };
+
+  const handleRemoveAttachedFile = (id: string) => {
+    setAttachedFiles((prev) => prev.filter((f) => f.id !== id));
+  };
+
+  const openNewRevisionModal = () => {
+    const doc = selectedBaseDoc || documents[0];
+    if (doc) {
+      setSelectedDocId(doc.id);
+      setNewForm((prev) => ({
+        ...prev,
+        code: doc.code,
+        currentRevNum: parseRevNumber(doc.version),
+        title: doc.title,
+        dept: doc.unit || doc.management || prev.dept,
+        reasonText: '',
+      }));
+    }
+    setDocDropdownOpen(false);
+    setDocSearchQuery('');
+    setAttachedFiles([]);
+    setReplaceOnApproval(true);
+    setIsDragOver(false);
+    setShowNewModal(true);
+  };
 
   const filteredRevisions = useMemo(() => {
     return revisions.filter((r) => {
@@ -92,12 +245,19 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
 
   const handleCreateRevision = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newForm.title.trim()) {
-      onNotify('عنوان سند الزامی است', 'لطفاً عنوان مستند مشمول بازنگری را وارد کنید.', 'warning');
+    if (!newForm.code.trim() || !newForm.title.trim()) {
+      onNotify('انتخاب مستند الزامی است', 'لطفاً یک سند را از لیست کشویی کد پایه سند انتخاب نمایید.', 'warning');
       return;
     }
+    const baseCode = newForm.code.trim();
     const currStr = String(newForm.currentRevNum).padStart(2, '0');
     const nextStr = String(newForm.currentRevNum + 1).padStart(2, '0');
+    const hasTrailingRevDigits = new RegExp(`-${currStr}$`).test(baseCode);
+    const currentCode = baseCode;
+    const nextCode = hasTrailingRevDigits
+      ? baseCode.replace(/-\d{2}$/, `-${nextStr}`)
+      : `${baseCode}-${nextStr}`;
+
     const triggerMap = {
       overdue: 'سررسید ادواری منقضی',
       moc: 'دگرگونی فرآیند (MOC)',
@@ -106,8 +266,8 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
     };
     const item: RevisionItem = {
       id: `rev-${Date.now()}`,
-      code: `${newForm.code.trim()}-${currStr}`,
-      suggestedCode: `${newForm.code.trim()}-${nextStr}`,
+      code: currentCode,
+      suggestedCode: nextCode,
       title: newForm.title.trim(),
       subtitle: `درخواست بازنگری جدید • ${newForm.dept}`,
       currentRev: `Rev ${currStr}`,
@@ -121,19 +281,30 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
       progress: 25,
       workflowState: 'مرحله ۱: تدوین اصلاحیه پیش‌نویس',
       diffSection: 'بخش ۱: دامنه تغییرات پیشنهادی',
-      oldRevDate: '۱۴۰۱/۰۸/۲۰',
+      oldRevDate: selectedBaseDoc?.registeredAt || '۱۴۰۱/۰۸/۲۰',
       oldText: 'متن پیشین قبل از اعمال اصلاحیه فنی مطابق ویرایش مصوب قبلی:',
       oldHighlight: 'نیاز به بازبینی مطابق پارامترهای جدید بهره‌برداری',
       newTextPrefix: 'اصلاحیه پیشنهادی جدید:',
       newHighlight: newForm.reasonText.trim() || 'به‌روزرسانی دستورالعمل بر اساس تغییرات مهندسی و الزامات ایمنی ۱۴۰۳',
       newTextSuffix: 'جهت طرح در کمیته فنی.',
-      newNote: 'ثبت‌شده از طریق کارتابل درخواست بازنگری جدید.',
+      newNote:
+        attachedFiles.length > 0
+          ? `${attachedFiles.length.toLocaleString('fa-IR')} فایل سند تغییریافته پیوست شده و به کارتابل تایید ارجاع گردید.`
+          : 'ثبت‌شده از طریق کارتابل درخواست بازنگری جدید.',
+      sourceDocId: selectedBaseDoc?.id,
+      attachedFiles: attachedFiles.length > 0 ? attachedFiles : undefined,
+      replaceOnApproval,
     };
     onAddRevision(item);
     setSelectedDiffId(item.id);
+    setAttachedFiles([]);
+    setReplaceOnApproval(true);
     setShowNewModal(false);
-    setNewForm({ ...newForm, title: '', reasonText: '' });
-    onNotify('درخواست بازنگری جدید ثبت شد', `${item.code} → ${item.targetRev} به کارتابل اضافه گردید.`, 'success');
+    onNotify(
+      'درخواست بازنگری جدید ثبت شد',
+      `${item.code} (${item.currentRev}) → ${item.targetRev} به کارتابل بازنگری و جریان تایید ارسال گردید.`,
+      'success'
+    );
   };
 
   return (
@@ -153,29 +324,19 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
         </div>
       </div>
 
-      {/* Header */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-4 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
-        <div className="space-y-1.5">
-          <div className="flex flex-wrap items-center gap-2.5">
-            <span className="w-9 h-9 rounded-xl bg-sky-50 text-secondary flex items-center justify-center">
-              <span className="material-symbols-outlined">change_circle</span>
-            </span>
-            <h1 className="text-lg sm:text-xl font-extrabold text-primary">
-              کارتابل بازنگری دوره‌ای و اصلاحی مستندات IMS
-            </h1>
-            <span className="font-label-code text-[11px] font-bold px-2.5 py-1 rounded-full bg-sky-50 text-secondary border border-sky-200">
-              ISO 9001: 7.5.2
-            </span>
-          </div>
-          <p className="text-xs text-on-surface-variant">
-            مدیریت چرخه‌عمر، پایش سررسید ۲ ساله ادواری، اعمال تغییرات ناشی از مدیریت دگرگونی فرآیندی (MOC) و اقدامات اصلاحی (CAPA) پتروشیمی آپادانا خلیج فارس
-          </p>
-        </div>
+      {/* Main Page Title Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline p-5 sm:p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)] text-center">
+        <h1 className="text-lg sm:text-xl font-extrabold text-primary">
+          کارتابل بازنگری دوره‌ای و اصلاحی مستندات IMS
+        </h1>
+      </section>
 
-        <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+      {/* Actions Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline px-5 py-4 flex flex-wrap items-center justify-center gap-3 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
+        <div className="flex flex-wrap items-center justify-center gap-2.5 shrink-0">
           <button
             type="button"
-            onClick={() => setShowNewModal(true)}
+            onClick={openNewRevisionModal}
             className="px-4 py-2.5 rounded-xl bg-primary hover:bg-secondary text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer"
           >
             <span className="material-symbols-outlined !text-[17px]">post_add</span>
@@ -422,6 +583,26 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
                       <span className="font-label-code text-[10.5px] font-bold px-2 py-0.5 rounded bg-surface-container text-primary">
                         {rev.currentRev} → {rev.targetRev}
                       </span>
+                      {rev.attachedFiles && rev.attachedFiles.length > 0 && (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-sky-50 text-secondary border border-sky-200">
+                          <span className="material-symbols-outlined !text-[13px]">attach_file</span>
+                          {rev.attachedFiles.length.toLocaleString('fa-IR')} فایل تغییریافته
+                        </span>
+                      )}
+                      {rev.replaceOnApproval && (
+                        <span
+                          className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded ${
+                            rev.progress === 100
+                              ? 'bg-emerald-50 text-tertiary border border-emerald-200'
+                              : 'bg-amber-50 text-warning-capa border border-amber-200'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined !text-[13px]">
+                            {rev.progress === 100 ? 'verified' : 'swap_horiz'}
+                          </span>
+                          {rev.progress === 100 ? 'جایگزین ریویژن قبلی شد' : 'جایگزینی خودکار پس از تایید'}
+                        </span>
+                      )}
                       <span className="text-[11px] text-on-surface-variant">{rev.subtitle}</span>
                     </div>
                   </td>
@@ -560,6 +741,54 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
               </div>
             </div>
           </div>
+
+          {activeDiff.attachedFiles && activeDiff.attachedFiles.length > 0 && (
+            <div className="rounded-2xl border border-sky-200 bg-sky-50/40 p-4 space-y-2.5 text-xs">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="font-bold text-primary flex items-center gap-1.5">
+                  <span className="material-symbols-outlined !text-[18px] text-secondary">folder_zip</span>
+                  فایل‌های سند تغییریافته پیوست‌شده ({activeDiff.attachedFiles.length.toLocaleString('fa-IR')} مورد)
+                </div>
+                <div className="flex items-center gap-2">
+                  {activeDiff.replaceOnApproval && (
+                    <span className="px-2.5 py-1 rounded-full bg-white border border-sky-200 text-[10.5px] font-bold text-secondary">
+                      {activeDiff.progress === 100
+                        ? 'تصویب نهایی انجام و جایگزین ریویژن قبلی شد'
+                        : 'آماده جایگزینی با ریویژن قبلی پس از تایید نهایی'}
+                    </span>
+                  )}
+                  {activeDiff.progress < 100 && (
+                    <button
+                      type="button"
+                      onClick={() => onNavigate('documents-approval-workflow')}
+                      className="px-3 py-1.5 rounded-lg bg-primary hover:bg-secondary text-white text-[11px] font-bold inline-flex items-center gap-1 cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined !text-[14px]">fact_check</span>
+                      رفتن به کارتابل تایید و جایگزینی
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {activeDiff.attachedFiles.map((file) => (
+                  <div
+                    key={file.id}
+                    className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-white border border-border-hairline"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-label-code uppercase px-2 py-0.5 rounded bg-sky-50 text-secondary font-bold text-[10px] shrink-0">
+                        {file.type}
+                      </span>
+                      <span className="font-label-code font-semibold text-primary truncate" dir="ltr">
+                        {file.name}
+                      </span>
+                    </div>
+                    <span className="text-[10.5px] text-outline shrink-0">{file.size}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
       )}
 
@@ -568,61 +797,179 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
         <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-[2px]">
           <form
             onSubmit={handleCreateRevision}
-            className="animate-modal-enter w-full max-w-lg bg-white rounded-2xl border border-border-hairline shadow-2xl overflow-hidden"
+            className="animate-modal-enter w-full max-w-2xl bg-white rounded-2xl border border-border-hairline shadow-2xl overflow-visible"
           >
-            <div className="px-6 py-4 bg-primary text-white flex items-center justify-between">
+            <div className="px-6 py-4 bg-primary text-white rounded-t-2xl flex items-center justify-between">
               <h3 className="text-sm font-bold">ثبت درخواست بازنگری و ویرایش جدید</h3>
               <button type="button" onClick={() => setShowNewModal(false)} className="cursor-pointer">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
-            <div className="p-6 space-y-3.5 text-xs">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-bold text-primary mb-1">کد پایه سند</label>
-                  <input
-                    type="text"
-                    value={newForm.code}
-                    onChange={(e) => setNewForm({ ...newForm, code: e.target.value })}
-                    dir="ltr"
-                    className="w-full px-3 py-2 rounded-xl border border-border-hairline font-label-code"
-                    required
-                  />
+            <div
+              className={`p-6 space-y-4 text-xs ${
+                docDropdownOpen ? 'overflow-visible' : 'max-h-[75vh] overflow-y-auto custom-scrollbar'
+              }`}
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-start">
+                {/* Searchable Base Document Code Dropdown */}
+                <div className="sm:col-span-7 relative" ref={dropdownRef}>
+                  <label className="block font-bold text-primary mb-1.5">
+                    کد پایه سند (انتخاب از فهرست مستندات) *
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setDocDropdownOpen((v) => !v)}
+                    className={`w-full px-3 py-2.5 rounded-xl border text-right flex items-center justify-between gap-2 transition-colors cursor-pointer ${
+                      docDropdownOpen
+                        ? 'border-secondary bg-white ring-2 ring-secondary/15'
+                        : 'border-border-hairline bg-surface-container-low hover:border-secondary'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="material-symbols-outlined !text-[17px] text-secondary shrink-0">
+                        description
+                      </span>
+                      {newForm.code ? (
+                        <span className="font-label-code font-extrabold text-primary truncate" dir="ltr">
+                          {newForm.code}
+                        </span>
+                      ) : (
+                        <span className="text-on-surface-variant">انتخاب کد مدرک...</span>
+                      )}
+                      {selectedBaseDoc && (
+                        <span className="px-2 py-0.5 rounded-md bg-sky-50 border border-sky-200 font-label-code text-[10px] font-bold text-secondary shrink-0">
+                          {selectedBaseDoc.version}
+                        </span>
+                      )}
+                    </div>
+                    <span
+                      className={`material-symbols-outlined !text-[18px] text-on-surface-variant transition-transform shrink-0 ${
+                        docDropdownOpen ? 'rotate-180 text-secondary' : ''
+                      }`}
+                    >
+                      expand_more
+                    </span>
+                  </button>
+
+                  {docDropdownOpen && (
+                    <div className="absolute z-40 top-full right-0 left-0 mt-1.5 bg-white rounded-xl border border-border-hairline shadow-[0px_18px_40px_-8px_rgba(20,44,67,0.22)] overflow-hidden animate-modal-enter">
+                      {/* Search Bar */}
+                      <div className="p-2.5 border-b border-border-hairline bg-surface-container-low/70">
+                        <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-white border border-border-hairline focus-within:border-secondary">
+                          <span className="material-symbols-outlined !text-[17px] text-outline">search</span>
+                          <input
+                            ref={searchInputRef}
+                            type="text"
+                            value={docSearchQuery}
+                            onChange={(e) => setDocSearchQuery(e.target.value)}
+                            placeholder="جستجو بر اساس کد مدرک، عنوان یا واحد..."
+                            className="w-full bg-transparent text-xs text-primary placeholder:text-outline focus:outline-none"
+                          />
+                          {docSearchQuery && (
+                            <button
+                              type="button"
+                              onClick={() => setDocSearchQuery('')}
+                              className="text-outline hover:text-primary cursor-pointer"
+                            >
+                              <span className="material-symbols-outlined !text-[15px]">close</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Options List */}
+                      <div className="max-h-60 overflow-y-auto custom-scrollbar divide-y divide-border-hairline/50">
+                        {filteredDropdownDocs.length === 0 ? (
+                          <div className="py-6 px-4 text-center text-[11px] text-on-surface-variant">
+                            موردی با عبارت «{docSearchQuery}» در فهرست مستندات یافت نشد.
+                          </div>
+                        ) : (
+                          filteredDropdownDocs.map((doc) => {
+                            const isSelected = selectedBaseDoc?.id === doc.id;
+                            return (
+                              <button
+                                key={doc.id}
+                                type="button"
+                                onClick={() => handleSelectBaseDoc(doc)}
+                                className={`w-full text-right px-3.5 py-2.5 transition-colors cursor-pointer flex items-start justify-between gap-2.5 ${
+                                  isSelected ? 'bg-secondary-container/35' : 'hover:bg-surface-container-low'
+                                }`}
+                              >
+                                <div className="min-w-0 flex-1 space-y-1">
+                                  <div className="flex flex-wrap items-center gap-1.5">
+                                    <span className="font-label-code font-extrabold text-primary text-xs" dir="ltr">
+                                      {doc.code}
+                                    </span>
+                                    <span className="font-label-code px-1.5 py-0.5 rounded bg-sky-50 text-secondary border border-sky-200 text-[10px] font-bold">
+                                      {doc.version}
+                                    </span>
+                                    <span
+                                      className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                                        doc.status === 'مصوب'
+                                          ? 'bg-emerald-50 text-tertiary'
+                                          : doc.status === 'منسوخ'
+                                          ? 'bg-red-50 text-critical-hse'
+                                          : 'bg-amber-50 text-warning-capa'
+                                      }`}
+                                    >
+                                      {doc.status}
+                                    </span>
+                                  </div>
+                                  <div className="text-[11px] font-semibold text-primary line-clamp-1">
+                                    {doc.title}
+                                  </div>
+                                  <div className="text-[10px] text-on-surface-variant">{doc.unit}</div>
+                                </div>
+                                {isSelected && (
+                                  <span className="material-symbols-outlined !text-[18px] text-tertiary shrink-0 mt-0.5">
+                                    check_circle
+                                  </span>
+                                )}
+                              </button>
+                            );
+                          })
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <label className="block font-bold text-primary mb-1">شماره نگارش فعلی (محاسبه خودکار آتی)</label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      min={0}
-                      max={99}
-                      value={newForm.currentRevNum}
-                      onChange={(e) => setNewForm({ ...newForm, currentRevNum: Number(e.target.value) })}
-                      className="w-24 px-3 py-2 rounded-xl border border-border-hairline font-label-code"
-                    />
-                    <span className="font-label-code font-bold text-secondary">
-                      Rev {String(newForm.currentRevNum).padStart(2, '0')} → Rev{' '}
-                      {String(newForm.currentRevNum + 1).padStart(2, '0')}
+
+                {/* Auto-loaded Current Revision & Calculated Next Revision */}
+                <div className="sm:col-span-5">
+                  <label className="block font-bold text-primary mb-1.5">نگارش فعلی و آتی (خودکار)</label>
+                  <div className="px-3 py-2.5 rounded-xl border border-border-hairline bg-surface-container-low flex items-center justify-between gap-2">
+                    <span className="font-label-code px-2 py-0.5 rounded-md bg-white border border-border-hairline font-bold text-on-surface-variant">
+                      Rev {String(newForm.currentRevNum).padStart(2, '0')}
+                    </span>
+                    <span className="material-symbols-outlined !text-[16px] text-secondary">arrow_back</span>
+                    <span className="font-label-code px-2.5 py-0.5 rounded-md bg-secondary text-white font-extrabold">
+                      Rev {String(newForm.currentRevNum + 1).padStart(2, '0')}
                     </span>
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="block font-bold text-primary mb-1">عنوان مستند</label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block font-bold text-primary">عنوان مستند (خوانده‌شده از فهرست مستندات)</label>
+                  <span className="text-[10.5px] font-bold text-tertiary inline-flex items-center gap-1">
+                    <span className="material-symbols-outlined !text-[14px]">sync</span>
+                    بارگذاری خودکار
+                  </span>
+                </div>
                 <input
                   type="text"
                   value={newForm.title}
-                  onChange={(e) => setNewForm({ ...newForm, title: e.target.value })}
-                  placeholder="مثال: دستورالعمل بهره‌برداری برج تقطیر واحد متانول"
-                  className="w-full px-3 py-2 rounded-xl border border-border-hairline"
+                  readOnly
+                  placeholder="پس از انتخاب کد پایه سند، عنوان به‌صورت خودکار درج می‌شود..."
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border-hairline bg-surface-container-low text-primary font-semibold focus:outline-none"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-primary mb-1">منشا بازنگری</label>
+                  <label className="block font-bold text-primary mb-1.5">منشا بازنگری</label>
                   <select
                     value={newForm.triggerCategory}
                     onChange={(e) =>
@@ -637,32 +984,133 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
                   </select>
                 </div>
                 <div>
-                  <label className="block font-bold text-primary mb-1">واحد متولی</label>
+                  <label className="block font-bold text-primary mb-1.5">واحد متولی</label>
                   <select
                     value={newForm.dept}
                     onChange={(e) => setNewForm({ ...newForm, dept: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl border border-border-hairline bg-surface-container-low"
                   >
-                    <option value="مدیریت بهره‌برداری">مدیریت بهره‌برداری</option>
-                    <option value="واحد HSE و آتش‌نشانی">واحد HSE و آتش‌نشانی</option>
-                    <option value="آزمایشگاه مرکزی">آزمایشگاه مرکزی</option>
-                    <option value="حفاظت محیط زیست">حفاظت محیط زیست</option>
+                    {deptOptions.map((dept) => (
+                      <option key={dept} value={dept}>
+                        {dept}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block font-bold text-primary mb-1">شرح تغییرات پیشنهادی</label>
+                <label className="block font-bold text-primary mb-1.5">شرح تغییرات پیشنهادی</label>
                 <textarea
                   rows={3}
                   value={newForm.reasonText}
                   onChange={(e) => setNewForm({ ...newForm, reasonText: e.target.value })}
                   placeholder="خلاصه تغییرات مورد نیاز در ویرایش جدید..."
-                  className="w-full px-3 py-2 rounded-xl border border-border-hairline"
+                  className="w-full px-3 py-2 rounded-xl border border-border-hairline focus:outline-none focus:border-secondary"
                 />
               </div>
+
+              {/* Modified / Revised Document Files Upload Section */}
+              <div className="pt-3 border-t border-border-hairline space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <label className="font-bold text-primary flex items-center gap-1.5">
+                    <span className="material-symbols-outlined !text-[18px] text-secondary">upload_file</span>
+                    بارگذاری اسناد تغییریافته (نسخه پیشنهادی {`Rev ${String(newForm.currentRevNum + 1).padStart(2, '0')}`})
+                  </label>
+                  <span className="text-[10.5px] text-outline">فرمت‌های مجاز: PDF، DOCX، XLSX، DWG</span>
+                </div>
+
+                <input
+                  ref={revisionFileInputRef}
+                  type="file"
+                  multiple
+                  accept=".pdf,.doc,.docx,.xlsx,.xls,.dwg"
+                  onChange={handleRevisionFilePick}
+                  className="hidden"
+                />
+
+                <div
+                  onClick={() => revisionFileInputRef.current?.click()}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragOver(true);
+                  }}
+                  onDragLeave={() => setIsDragOver(false)}
+                  onDrop={handleDropFiles}
+                  className={`rounded-2xl border-2 border-dashed p-4 text-center transition-colors cursor-pointer ${
+                    isDragOver
+                      ? 'border-secondary bg-sky-50/70'
+                      : 'border-border-hairline bg-surface-container-low/70 hover:border-secondary hover:bg-sky-50/30'
+                  }`}
+                >
+                  <div className="w-10 h-10 rounded-full bg-white border border-border-hairline text-secondary mx-auto flex items-center justify-center mb-2 shadow-xs">
+                    <span className="material-symbols-outlined !text-[21px]">cloud_upload</span>
+                  </div>
+                  <div className="font-bold text-primary">
+                    فایل‌های اصلاح‌شده سند را اینجا رها کنید یا برای انتخاب کلیک نمایید
+                  </div>
+                  <div className="text-[11px] text-on-surface-variant mt-1">
+                    این فایل‌ها در کارتابل تصویب و ابلاغ بررسی شده و پس از تایید نهایی جایگزین ریویژن فعلی می‌شوند.
+                  </div>
+                </div>
+
+                {attachedFiles.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="text-[11px] font-bold text-primary">
+                      فایل‌های آماده پیوست ({attachedFiles.length.toLocaleString('fa-IR')} مورد):
+                    </div>
+                    <div className="space-y-1.5">
+                      {attachedFiles.map((file) => (
+                        <div
+                          key={file.id}
+                          className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-surface-container-low border border-border-hairline"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="font-label-code uppercase px-2 py-0.5 rounded bg-sky-50 border border-sky-200 text-secondary font-bold text-[10px] shrink-0">
+                              {file.type}
+                            </span>
+                            <span className="font-label-code font-semibold text-primary truncate" dir="ltr">
+                              {file.name}
+                            </span>
+                            <span className="text-[10.5px] text-outline shrink-0">({file.size})</span>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveAttachedFile(file.id)}
+                            className="p-1 rounded-lg text-critical-hse hover:bg-red-50 cursor-pointer shrink-0"
+                            title="حذف فایل"
+                          >
+                            <span className="material-symbols-outlined !text-[16px]">delete</span>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <label className="flex items-start gap-2.5 p-3 rounded-xl bg-emerald-50/60 border border-emerald-200 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={replaceOnApproval}
+                    onChange={(e) => setReplaceOnApproval(e.target.checked)}
+                    className="w-4 h-4 mt-0.5 accent-tertiary rounded shrink-0"
+                  />
+                  <div className="space-y-0.5">
+                    <div className="font-bold text-primary">
+                      جایگزینی خودکار با ریویژن قبلی در فهرست مستندات پس از تایید نهایی
+                    </div>
+                    <div className="text-[11px] text-on-surface-variant leading-5">
+                      با اتمام فرآیند تصویب در کارتابل گردش کار، فایل‌های جدید جایگزین{' '}
+                      <span className="font-label-code font-bold text-primary">
+                        Rev {String(newForm.currentRevNum).padStart(2, '0')}
+                      </span>{' '}
+                      شده و نسخه پیشین به‌صورت خودکار به مخزن اسناد منسوخ منتقل می‌گردد.
+                    </div>
+                  </div>
+                </label>
+              </div>
             </div>
-            <div className="px-6 py-3.5 bg-surface-container-low border-t border-border-hairline flex justify-end gap-2">
+            <div className="px-6 py-3.5 bg-surface-container-low border-t border-border-hairline rounded-b-2xl flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setShowNewModal(false)}

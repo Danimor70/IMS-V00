@@ -364,12 +364,8 @@ export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
       </div>
 
       {/* Hero Header */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-5 sm:p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-lg sm:text-xl font-extrabold text-primary">فرم ثبت و گردش کار مستند جدید</h1>
-          </div>
-        </div>
+      <section className="bg-white rounded-2xl border border-border-hairline p-5 sm:p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)] text-center">
+        <h1 className="text-lg sm:text-xl font-extrabold text-primary">فرم ثبت و گردش کار مستند جدید</h1>
       </section>
 
       {/* Main Grid: 8 cols Form + 4 cols Guidance */}

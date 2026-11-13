@@ -73,25 +73,24 @@ export const DocumentArchivePage: React.FC<DocumentArchivePageProps> = ({
 
   return (
     <div className="space-y-5">
-      {/* Header */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-5 flex flex-col xl:flex-row xl:items-center justify-between gap-4 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
-        <div className="space-y-1.5">
+      {/* Main Page Title Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline p-5 sm:p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)] text-center">
+        <h1 className="text-lg sm:text-xl font-extrabold text-primary">
+          مرکز بایگانی، تاریخچه ویرایش‌ها و مدیریت اسناد منسوخ
+        </h1>
+      </section>
+
+      {/* Actions Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline px-5 py-4 flex flex-wrap items-center justify-between gap-3 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
+        <div className="flex flex-wrap items-center gap-2.5">
           <div className="font-label-code text-[11px] font-bold text-secondary flex items-center gap-1.5">
             <span className="material-symbols-outlined !text-[16px]">inventory_2</span>
             سیستم مدیریت اسناد مهندسی (EDMS) • استاندارد ISO 9001 / ISO 27001
           </div>
-          <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-lg sm:text-xl font-extrabold text-primary">
-              مرکز بایگانی، تاریخچه ویرایش‌ها و مدیریت اسناد منسوخ
-            </h1>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-50 text-critical-hse border border-red-200 text-[11px] font-bold">
-              <span className="w-2 h-2 rounded-full bg-critical-hse" />
-              محیط اسناد راکد و سوابق حقوقی
-            </span>
-          </div>
-          <p className="text-xs text-on-surface-variant">
-            آرشیو رسمی نگارش‌های پیشین، رویه‌های ابطال‌شده با برچسب عدم استناد (Obsolete)، سوابق ممیزی‌های مختومه و پایش زمان‌بندی امحای دوره‌ای مطابق مقررات وزارت نفت و شرکت ملی صنایع پتروشیمی
-          </p>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-50 text-critical-hse border border-red-200 text-[11px] font-bold">
+            <span className="w-2 h-2 rounded-full bg-critical-hse" />
+            محیط اسناد راکد و سوابق حقوقی
+          </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 shrink-0">

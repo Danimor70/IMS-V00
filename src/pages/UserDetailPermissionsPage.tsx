@@ -274,6 +274,13 @@ export const UserDetailPermissionsPage: React.FC<UserDetailPermissionsPageProps>
         </div>
       </div>
 
+      {/* Main Page Title Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline p-5 sm:p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] text-center">
+        <h1 className="text-lg sm:text-xl font-extrabold text-primary">
+          پروفایل، مشخصات هویتی و ماتریس دسترسی کاربر
+        </h1>
+      </section>
+
       {/* Primary User Identity Card */}
       <section className="bg-white rounded-2xl border border-border-hairline p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] space-y-5">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-border-hairline">
@@ -286,9 +293,9 @@ export const UserDetailPermissionsPage: React.FC<UserDetailPermissionsPageProps>
             </div>
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-lg sm:text-xl font-extrabold text-primary">
+                <h2 className="text-lg sm:text-xl font-extrabold text-primary">
                   {user.honorific} {user.firstName} {user.lastName}
-                </h1>
+                </h2>
                 <span
                   className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
                     isSuspended

@@ -34,6 +34,7 @@ import {
   DistributionMatrixRow,
   ImsDocument,
   NotificationItem,
+  ObsoleteDocRecord,
   PermissionFlags,
   RevisionItem,
   RouteId,
@@ -49,6 +50,7 @@ export default function App() {
   const [documents, setDocuments] = useState<ImsDocument[]>(INITIAL_DOCUMENTS);
   const [revisions, setRevisions] = useState<RevisionItem[]>(INITIAL_REVISIONS);
   const [workflowDocs, setWorkflowDocs] = useState<WorkflowDoc[]>(INITIAL_WORKFLOW_DOCS);
+  const [obsoleteDocs, setObsoleteDocs] = useState<ObsoleteDocRecord[]>(INITIAL_OBSOLETE_DOCS);
   const [matrixRows, setMatrixRows] = useState<DistributionMatrixRow[]>(INITIAL_DISTRIBUTION_MATRIX);
   const [auditTrail, setAuditTrail] = useState<AuditTrailEntry[]>(INITIAL_AUDIT_TRAIL);
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
@@ -141,9 +143,73 @@ export default function App() {
     [notify]
   );
 
-  const handleAddRevision = useCallback((item: RevisionItem) => {
-    setRevisions((prev) => [item, ...prev]);
-  }, []);
+  const handleAddRevision = useCallback(
+    (item: RevisionItem) => {
+      setRevisions((prev) => [item, ...prev]);
+
+      const sourceDoc = documents.find((d) => d.id === item.sourceDocId || d.code === item.code);
+      const firstFile = item.attachedFiles?.[0];
+      const wfEntry: WorkflowDoc = {
+        id: `wf-rev-${Date.now()}`,
+        code: item.suggestedCode || item.code,
+        title: item.title,
+        version: `${item.targetRev} (بازنگری جدید)`,
+        standards: sourceDoc?.isoStandards || ['ISO 9001:2015'],
+        priority: item.triggerCategory === 'overdue' ? 'بحرانی' : 'فوری',
+        currentStage: 3,
+        stageLabel: 'مرحله ۳: تایید نهایی و جایگزینی نسخه',
+        currentActor: 'مهندس مهران کاظمی (شما)',
+        slaDaysUsed: 1,
+        slaDaysTotal: 5,
+        slaRemainingText: '۴ روز باقی‌مانده',
+        processCode: item.triggerRef || 'REV-REQ',
+        processOwner: item.dept,
+        confidentiality: sourceDoc?.confidentiality || 'داخلی (C2)',
+        nextReviewDate: '۱۴۰۵/۰۸/۲۴ (ادواری)',
+        pdfName: firstFile?.name || `${item.suggestedCode || item.code}_Revised.pdf`,
+        pdfSize: firstFile?.size || '۲.۱ مگابایت',
+        pdfPages: 12,
+        pdfStandard: sourceDoc?.isoStandards?.[0] || 'ISO 9001:2015',
+        excerptSection: item.diffSection || 'دامنه تغییرات پیشنهادی',
+        excerptIsoTag: item.triggerLabel,
+        excerptText: item.newHighlight,
+        validatorNote: item.replaceOnApproval
+          ? 'پس از تایید نهایی در این کارتابل، فایل‌های پیوست‌شده به‌صورت خودکار جایگزین ریویژن قبلی در فهرست مستندات خواهند شد.'
+          : 'درخواست بازنگری از کارتابل مدیریت ویرایش ارسال شده است.',
+        readinessScore: 92,
+        checklist: [
+          { label: 'انطباق کد و شماره ویرایش جدید', status: 'passed', statusText: 'تایید شده' },
+          {
+            label: 'بارگذاری فایل‌های سند تغییریافته',
+            status: item.attachedFiles && item.attachedFiles.length > 0 ? 'passed' : 'warning',
+            statusText:
+              item.attachedFiles && item.attachedFiles.length > 0
+                ? `${item.attachedFiles.length.toLocaleString('fa-IR')} فایل پیوست`
+                : 'بدون فایل پیوست',
+          },
+          { label: 'ارجاع سیستمی و توجیه فنی تغییر', status: 'passed', statusText: 'تایید شده' },
+        ],
+        history: [
+          {
+            actor: item.owner,
+            role: item.ownerRole,
+            date: '۱۴۰۳/۰۸/۲۴ - هم‌اکنون',
+            note: `ثبت درخواست بازنگری (${item.currentRev} ← ${item.targetRev}) و ارسال جهت تایید نهایی.`,
+            type: 'submitted',
+          },
+        ],
+        tabGroup: 'my-inbox',
+        revisionId: item.id,
+        sourceDocId: item.sourceDocId || sourceDoc?.id,
+        targetRev: item.targetRev,
+        suggestedCode: item.suggestedCode,
+        attachedFiles: item.attachedFiles,
+        replaceOnApproval: item.replaceOnApproval,
+      };
+      setWorkflowDocs((prev) => [wfEntry, ...prev]);
+    },
+    [documents]
+  );
 
   const handleUpdateRevision = useCallback((id: string, patch: Partial<RevisionItem>) => {
     setRevisions((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
@@ -152,6 +218,73 @@ export default function App() {
   const handleUpdateWorkflowDoc = useCallback((id: string, patch: Partial<WorkflowDoc>) => {
     setWorkflowDocs((prev) => prev.map((w) => (w.id === id ? { ...w, ...patch } : w)));
   }, []);
+
+  const handlePromoteRevision = useCallback(
+    (wfDoc: WorkflowDoc) => {
+      const targetDoc = documents.find(
+        (d) =>
+          (wfDoc.sourceDocId && d.id === wfDoc.sourceDocId) ||
+          d.code === wfDoc.code ||
+          (wfDoc.suggestedCode && d.code === wfDoc.suggestedCode)
+      );
+
+      if (targetDoc) {
+        const nextCode = wfDoc.suggestedCode || targetDoc.code;
+        const nextVersion = wfDoc.targetRev || targetDoc.version;
+
+        const archivedOld: ObsoleteDocRecord = {
+          id: `obs-${Date.now()}`,
+          code: targetDoc.code,
+          title: targetDoc.title,
+          unit: targetDoc.unit,
+          rev: targetDoc.version,
+          retentionMonths: 60,
+          obsoleteDate: '۱۴۰۳/۰۸/۲۴',
+          supersededBy: `${nextCode} (${nextVersion})`,
+          reason: 'جایگزینی خودکار پس از تایید نهایی ویرایش جدید در گردش کار بازنگری',
+          yearGroup: '1403',
+          tags: ['ابطال ناشی از بازنگری', targetDoc.docTypeCode],
+          sha256: `e3b0c44298fc1c149afbf4c8996fb924...${Date.now().toString().slice(-4)}`,
+          vaultZone: 'EDMS-ARCHIVE-01',
+          fileSize: wfDoc.attachedFiles?.[0]?.size || '۲.۴ مگابایت',
+          archiver: 'مهندس مهران کاظمی',
+        };
+
+        setObsoleteDocs((prev) => [archivedOld, ...prev]);
+        setDocuments((prev) =>
+          prev.map((d) =>
+            d.id === targetDoc.id
+              ? {
+                  ...d,
+                  code: nextCode,
+                  version: nextVersion,
+                  status: 'مصوب',
+                  registeredAt: '۱۴۰۳/۰۸/۲۴',
+                  attachedFiles: wfDoc.attachedFiles && wfDoc.attachedFiles.length > 0 ? wfDoc.attachedFiles : d.attachedFiles,
+                }
+              : d
+          )
+        );
+
+        notify(
+          'جایگزینی ریویژن جدید انجام شد',
+          `سند ${targetDoc.code} (${targetDoc.version}) به ${nextCode} (${nextVersion}) ارتقا یافت و نسخه قبلی بایگانی شد.`,
+          'success'
+        );
+      }
+
+      if (wfDoc.revisionId) {
+        setRevisions((prev) =>
+          prev.map((r) =>
+            r.id === wfDoc.revisionId
+              ? { ...r, progress: 100, workflowState: 'تصویب نهایی و جایگزین ریویژن قبلی شد' }
+              : r
+          )
+        );
+      }
+    },
+    [documents, notify]
+  );
 
   const handleTogglePermission = useCallback(
     (rowId: string, mode: 'unit' | 'user', targetKey: string, flag: keyof PermissionFlags) => {
@@ -305,6 +438,7 @@ export default function App() {
 
           {route === 'documents-revision' && (
             <DocumentRevisionPage
+              documents={documents}
               revisions={revisions}
               onAddRevision={handleAddRevision}
               onUpdateRevision={handleUpdateRevision}
@@ -317,6 +451,7 @@ export default function App() {
             <ApprovalWorkflowPage
               workflowDocs={workflowDocs}
               onUpdateWorkflowDoc={handleUpdateWorkflowDoc}
+              onPromoteRevision={handlePromoteRevision}
               onNavigate={handleNavigate}
               onNotify={notify}
             />
@@ -335,7 +470,7 @@ export default function App() {
 
           {route === 'documents-archive' && (
             <DocumentArchivePage
-              obsoleteDocs={INITIAL_OBSOLETE_DOCS}
+              obsoleteDocs={obsoleteDocs}
               onNavigate={handleNavigate}
               onNotify={notify}
             />
