@@ -64,7 +64,7 @@ export interface ImsDocument {
   registeredAt: string;
   reviewAt: string;
   expiresAt: string;
-  confidentiality: 'عمومی (C1)' | 'داخلی (C2)' | 'محرمانه فنی (C3)' | 'فوق‌محرمانه (C4)';
+  confidentiality: string;
   isoStandards: string[];
   owner: string;
   needsMySignature?: boolean;

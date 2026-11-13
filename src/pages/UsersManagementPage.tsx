@@ -470,25 +470,18 @@ export const UsersManagementPage: React.FC<UsersManagementPageProps> = ({
       {/* Page Header Card */}
       <section className="bg-white rounded-2xl border border-border-hairline p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)]">
         <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-5">
-          <div className="space-y-2.5 max-w-3xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/70 text-primary text-[11px] font-bold">
-                <span className="material-symbols-outlined !text-[15px] text-secondary">security</span>
-                پیکربندی حاکمیت داده و امنیت پرسنل
-              </span>
-              <span className="font-label-code px-2.5 py-1 rounded-full bg-surface-container-low border border-border-hairline text-[11px] font-bold text-on-surface-variant">
-                ISO/IEC 27001: A.9.2
-              </span>
-            </div>
+          <div className="max-w-3xl">
             <h1 className="text-xl sm:text-2xl font-extrabold text-primary tracking-tight">
               مدیریت کاربران، حساب‌ها و تنظیمات دسترسی سامانه IMS
             </h1>
-            <p className="text-xs sm:text-[13px] text-on-surface-variant leading-6">
-              مدیریت پرسنل مجاز، تعریف سطوح دسترسی فرآیندی، تعیین ساختار سازمانی و صدور مجوزها بر مبنای بندهای ISO 9001 و الزامات امنیت اطلاعات ISO/IEC 27001 در پتروشیمی آپادانا خلیج فارس.
-            </p>
           </div>
+        </div>
+      </section>
 
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+      {/* Dedicated Quick Actions Section */}
+      <section className="bg-white rounded-2xl border border-border-hairline px-6 py-4 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)]">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}

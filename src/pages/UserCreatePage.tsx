@@ -229,17 +229,8 @@ export const UserCreatePage: React.FC<UserCreatePageProps> = ({
       </div>
 
       {/* Hero Summary Banner */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] flex flex-col xl:flex-row xl:items-center justify-between gap-5">
-        <div className="space-y-2 max-w-3xl">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/70 text-primary text-[11px] font-bold">
-              <span className="material-symbols-outlined !text-[15px] text-secondary">person_add</span>
-              احراز هویت و تخصیص دسترسی پرسنل جدید
-            </span>
-            <span className="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-tertiary text-[11px] font-bold">
-              ثبت بلادرنگ در چارت سازمانی
-            </span>
-          </div>
+      <section className="bg-white rounded-2xl border border-border-hairline p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] flex flex-col items-center justify-center text-center gap-5">
+        <div className="space-y-2 max-w-3xl mx-auto text-center">
           <h1 className="text-xl sm:text-2xl font-extrabold text-primary">
             فرم ثبت دستی، احراز صلاحیت و پیکربندی کاربر جدید در سامانه IMS
           </h1>
@@ -249,12 +240,12 @@ export const UserCreatePage: React.FC<UserCreatePageProps> = ({
         </div>
 
         {/* Live Preview Card */}
-        <div className="p-4 rounded-2xl bg-surface-container-low border border-border-hairline min-w-[270px] space-y-2 shrink-0">
-          <div className="flex items-center gap-3">
+        <div className="p-4 rounded-2xl bg-surface-container-low border border-border-hairline min-w-[290px] space-y-2.5 shrink-0 flex flex-col items-center text-center">
+          <div className="flex flex-col items-center gap-2">
             <div className="w-11 h-11 rounded-xl bg-primary text-white flex items-center justify-center font-extrabold text-sm shrink-0">
               {firstName ? firstName.charAt(0) : 'ک'}.{lastName ? lastName.charAt(0) : 'ج'}
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 text-center">
               <div className="text-xs font-extrabold text-primary truncate">
                 {firstName || lastName ? `${honorific} ${firstName} ${lastName}` : 'پیش‌نمایش پروفایل کاربر'}
               </div>
@@ -263,7 +254,7 @@ export const UserCreatePage: React.FC<UserCreatePageProps> = ({
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-between pt-2 border-t border-border-hairline text-[11px]">
+          <div className="flex items-center justify-center gap-3 pt-2 border-t border-border-hairline w-full text-[11px]">
             <span className="font-label-code font-bold text-primary">{rbacLevel} ({securityLevel})</span>
             <span className="font-bold text-tertiary tabular-nums">
               {permissions.length.toLocaleString('fa-IR')} از {RBAC_PERMISSION_DEFS.length.toLocaleString('fa-IR')} مجوز فعال

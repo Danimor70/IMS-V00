@@ -123,15 +123,6 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ documents, capas, 
       {/* Executive Hero Banner */}
       <section className="bg-white rounded-2xl border border-border-hairline shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] p-5 sm:p-6 flex flex-col xl:flex-row xl:items-center justify-between gap-5">
         <div className="space-y-2 max-w-3xl">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-tertiary text-[11px] font-bold">
-              <span className="w-2 h-2 rounded-full bg-tertiary animate-pulse" />
-              پایش بلادرنگ ممیزی و فرآیندها
-            </span>
-            <span className="font-label-code text-[11px] font-bold px-2.5 py-1 rounded-full bg-surface-container-low text-secondary border border-border-hairline">
-              AP-IMS-OVERVIEW
-            </span>
-          </div>
           <h1 className="text-xl sm:text-2xl font-extrabold text-primary leading-snug">
             سامانه جامع مدیریت یکپارچه (IMS) پتروشیمی آپادانا خلیج فارس
           </h1>

@@ -296,6 +296,7 @@ export default function App() {
           {route === 'documents-create' && (
             <DocumentCreatePage
               documents={documents}
+              users={users}
               onAddDocument={handleAddDocument}
               onNavigate={handleNavigate}
               onNotify={notify}

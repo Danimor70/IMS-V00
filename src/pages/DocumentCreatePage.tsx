@@ -1,8 +1,9 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { ImsDocument, RouteId } from '../types/ims';
+import { ImsDocument, RouteId, UserAccount } from '../types/ims';
 
 interface DocumentCreatePageProps {
   documents: ImsDocument[];
+  users: UserAccount[];
   onAddDocument: (doc: ImsDocument, asDraft: boolean) => void;
   onNavigate: (route: RouteId) => void;
   onNotify: (title: string, message?: string, type?: 'success' | 'info' | 'warning' | 'error') => void;
@@ -15,39 +16,77 @@ interface UploadedDraftFile {
   type: 'docx' | 'pdf' | 'other';
 }
 
-const DOC_TYPES = [
-  { code: 'PR', label: 'فرآیند (PR)', full: 'فرآیند (PR)' },
-  { code: 'SOP', label: 'روش اجرایی (SOP)', full: 'روش اجرایی (SOP)' },
-  { code: 'MN', label: 'نظامنامه (MN)', full: 'نظامنامه (MN)' },
-  { code: 'POL', label: 'خط‌مشی (POL)', full: 'خط‌مشی (POL)' },
-  { code: 'WI', label: 'دستورالعمل (WI)', full: 'دستورالعمل (WI)' },
-  { code: 'FRM', label: 'فرم (FRM)', full: 'فرم (FRM)' },
+interface CatalogItem {
+  code: string;
+  nameFa: string;
+  nameEn: string;
+}
+
+type CatalogKind = 'docType' | 'management' | 'unit' | 'confidentiality' | 'isoStandard';
+
+const INITIAL_DOC_TYPES: CatalogItem[] = [
+  { code: 'PR', nameFa: 'فرآیند', nameEn: 'Process' },
+  { code: 'SOP', nameFa: 'روش اجرایی', nameEn: 'Standard Operating Procedure' },
+  { code: 'MN', nameFa: 'نظامنامه', nameEn: 'Manual' },
+  { code: 'POL', nameFa: 'خط‌مشی', nameEn: 'Policy' },
+  { code: 'WI', nameFa: 'دستورالعمل', nameEn: 'Work Instruction' },
+  { code: 'FRM', nameFa: 'فرم', nameEn: 'Form' },
 ];
 
-const MANAGEMENTS = [
-  { code: 'MIS', label: 'مدیریت مهندسی و بازرسی' },
-  { code: 'OPS', label: 'مدیریت بهره‌برداری' },
-  { code: 'QMS', label: 'مدیریت تضمین کیفیت' },
-  { code: 'HSE', label: 'مدیریت HSE و آتش‌نشانی' },
-  { code: 'ENG', label: 'مدیریت مهندسی و پروژه‌ها' },
-  { code: 'COM', label: 'مدیریت بازرگانی و تدارکات' },
+const INITIAL_MANAGEMENTS: CatalogItem[] = [
+  { code: 'MIS', nameFa: 'مدیریت مهندسی و بازرسی', nameEn: 'Engineering & Inspection' },
+  { code: 'OPS', nameFa: 'مدیریت بهره‌برداری', nameEn: 'Operations Management' },
+  { code: 'QMS', nameFa: 'مدیریت تضمین کیفیت', nameEn: 'Quality Management System' },
+  { code: 'HSE', nameFa: 'مدیریت HSE و آتش‌نشانی', nameEn: 'Health, Safety & Environment' },
+  { code: 'ENG', nameFa: 'مدیریت مهندسی و پروژه‌ها', nameEn: 'Engineering & Projects' },
+  { code: 'COM', nameFa: 'مدیریت بازرگانی و تدارکات', nameEn: 'Commercial & Procurement' },
 ];
 
-const UNITS = [
-  { code: 'STP', label: 'واحد بخار و بازرسی فنی' },
-  { code: 'MET', label: 'واحد متانول ۲' },
-  { code: 'UTL', label: 'یوتیلیتی و آب و برق' },
-  { code: 'INS', label: 'ابزاردقیق و کنترل' },
-  { code: 'LAB', label: 'آزمایشگاه مرکزی' },
+const INITIAL_UNITS: CatalogItem[] = [
+  { code: 'STP', nameFa: 'واحد بخار و بازرسی فنی', nameEn: 'Steam & Technical Inspection' },
+  { code: 'MET', nameFa: 'واحد متانول ۲', nameEn: 'Methanol Unit 2' },
+  { code: 'UTL', nameFa: 'یوتیلیتی و آب و برق', nameEn: 'Utilities, Water & Power' },
+  { code: 'INS', nameFa: 'ابزاردقیق و کنترل', nameEn: 'Instrumentation & Control' },
+  { code: 'LAB', nameFa: 'آزمایشگاه مرکزی', nameEn: 'Central Laboratory' },
 ];
+
+const INITIAL_CONFIDENTIALITIES: CatalogItem[] = [
+  { code: 'C1', nameFa: 'عمومی', nameEn: 'Public' },
+  { code: 'C2', nameFa: 'داخلی', nameEn: 'Internal' },
+  { code: 'C3', nameFa: 'محرمانه فنی', nameEn: 'Technical Confidential' },
+  { code: 'C4', nameFa: 'فوق‌محرمانه', nameEn: 'Top Secret' },
+];
+
+const INITIAL_ISO_STANDARDS: CatalogItem[] = [
+  { code: 'ISO 9001:2015', nameFa: 'سیستم مدیریت کیفیت', nameEn: 'Quality Management System' },
+  { code: 'ISO 14001:2015', nameFa: 'سیستم مدیریت زیست‌محیطی', nameEn: 'Environmental Management System' },
+  { code: 'ISO 45001:2018', nameFa: 'ایمنی و بهداشت شغلی', nameEn: 'Occupational Health & Safety' },
+  { code: 'ISO 50001:2018', nameFa: 'سیستم مدیریت انرژی', nameEn: 'Energy Management System' },
+  { code: 'ISO/IEC 17025', nameFa: 'صلاحیت آزمایشگاه‌ها', nameEn: 'Testing & Calibration Labs' },
+];
+
+const formatUserActor = (u?: UserAccount) =>
+  u ? `${u.firstName} ${u.lastName} (${u.roleTitle})` : '';
 
 export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
   documents,
+  users,
   onAddDocument,
   onNavigate,
   onNotify,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [docTypes, setDocTypes] = useState<CatalogItem[]>(INITIAL_DOC_TYPES);
+  const [managements, setManagements] = useState<CatalogItem[]>(INITIAL_MANAGEMENTS);
+  const [units, setUnits] = useState<CatalogItem[]>(INITIAL_UNITS);
+  const [confidentialities, setConfidentialities] = useState<CatalogItem[]>(INITIAL_CONFIDENTIALITIES);
+  const [isoStandards, setIsoStandards] = useState<CatalogItem[]>(INITIAL_ISO_STANDARDS);
+
+  const [activeCatalogModal, setActiveCatalogModal] = useState<CatalogKind | null>(null);
+  const [showCatalogAddForm, setShowCatalogAddForm] = useState(false);
+  const [editingCatalogCode, setEditingCatalogCode] = useState<string | null>(null);
+  const [catalogForm, setCatalogForm] = useState({ nameFa: '', nameEn: '', code: '' });
 
   const [docTypeCode, setDocTypeCode] = useState('PR');
   const [mgmtCode, setMgmtCode] = useState('MIS');
@@ -57,7 +96,7 @@ export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
 
   const [titleFa, setTitleFa] = useState('');
   const [titleEn, setTitleEn] = useState('');
-  const [confidentiality, setConfidentiality] = useState<ImsDocument['confidentiality']>('محرمانه فنی (C3)');
+  const [confidentialityCode, setConfidentialityCode] = useState('C3');
   const [selectedIsos, setSelectedIsos] = useState<string[]>(['ISO 9001:2015', 'ISO 45001:2018']);
   const [reviewCycle, setReviewCycle] = useState<1 | 2 | 3>(2);
   const [slaDays, setSlaDays] = useState<3 | 5 | 10>(5);
@@ -68,14 +107,23 @@ export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
     { id: 'f2', name: 'PR-MIS-STP-02-00_PID.pdf', size: '۸.۱ مگابایت', type: 'pdf' },
   ]);
 
-  const [workflowActors, setWorkflowActors] = useState([
-    { step: 'گام ۱: تهیه‌کننده', actor: 'مهندس مهران کاظمی (۹۴۰۲۱)' },
-    { step: 'گام ۲: تاییدکننده فنی', actor: 'مهندس علیرضا رضایی (رئیس فرآیند)' },
-    { step: 'گام ۳: تصویب‌کننده انطباق', actor: 'مهندس حمید دهداری (سرپرست HSE)' },
-    { step: 'گام ۴: تصویب نهایی', actor: 'دکتر مریم کریمی (معاون تضمین کیفیت)' },
+  const userOptions = useMemo(
+    () =>
+      users.map((u) => ({
+        id: u.id,
+        label: formatUserActor(u),
+      })),
+    [users]
+  );
+
+  const [workflowActors, setWorkflowActors] = useState(() => [
+    { step: 'گام ۱: تهیه‌کننده', actor: formatUserActor(users[0]) },
+    { step: 'گام ۲: تاییدکننده فنی', actor: formatUserActor(users[1] || users[0]) },
+    { step: 'گام ۳: تصویب‌کننده انطباق', actor: formatUserActor(users[3] || users[0]) },
+    { step: 'گام ۴: تصویب نهایی', actor: formatUserActor(users[6] || users[0]) },
   ]);
 
-  const generatedCode = `${docTypeCode}-${mgmtCode}-${unitCode}-03-00`;
+  const generatedCode = `${docTypeCode || '---'}-${mgmtCode || '---'}-${unitCode || '---'}-03-00`;
   const activeCode = manualCodeUnlocked ? manualCode : generatedCode;
 
   const isDuplicate = useMemo(
@@ -83,9 +131,153 @@ export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
     [documents, activeCode]
   );
 
-  const selectedMgmtLabel = MANAGEMENTS.find((m) => m.code === mgmtCode)?.label || 'مدیریت مهندسی و بازرسی';
-  const selectedUnitLabel = UNITS.find((u) => u.code === unitCode)?.label || 'واحد بخار و بازرسی فنی';
-  const selectedTypeObj = DOC_TYPES.find((t) => t.code === docTypeCode) || DOC_TYPES[0];
+  const selectedMgmtLabel = managements.find((m) => m.code === mgmtCode)?.nameFa || managements[0]?.nameFa || 'نامشخص';
+  const selectedUnitLabel = units.find((u) => u.code === unitCode)?.nameFa || units[0]?.nameFa || 'نامشخص';
+  const selectedTypeItem = docTypes.find((t) => t.code === docTypeCode) || docTypes[0] || { code: '---', nameFa: 'نامشخص', nameEn: '' };
+  const selectedTypeObj = {
+    code: selectedTypeItem.code,
+    full: `${selectedTypeItem.nameFa} (${selectedTypeItem.code})`,
+  };
+  const selectedConfidentialityItem =
+    confidentialities.find((c) => c.code === confidentialityCode) || confidentialities[0];
+  const confidentialityLabel = selectedConfidentialityItem
+    ? `${selectedConfidentialityItem.nameFa} (${selectedConfidentialityItem.code})`
+    : 'عمومی (C1)';
+
+  const openCatalogModal = (kind: CatalogKind) => {
+    setActiveCatalogModal(kind);
+    setShowCatalogAddForm(false);
+    setEditingCatalogCode(null);
+    setCatalogForm({ nameFa: '', nameEn: '', code: '' });
+  };
+
+  const startEditCatalogItem = (item: CatalogItem) => {
+    setEditingCatalogCode(item.code);
+    setCatalogForm({ nameFa: item.nameFa, nameEn: item.nameEn, code: item.code });
+    setShowCatalogAddForm(true);
+  };
+
+  const handleDeleteCatalogItem = (kind: CatalogKind, targetCode: string) => {
+    if (kind === 'docType') {
+      const next = docTypes.filter((item) => item.code !== targetCode);
+      setDocTypes(next);
+      if (docTypeCode === targetCode) setDocTypeCode(next[0]?.code || '');
+    } else if (kind === 'management') {
+      const next = managements.filter((item) => item.code !== targetCode);
+      setManagements(next);
+      if (mgmtCode === targetCode) setMgmtCode(next[0]?.code || '');
+    } else if (kind === 'unit') {
+      const next = units.filter((item) => item.code !== targetCode);
+      setUnits(next);
+      if (unitCode === targetCode) setUnitCode(next[0]?.code || '');
+    } else if (kind === 'confidentiality') {
+      const next = confidentialities.filter((item) => item.code !== targetCode);
+      setConfidentialities(next);
+      if (confidentialityCode === targetCode) setConfidentialityCode(next[0]?.code || '');
+    } else {
+      const next = isoStandards.filter((item) => item.code !== targetCode);
+      setIsoStandards(next);
+      setSelectedIsos((prev) => prev.filter((c) => c !== targetCode));
+    }
+
+    if (editingCatalogCode === targetCode) {
+      setEditingCatalogCode(null);
+      setShowCatalogAddForm(false);
+      setCatalogForm({ nameFa: '', nameEn: '', code: '' });
+    }
+
+    onNotify('مورد از لیست حذف شد', `آیتم با کد «${targetCode}» با موفقیت حذف گردید.`, 'info');
+  };
+
+  const handleSaveCatalogItem = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeCatalogModal) return;
+
+    const nameFa = catalogForm.nameFa.trim();
+    const nameEn = catalogForm.nameEn.trim();
+    const code =
+      activeCatalogModal === 'isoStandard'
+        ? catalogForm.code.trim()
+        : catalogForm.code.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    if (!nameFa || !nameEn || !code) {
+      onNotify('تکمیل فیلدهای الزامی', 'نام فارسی، نام لاتین و کد/مخفف هر سه الزامی هستند.', 'error');
+      return;
+    }
+
+    const currentList =
+      activeCatalogModal === 'docType'
+        ? docTypes
+        : activeCatalogModal === 'management'
+        ? managements
+        : activeCatalogModal === 'unit'
+        ? units
+        : activeCatalogModal === 'confidentiality'
+        ? confidentialities
+        : isoStandards;
+
+    const hasDuplicate = currentList.some(
+      (item) =>
+        item.code.toLowerCase() === code.toLowerCase() &&
+        (editingCatalogCode === null || item.code !== editingCatalogCode)
+    );
+
+    if (hasDuplicate) {
+      onNotify('کد یا مخفف تکراری است', `مقدار «${code}» قبلاً در این لیست ثبت شده است.`, 'error');
+      return;
+    }
+
+    const entry: CatalogItem = { code, nameFa, nameEn };
+
+    if (editingCatalogCode !== null) {
+      const oldCode = editingCatalogCode;
+      if (activeCatalogModal === 'docType') {
+        setDocTypes((prev) => prev.map((item) => (item.code === oldCode ? entry : item)));
+        if (docTypeCode === oldCode) setDocTypeCode(code);
+      } else if (activeCatalogModal === 'management') {
+        setManagements((prev) => prev.map((item) => (item.code === oldCode ? entry : item)));
+        if (mgmtCode === oldCode) setMgmtCode(code);
+      } else if (activeCatalogModal === 'unit') {
+        setUnits((prev) => prev.map((item) => (item.code === oldCode ? entry : item)));
+        if (unitCode === oldCode) setUnitCode(code);
+      } else if (activeCatalogModal === 'confidentiality') {
+        setConfidentialities((prev) => prev.map((item) => (item.code === oldCode ? entry : item)));
+        if (confidentialityCode === oldCode) setConfidentialityCode(code);
+      } else {
+        setIsoStandards((prev) => prev.map((item) => (item.code === oldCode ? entry : item)));
+        setSelectedIsos((prev) => prev.map((c) => (c === oldCode ? code : c)));
+      }
+
+      onNotify('ویرایش با موفقیت انجام شد', `«${nameFa}» (${code}) در لیست به‌روزرسانی گردید.`, 'success');
+    } else {
+      if (activeCatalogModal === 'docType') {
+        setDocTypes((prev) => [...prev, entry]);
+        setDocTypeCode(code);
+      } else if (activeCatalogModal === 'management') {
+        setManagements((prev) => [...prev, entry]);
+        setMgmtCode(code);
+      } else if (activeCatalogModal === 'unit') {
+        setUnits((prev) => [...prev, entry]);
+        setUnitCode(code);
+      } else if (activeCatalogModal === 'confidentiality') {
+        setConfidentialities((prev) => [...prev, entry]);
+        setConfidentialityCode(code);
+      } else {
+        setIsoStandards((prev) => [...prev, entry]);
+        setSelectedIsos((prev) => (prev.includes(code) ? prev : [...prev, code]));
+      }
+
+      onNotify(
+        'مورد جدید با موفقیت اضافه شد',
+        `«${nameFa}» (${code}) به لیست اضافه و انتخاب گردید.`,
+        'success'
+      );
+    }
+
+    setCatalogForm({ nameFa: '', nameEn: '', code: '' });
+    setEditingCatalogCode(null);
+    setShowCatalogAddForm(false);
+  };
 
   const nextReviewDate = reviewCycle === 1 ? '۱۴۰۴/۰۸/۲۴' : reviewCycle === 2 ? '۱۴۰۵/۰۸/۲۴' : '۱۴۰۶/۰۸/۲۴';
 
@@ -131,8 +323,8 @@ export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
       registeredAt: '۱۴۰۳/۰۸/۲۴',
       reviewAt: nextReviewDate,
       expiresAt: nextReviewDate,
-      confidentiality,
-      isoStandards: selectedIsos.length > 0 ? selectedIsos : ['ISO 9001:2015'],
+      confidentiality: confidentialityLabel,
+      isoStandards: selectedIsos.length > 0 ? selectedIsos : [isoStandards[0]?.code || 'ISO 9001:2015'],
       owner: 'مهندس مهران کاظمی',
       needsMySignature: !asDraft,
       summary: justification.trim() || 'ثبت شده از طریق فرم یکپارچه ثبت و گردش کار مستند جدید.',
@@ -147,8 +339,6 @@ export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
     onAddDocument(newDoc, asDraft);
     onNavigate(asDraft ? 'documents-list' : 'documents-approval-workflow');
   };
-
-  const activeStepperStep = titleFa.trim() ? (files.length > 0 ? 3 : 2) : 1;
 
   return (
     <div className="space-y-5 pb-20">
@@ -167,64 +357,18 @@ export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
         </div>
 
         <div className="flex items-center gap-2.5">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-warning-capa border border-amber-200 font-bold text-[11px]">
-            <span className="w-2 h-2 rounded-full bg-warning-capa animate-pulse" />
-            وضعیت جاری: پیش‌نویس موقت
-          </span>
           <span className="font-label-code text-[11px] px-3 py-1 rounded-full bg-white border border-border-hairline">
             ۱۴۰۳/۰۸/۲۴ - ۱۰:۴۵
           </span>
         </div>
       </div>
 
-      {/* Hero Header & 4-Step Stepper */}
+      {/* Hero Header */}
       <section className="bg-white rounded-2xl border border-border-hairline p-5 sm:p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-5">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div>
             <h1 className="text-lg sm:text-xl font-extrabold text-primary">فرم ثبت و گردش کار مستند جدید</h1>
-            <p className="font-label-code text-xs text-secondary font-semibold mt-0.5">
-              IMS Document Registration Workflow • Standard ISO 9001: 7.5.2
-            </p>
           </div>
-          <div className="flex items-center gap-2 text-xs bg-surface-container-low px-4 py-2 rounded-xl border border-border-hairline">
-            <span className="text-on-surface-variant">پیش‌نمایش کد یکتا:</span>
-            <span className="font-label-code font-extrabold text-primary text-sm" dir="ltr">
-              {activeCode}
-            </span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            { num: 1, label: 'اطلاعات پایه و کدگذاری' },
-            { num: 2, label: 'مالکیت و چرخه بازبینی' },
-            { num: 3, label: 'بارگذاری در EDMS Vault' },
-            { num: 4, label: 'تنظیم گردش کار تایید' },
-          ].map((s) => {
-            const done = activeStepperStep > s.num;
-            const current = activeStepperStep === s.num;
-            return (
-              <div
-                key={s.num}
-                className={`flex items-center gap-2.5 p-3 rounded-xl border transition-colors ${
-                  current
-                    ? 'bg-primary text-white border-primary shadow-sm'
-                    : done
-                    ? 'bg-emerald-50 border-emerald-200 text-tertiary'
-                    : 'bg-surface-container-low border-border-hairline text-on-surface-variant'
-                }`}
-              >
-                <span
-                  className={`w-6 h-6 rounded-full font-label-code text-xs font-bold flex items-center justify-center shrink-0 ${
-                    current ? 'bg-white text-primary' : done ? 'bg-tertiary text-white' : 'bg-white text-primary'
-                  }`}
-                >
-                  {done ? '✓' : s.num.toLocaleString('fa-IR')}
-                </span>
-                <span className="text-xs font-bold truncate">{s.label}</span>
-              </div>
-            );
-          })}
         </div>
       </section>
 
@@ -257,43 +401,73 @@ export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-bold text-primary mb-1.5">۱. نوع مدرک سازمانی</label>
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <label className="block text-xs font-bold text-primary">۱. نوع مدرک سازمانی</label>
+                  <button
+                    type="button"
+                    onClick={() => openCatalogModal('docType')}
+                    className="px-2 py-0.5 rounded-lg bg-secondary-container/60 hover:bg-secondary-container text-[10.5px] font-bold text-primary inline-flex items-center gap-1 transition-colors cursor-pointer shrink-0"
+                  >
+                    <span className="material-symbols-outlined !text-[14px] text-secondary">playlist_add</span>
+                    مدیریت لیست
+                  </button>
+                </div>
                 <select
                   value={docTypeCode}
                   onChange={(e) => setDocTypeCode(e.target.value)}
                   className="w-full px-3 py-2.5 rounded-xl border border-border-hairline bg-surface-container-low text-xs font-semibold text-primary focus:outline-none focus:border-secondary"
                 >
-                  {DOC_TYPES.map((t) => (
+                  {docTypes.map((t) => (
                     <option key={t.code} value={t.code}>
-                      {t.label}
+                      {t.nameFa} ({t.code})
                     </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-primary mb-1.5">۲. مدیریت متولی</label>
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <label className="block text-xs font-bold text-primary">۲. مدیریت متولی</label>
+                  <button
+                    type="button"
+                    onClick={() => openCatalogModal('management')}
+                    className="px-2 py-0.5 rounded-lg bg-secondary-container/60 hover:bg-secondary-container text-[10.5px] font-bold text-primary inline-flex items-center gap-1 transition-colors cursor-pointer shrink-0"
+                  >
+                    <span className="material-symbols-outlined !text-[14px] text-secondary">playlist_add</span>
+                    مدیریت لیست
+                  </button>
+                </div>
                 <select
                   value={mgmtCode}
                   onChange={(e) => setMgmtCode(e.target.value)}
                   className="w-full px-3 py-2.5 rounded-xl border border-border-hairline bg-surface-container-low text-xs font-semibold text-primary focus:outline-none focus:border-secondary"
                 >
-                  {MANAGEMENTS.map((m) => (
+                  {managements.map((m) => (
                     <option key={m.code} value={m.code}>
-                      {m.code} — {m.label}
+                      {m.code} — {m.nameFa}
                     </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-primary mb-1.5">۳. واحد سازمانی</label>
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <label className="block text-xs font-bold text-primary">۳. واحد سازمانی</label>
+                  <button
+                    type="button"
+                    onClick={() => openCatalogModal('unit')}
+                    className="px-2 py-0.5 rounded-lg bg-secondary-container/60 hover:bg-secondary-container text-[10.5px] font-bold text-primary inline-flex items-center gap-1 transition-colors cursor-pointer shrink-0"
+                  >
+                    <span className="material-symbols-outlined !text-[14px] text-secondary">playlist_add</span>
+                    مدیریت لیست
+                  </button>
+                </div>
                 <select
                   value={unitCode}
                   onChange={(e) => setUnitCode(e.target.value)}
                   className="w-full px-3 py-2.5 rounded-xl border border-border-hairline bg-surface-container-low text-xs font-semibold text-primary focus:outline-none focus:border-secondary"
                 >
-                  {UNITS.map((u) => (
+                  {units.map((u) => (
                     <option key={u.code} value={u.code}>
-                      {u.code} — {u.label}
+                      {u.code} — {u.nameFa}
                     </option>
                   ))}
                 </select>
@@ -360,45 +534,70 @@ export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-primary mb-1.5">سطح محرمانگی سند</label>
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <label className="block text-xs font-bold text-primary">سطح محرمانگی سند</label>
+                  <button
+                    type="button"
+                    onClick={() => openCatalogModal('confidentiality')}
+                    className="px-2 py-0.5 rounded-lg bg-secondary-container/60 hover:bg-secondary-container text-[10.5px] font-bold text-primary inline-flex items-center gap-1 transition-colors cursor-pointer shrink-0"
+                  >
+                    <span className="material-symbols-outlined !text-[14px] text-secondary">playlist_add</span>
+                    مدیریت لیست
+                  </button>
+                </div>
                 <select
-                  value={confidentiality}
-                  onChange={(e) => setConfidentiality(e.target.value as ImsDocument['confidentiality'])}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-border-hairline bg-surface-container-low text-xs font-semibold text-primary focus:outline-none"
+                  value={confidentialityCode}
+                  onChange={(e) => setConfidentialityCode(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-border-hairline bg-surface-container-low text-xs font-semibold text-primary focus:outline-none focus:border-secondary"
                 >
-                  <option value="عمومی (C1)">عمومی (C1)</option>
-                  <option value="داخلی (C2)">داخلی (C2)</option>
-                  <option value="محرمانه فنی (C3)">محرمانه فنی (C3)</option>
-                  <option value="فوق‌محرمانه (C4)">فوق‌محرمانه (C4)</option>
+                  {confidentialities.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.nameFa} ({c.code})
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
 
-            {/* 5 ISO Checkboxes */}
+            {/* ISO Checkboxes */}
             <div>
-              <label className="block text-xs font-bold text-primary mb-2">استانداردهای مرجع مرتبط (ISO Mapping)</label>
+              <div className="flex items-center justify-between gap-2 mb-2">
+                <label className="block text-xs font-bold text-primary">استانداردهای مرجع مرتبط (ISO Mapping)</label>
+                <button
+                  type="button"
+                  onClick={() => openCatalogModal('isoStandard')}
+                  className="px-2.5 py-0.5 rounded-lg bg-secondary-container/60 hover:bg-secondary-container text-[10.5px] font-bold text-primary inline-flex items-center gap-1 transition-colors cursor-pointer shrink-0"
+                >
+                  <span className="material-symbols-outlined !text-[14px] text-secondary">playlist_add</span>
+                  مدیریت لیست
+                </button>
+              </div>
               <div className="flex flex-wrap gap-2">
-                {['ISO 9001:2015', 'ISO 14001:2015', 'ISO 45001:2018', 'ISO 50001:2018', 'ISO/IEC 17025'].map(
-                  (iso) => {
-                    const checked = selectedIsos.includes(iso);
-                    return (
-                      <button
-                        key={iso}
-                        type="button"
-                        onClick={() => toggleIso(iso)}
-                        className={`font-label-code px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
-                          checked
-                            ? 'bg-primary text-white border-primary'
-                            : 'bg-surface-container-low text-on-surface-variant border-border-hairline hover:border-secondary'
-                        }`}
-                      >
-                        <span className="material-symbols-outlined !text-[15px]">
-                          {checked ? 'check_box' : 'check_box_outline_blank'}
-                        </span>
-                        {iso}
-                      </button>
-                    );
-                  }
+                {isoStandards.map((iso) => {
+                  const checked = selectedIsos.includes(iso.code);
+                  return (
+                    <button
+                      key={iso.code}
+                      type="button"
+                      onClick={() => toggleIso(iso.code)}
+                      title={`${iso.nameFa} — ${iso.nameEn}`}
+                      className={`font-label-code px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
+                        checked
+                          ? 'bg-primary text-white border-primary'
+                          : 'bg-surface-container-low text-on-surface-variant border-border-hairline hover:border-secondary'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined !text-[15px]">
+                        {checked ? 'check_box' : 'check_box_outline_blank'}
+                      </span>
+                      {iso.code}
+                    </button>
+                  );
+                })}
+                {isoStandards.length === 0 && (
+                  <span className="text-xs text-on-surface-variant">
+                    هیچ استانداردی در لیست وجود ندارد. از دکمه «مدیریت لیست» استاندارد جدید اضافه کنید.
+                  </span>
                 )}
               </div>
             </div>
@@ -431,7 +630,7 @@ export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
                   م.ک
                 </div>
                 <div>
-                  <div className="text-[11px] text-on-surface-variant">تهیه‌کننده و ثبت‌کننده مستند</div>
+                  <div className="text-[11px] text-on-surface-variant">ثبت‌کننده سند</div>
                   <div className="text-xs font-bold text-primary mt-0.5">
                     مهندس مهران کاظمی | <span className="font-label-code">کد پرسنلی: ۹۴۰۲۱</span>
                   </div>
@@ -578,21 +777,31 @@ export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {workflowActors.map((item, idx) => (
-                <div key={item.step} className="p-3 rounded-xl bg-surface-container-low border border-border-hairline">
-                  <div className="text-[11px] font-bold text-secondary mb-1">{item.step}</div>
-                  <input
-                    type="text"
-                    value={item.actor}
-                    onChange={(e) => {
-                      const next = [...workflowActors];
-                      next[idx] = { ...next[idx], actor: e.target.value };
-                      setWorkflowActors(next);
-                    }}
-                    className="w-full px-2.5 py-1.5 rounded-lg border border-border-hairline bg-white text-xs font-semibold text-primary focus:outline-none focus:border-secondary"
-                  />
-                </div>
-              ))}
+              {workflowActors.map((item, idx) => {
+                const currentValue = userOptions.some((opt) => opt.label === item.actor)
+                  ? item.actor
+                  : userOptions[0]?.label || '';
+                return (
+                  <div key={item.step} className="p-3 rounded-xl bg-surface-container-low border border-border-hairline">
+                    <div className="text-[11px] font-bold text-secondary mb-1">{item.step}</div>
+                    <select
+                      value={currentValue}
+                      onChange={(e) => {
+                        const next = [...workflowActors];
+                        next[idx] = { ...next[idx], actor: e.target.value };
+                        setWorkflowActors(next);
+                      }}
+                      className="w-full px-2.5 py-1.5 rounded-lg border border-border-hairline bg-white text-xs font-semibold text-primary focus:outline-none focus:border-secondary cursor-pointer"
+                    >
+                      {userOptions.map((opt) => (
+                        <option key={opt.id} value={opt.label}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                );
+              })}
             </div>
 
             <div>
@@ -654,12 +863,8 @@ export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
       </div>
 
       {/* Sticky Action Bar */}
-      <div className="sticky bottom-3 z-20 bg-white/95 backdrop-blur-md border border-border-hairline rounded-2xl p-3.5 shadow-[0px_18px_40px_-10px_rgba(20,44,67,0.16)] flex flex-wrap items-center justify-between gap-3">
-        <div className="text-xs text-on-surface-variant">
-          کد فعال: <strong className="font-label-code text-primary">{activeCode}</strong> •{' '}
-          <span>{files.length.toLocaleString('fa-IR')} فایل پیوست</span>
-        </div>
-        <div className="flex flex-wrap items-center gap-2.5">
+      <div className="sticky bottom-3 z-20 bg-white/95 backdrop-blur-md border border-border-hairline rounded-2xl p-3.5 shadow-[0px_18px_40px_-10px_rgba(20,44,67,0.16)] flex flex-wrap items-center justify-center gap-3">
+        <div className="flex flex-wrap items-center justify-center gap-2.5">
           <button
             type="button"
             onClick={() => onNavigate('documents-list')}
@@ -684,6 +889,369 @@ export const DocumentCreatePage: React.FC<DocumentCreatePageProps> = ({
           </button>
         </div>
       </div>
+
+      {/* In-Page Catalog Management Modal */}
+      {activeCatalogModal && (
+        <div className="fixed inset-0 z-[85] flex items-center justify-center p-4 bg-slate-900/55 backdrop-blur-[2px]">
+          <div className="animate-modal-enter w-full max-w-4xl bg-white rounded-2xl border border-border-hairline shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            {(() => {
+              const modalMeta =
+                activeCatalogModal === 'docType'
+                  ? {
+                      listTitle: 'لیست نوع مدرک سازمانی',
+                      addBtnLabel: 'افزودن نوع مدرک سازمانی جدید',
+                      editTitle: 'ویرایش نوع مدرک سازمانی',
+                      subtitle: 'مدیریت، ویرایش و حذف انواع اسناد رسمی سامانه و مخفف استاندارد آن‌ها در کد مدرک تولیدی',
+                      codeFieldLabel: '۳. مخفف (در کد مدرک تولیدی) *',
+                      codeColumnHeader: 'مخفف (کد در شناسه تولیدی)',
+                      codePlaceholder: 'e.g. TI',
+                      items: docTypes,
+                      isMultiSelect: false,
+                      isItemSelected: (code: string) => docTypeCode === code,
+                      onSelect: (code: string) => {
+                        setDocTypeCode(code);
+                        setActiveCatalogModal(null);
+                      },
+                    }
+                  : activeCatalogModal === 'management'
+                  ? {
+                      listTitle: 'لیست مدیریت متولی',
+                      addBtnLabel: 'افزودن مدیریت متولی جدید',
+                      editTitle: 'ویرایش مدیریت متولی',
+                      subtitle: 'مدیریت، ویرایش و حذف مدیریت‌های سازمانی مجتمع و مخفف لاتین آن‌ها در شناسه مدرک',
+                      codeFieldLabel: '۳. مخفف (در کد مدرک تولیدی) *',
+                      codeColumnHeader: 'مخفف (کد در شناسه تولیدی)',
+                      codePlaceholder: 'e.g. ITM',
+                      items: managements,
+                      isMultiSelect: false,
+                      isItemSelected: (code: string) => mgmtCode === code,
+                      onSelect: (code: string) => {
+                        setMgmtCode(code);
+                        setActiveCatalogModal(null);
+                      },
+                    }
+                  : activeCatalogModal === 'unit'
+                  ? {
+                      listTitle: 'لیست واحد سازمانی',
+                      addBtnLabel: 'افزودن واحد سازمانی جدید',
+                      editTitle: 'ویرایش واحد سازمانی',
+                      subtitle: 'مدیریت، ویرایش و حذف واحدهای عملیاتی/ستادی و کد اختصاری آن‌ها در ساختار کدگذاری',
+                      codeFieldLabel: '۳. مخفف (در کد مدرک تولیدی) *',
+                      codeColumnHeader: 'مخفف (کد در شناسه تولیدی)',
+                      codePlaceholder: 'e.g. PIP',
+                      items: units,
+                      isMultiSelect: false,
+                      isItemSelected: (code: string) => unitCode === code,
+                      onSelect: (code: string) => {
+                        setUnitCode(code);
+                        setActiveCatalogModal(null);
+                      },
+                    }
+                  : activeCatalogModal === 'confidentiality'
+                  ? {
+                      listTitle: 'لیست سطوح محرمانگی سند',
+                      addBtnLabel: 'افزودن سطح محرمانگی جدید',
+                      editTitle: 'ویرایش سطح محرمانگی',
+                      subtitle: 'مدیریت، ویرایش و حذف سطوح طبقه‌بندی امنیتی اسناد و کد سطح آن‌ها (C1 تا C4 و سطوح جدید)',
+                      codeFieldLabel: '۳. مخفف / کد سطح (مثال: C5) *',
+                      codeColumnHeader: 'کد سطح',
+                      codePlaceholder: 'e.g. C5',
+                      items: confidentialities,
+                      isMultiSelect: false,
+                      isItemSelected: (code: string) => confidentialityCode === code,
+                      onSelect: (code: string) => {
+                        setConfidentialityCode(code);
+                        setActiveCatalogModal(null);
+                      },
+                    }
+                  : {
+                      listTitle: 'لیست استانداردهای مرجع مرتبط',
+                      addBtnLabel: 'افزودن استاندارد مرجع جدید',
+                      editTitle: 'ویرایش استاندارد مرجع',
+                      subtitle: 'افزودن، ویرایش و حذف استانداردهای مرجع جهت انتخاب در فرم شناسنامه سند',
+                      codeFieldLabel: '۳. مخفف / کد استاندارد *',
+                      codeColumnHeader: 'کد استاندارد',
+                      codePlaceholder: 'e.g. ISO 27001:2022',
+                      items: isoStandards,
+                      isMultiSelect: true,
+                      isItemSelected: (code: string) => selectedIsos.includes(code),
+                      onSelect: (code: string) => toggleIso(code),
+                    };
+
+              return (
+                <>
+                  {/* Modal Header */}
+                  <div className="px-6 py-4 bg-primary text-white flex items-center justify-between gap-4 shrink-0">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+                        <span className="material-symbols-outlined !text-[22px]">list_alt</span>
+                      </div>
+                      <div>
+                        <h3 className="text-sm sm:text-base font-extrabold">{modalMeta.listTitle}</h3>
+                        <p className="text-[11px] text-white/80 mt-0.5">{modalMeta.subtitle}</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setActiveCatalogModal(null)}
+                      className="p-1.5 rounded-lg hover:bg-white/15 cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined">close</span>
+                    </button>
+                  </div>
+
+                  {/* Modal Body */}
+                  <div className="p-6 overflow-y-auto custom-scrollbar space-y-5">
+                    {/* Top Action Bar inside modal */}
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <span className="text-xs font-bold text-on-surface-variant tabular-nums">
+                        تعداد کل اقلام تعریف‌شده:{' '}
+                        <strong className="text-primary">{modalMeta.items.length.toLocaleString('fa-IR')} مورد</strong>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (editingCatalogCode !== null) {
+                            setEditingCatalogCode(null);
+                            setCatalogForm({ nameFa: '', nameEn: '', code: '' });
+                            setShowCatalogAddForm(true);
+                          } else {
+                            setCatalogForm({ nameFa: '', nameEn: '', code: '' });
+                            setShowCatalogAddForm((v) => !v);
+                          }
+                        }}
+                        className="px-4 py-2 rounded-xl bg-primary hover:bg-secondary text-white text-xs font-bold inline-flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined !text-[18px]">
+                          {showCatalogAddForm && editingCatalogCode === null ? 'expand_less' : 'add_circle'}
+                        </span>
+                        {modalMeta.addBtnLabel}
+                      </button>
+                    </div>
+
+                    {/* Inline Add / Edit Form */}
+                    {showCatalogAddForm && (
+                      <form
+                        onSubmit={handleSaveCatalogItem}
+                        className="p-4 rounded-2xl bg-surface-container-low border border-secondary/30 space-y-4 animate-modal-enter"
+                      >
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-extrabold text-primary flex items-center gap-1.5">
+                            <span className="material-symbols-outlined !text-[17px] text-secondary">
+                              {editingCatalogCode !== null ? 'edit_note' : 'post_add'}
+                            </span>
+                            {editingCatalogCode !== null ? modalMeta.editTitle : modalMeta.addBtnLabel}
+                          </h4>
+                          <span className="text-[11px] text-on-surface-variant">
+                            {activeCatalogModal === 'confidentiality'
+                              ? 'عنوان و کد سطح در لیست محرمانگی سند نمایش داده می‌شود'
+                              : activeCatalogModal === 'isoStandard'
+                              ? 'کد استاندارد به‌عنوان گزینه قابل انتخاب در فرم ثبت سند ظاهر می‌شود'
+                              : 'مخفف مستقیماً در کد مدرک تولیدی درج می‌شود'}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                          <div>
+                            <label className="block font-bold text-primary mb-1.5">۱. نام فارسی *</label>
+                            <input
+                              type="text"
+                              required
+                              value={catalogForm.nameFa}
+                              onChange={(e) => setCatalogForm({ ...catalogForm, nameFa: e.target.value })}
+                              placeholder="مثال: روش بازرسی فنی"
+                              className="w-full px-3 py-2 rounded-xl border border-border-hairline bg-white focus:outline-none focus:border-secondary"
+                            />
+                          </div>
+                          <div>
+                            <label className="block font-bold text-primary mb-1.5">۲. نام لاتین *</label>
+                            <input
+                              type="text"
+                              required
+                              dir="ltr"
+                              value={catalogForm.nameEn}
+                              onChange={(e) => setCatalogForm({ ...catalogForm, nameEn: e.target.value })}
+                              placeholder="e.g. Technical Inspection"
+                              className="w-full px-3 py-2 rounded-xl border border-border-hairline bg-white font-label-code text-left focus:outline-none focus:border-secondary"
+                            />
+                          </div>
+                          <div>
+                            <label className="block font-bold text-primary mb-1.5">{modalMeta.codeFieldLabel}</label>
+                            <input
+                              type="text"
+                              required
+                              dir="ltr"
+                              maxLength={activeCatalogModal === 'isoStandard' ? 28 : 6}
+                              value={catalogForm.code}
+                              onChange={(e) =>
+                                setCatalogForm({
+                                  ...catalogForm,
+                                  code:
+                                    activeCatalogModal === 'isoStandard'
+                                      ? e.target.value
+                                      : e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''),
+                                })
+                              }
+                              placeholder={modalMeta.codePlaceholder}
+                              className={`w-full px-3 py-2 rounded-xl border border-border-hairline bg-white font-label-code font-bold text-left focus:outline-none focus:border-secondary ${
+                                activeCatalogModal === 'isoStandard' ? '' : 'uppercase'
+                              }`}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                          <div className="text-[11px] text-on-surface-variant">
+                            {activeCatalogModal === 'confidentiality' ? (
+                              <>
+                                پیش‌نمایش نمایش در لیست:{' '}
+                                <span className="font-bold text-secondary">
+                                  {catalogForm.nameFa || 'عنوان'} ({catalogForm.code || 'C5'})
+                                </span>
+                              </>
+                            ) : activeCatalogModal === 'isoStandard' ? (
+                              <>
+                                پیش‌نمایش گزینه انتخابی در فرم:{' '}
+                                <span className="font-label-code font-extrabold text-secondary" dir="ltr">
+                                  {catalogForm.code || 'ISO 27001:2022'}
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                پیش‌نمایش کد تولیدی با مخفف جدید:{' '}
+                                <span className="font-label-code font-extrabold text-secondary" dir="ltr">
+                                  {activeCatalogModal === 'docType'
+                                    ? `${catalogForm.code || 'XXX'}-${mgmtCode || '---'}-${unitCode || '---'}-03-00`
+                                    : activeCatalogModal === 'management'
+                                    ? `${docTypeCode || '---'}-${catalogForm.code || 'XXX'}-${unitCode || '---'}-03-00`
+                                    : `${docTypeCode || '---'}-${mgmtCode || '---'}-${catalogForm.code || 'XXX'}-03-00`}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowCatalogAddForm(false);
+                                setEditingCatalogCode(null);
+                                setCatalogForm({ nameFa: '', nameEn: '', code: '' });
+                              }}
+                              className="px-3.5 py-1.5 rounded-xl border border-border-hairline bg-white text-xs font-semibold text-on-surface-variant cursor-pointer"
+                            >
+                              انصراف
+                            </button>
+                            <button
+                              type="submit"
+                              className="px-4 py-1.5 rounded-xl bg-tertiary hover:bg-emerald-800 text-white text-xs font-bold cursor-pointer"
+                            >
+                              {editingCatalogCode !== null ? 'ذخیره تغییرات' : 'ذخیره و افزودن به لیست'}
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                    )}
+
+                    {/* Table displaying Name FA, Name EN, Abbreviation Code, and Actions (Select / Edit / Delete) */}
+                    <div className="border border-border-hairline rounded-xl overflow-hidden overflow-x-auto">
+                      <table className="w-full text-right border-collapse text-xs">
+                        <thead>
+                          <tr className="bg-surface-container-low border-b border-border-hairline font-extrabold text-primary text-[11px]">
+                            <th className="py-3 px-4 w-14 text-center">ردیف</th>
+                            <th className="py-3 px-4">نام فارسی</th>
+                            <th className="py-3 px-4">نام لاتین</th>
+                            <th className="py-3 px-4 text-center">{modalMeta.codeColumnHeader}</th>
+                            <th className="py-3 px-4 text-center w-48">انتخاب و عملیات</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border-hairline/70">
+                          {modalMeta.items.length === 0 ? (
+                            <tr>
+                              <td colSpan={5} className="py-8 text-center text-xs text-on-surface-variant">
+                                هیچ موردی در این لیست وجود ندارد. از دکمه بالا مورد جدید اضافه کنید.
+                              </td>
+                            </tr>
+                          ) : (
+                            modalMeta.items.map((item, idx) => {
+                              const isSelected = modalMeta.isItemSelected(item.code);
+                              return (
+                                <tr
+                                  key={item.code}
+                                  className={`transition-colors ${
+                                    isSelected ? 'bg-secondary-container/25' : 'hover:bg-surface-container-low/50'
+                                  }`}
+                                >
+                                  <td className="py-3 px-4 text-center font-bold text-on-surface-variant tabular-nums">
+                                    {(idx + 1).toLocaleString('fa-IR')}
+                                  </td>
+                                  <td className="py-3 px-4 font-bold text-primary">{item.nameFa}</td>
+                                  <td className="py-3 px-4 font-label-code text-on-surface-variant text-left" dir="ltr">
+                                    {item.nameEn}
+                                  </td>
+                                  <td className="py-3 px-4 text-center">
+                                    <span
+                                      className="font-label-code inline-block px-2.5 py-0.5 rounded-md bg-surface-container-low border border-border-hairline font-extrabold text-secondary"
+                                      dir="ltr"
+                                    >
+                                      {item.code}
+                                    </span>
+                                  </td>
+                                  <td className="py-3 px-4 text-center">
+                                    <div className="inline-flex items-center justify-center gap-1.5">
+                                      <button
+                                        type="button"
+                                        onClick={() => modalMeta.onSelect(item.code)}
+                                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold cursor-pointer transition-colors ${
+                                          isSelected
+                                            ? 'bg-tertiary text-white'
+                                            : 'bg-surface-container-low hover:bg-primary hover:text-white text-primary'
+                                        }`}
+                                      >
+                                        {isSelected ? 'انتخاب‌شده' : 'انتخاب'}
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => startEditCatalogItem(item)}
+                                        title="ویرایش"
+                                        className="p-1.5 rounded-lg bg-sky-50 hover:bg-secondary text-secondary hover:text-white transition-colors cursor-pointer"
+                                      >
+                                        <span className="material-symbols-outlined !text-[15px]">edit</span>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDeleteCatalogItem(activeCatalogModal, item.code)}
+                                        title="حذف"
+                                        className="p-1.5 rounded-lg bg-red-50 hover:bg-critical-hse text-critical-hse hover:text-white transition-colors cursor-pointer"
+                                      >
+                                        <span className="material-symbols-outlined !text-[15px]">delete</span>
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Modal Footer */}
+                  <div className="px-6 py-3.5 bg-surface-container-low border-t border-border-hairline flex justify-end shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setActiveCatalogModal(null)}
+                      className="px-5 py-2 rounded-xl bg-primary hover:bg-secondary text-white text-xs font-bold cursor-pointer"
+                    >
+                      بستن پنجره
+                    </button>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
