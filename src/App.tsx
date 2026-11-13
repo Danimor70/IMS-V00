@@ -14,6 +14,7 @@ import {
   INITIAL_NOTIFICATIONS,
   INITIAL_OBSOLETE_DOCS,
   INITIAL_REVISIONS,
+  INITIAL_USERS,
   INITIAL_WORKFLOW_DOCS,
 } from './data/imsData';
 import { ApprovalWorkflowPage } from './pages/ApprovalWorkflowPage';
@@ -25,6 +26,9 @@ import { DocumentRevisionPage } from './pages/DocumentRevisionPage';
 import { DocumentsListPage } from './pages/DocumentsListPage';
 import { LoginPage } from './pages/LoginPage';
 import { OperationalModulePage } from './pages/OperationalModulePage';
+import { UserCreatePage } from './pages/UserCreatePage';
+import { UserDetailPermissionsPage } from './pages/UserDetailPermissionsPage';
+import { UsersManagementPage } from './pages/UsersManagementPage';
 import {
   AuditTrailEntry,
   DistributionMatrixRow,
@@ -34,6 +38,7 @@ import {
   RevisionItem,
   RouteId,
   ToastMessage,
+  UserAccount,
   WorkflowDoc,
 } from './types/ims';
 
@@ -47,6 +52,8 @@ export default function App() {
   const [matrixRows, setMatrixRows] = useState<DistributionMatrixRow[]>(INITIAL_DISTRIBUTION_MATRIX);
   const [auditTrail, setAuditTrail] = useState<AuditTrailEntry[]>(INITIAL_AUDIT_TRAIL);
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
+  const [users, setUsers] = useState<UserAccount[]>(INITIAL_USERS);
+  const [selectedUserId, setSelectedUserId] = useState<string>('usr-rezvani-ali');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   const notify = useCallback(
@@ -192,6 +199,58 @@ export default function App() {
     [handleNavigate]
   );
 
+  const handleAddUser = useCallback((newUser: UserAccount) => {
+    setUsers((prev) => [newUser, ...prev]);
+  }, []);
+
+  const handleUpdateUser = useCallback(
+    (id: string, patch: Partial<UserAccount>, auditAction?: string) => {
+      setUsers((prev) =>
+        prev.map((u) => {
+          if (u.id !== id) return u;
+          const nextLogs = auditAction
+            ? [
+                {
+                  id: `log-${Date.now()}`,
+                  timestamp: '۱۴۰۳/۰۸/۲۴ - هم‌اکنون',
+                  action: auditAction,
+                  actor: 'مهران کاظمی (مدیر IMS)',
+                  actorRole: 'مدیر تضمین کیفیت و نماینده مدیریت IMS',
+                  ipOrSource: '10.14.80.12 [ADMIN-CONSOLE]',
+                  statusText: 'امضای دیجیتال معتبر',
+                  statusTone: 'tertiary' as const,
+                },
+                ...u.auditLogs,
+              ]
+            : u.auditLogs;
+          return { ...u, ...patch, auditLogs: nextLogs };
+        })
+      );
+    },
+    []
+  );
+
+  const handleDeleteUser = useCallback(
+    (id: string) => {
+      setUsers((prev) => {
+        const next = prev.filter((u) => u.id !== id);
+        if (selectedUserId === id && next.length > 0) {
+          setSelectedUserId(next[0].id);
+        }
+        return next;
+      });
+    },
+    [selectedUserId]
+  );
+
+  const handleSelectUserForDetail = useCallback(
+    (id: string) => {
+      setSelectedUserId(id);
+      handleNavigate('users-detail');
+    },
+    [handleNavigate]
+  );
+
   const inboxBadgeCount = workflowDocs.filter((w) => w.tabGroup === 'my-inbox').length + 1;
 
   return (
@@ -217,6 +276,8 @@ export default function App() {
           onMarkAllRead={handleMarkAllRead}
           onReadNotification={handleReadNotification}
           documents={documents}
+          users={users}
+          onSelectUserForDetail={handleSelectUserForDetail}
           onNotify={notify}
         >
           {route === 'dashboard' && (
@@ -279,13 +340,51 @@ export default function App() {
             />
           )}
 
+          {(route === 'users-list' || route === 'settings') && (
+            <UsersManagementPage
+              users={users}
+              onAddUser={handleAddUser}
+              onUpdateUser={handleUpdateUser}
+              onDeleteUser={handleDeleteUser}
+              onSelectUserForDetail={handleSelectUserForDetail}
+              onNavigate={handleNavigate}
+              onNotify={notify}
+            />
+          )}
+
+          {route === 'users-create' && (
+            <UserCreatePage
+              users={users}
+              onAddUser={handleAddUser}
+              onSelectUserForDetail={handleSelectUserForDetail}
+              onNavigate={handleNavigate}
+              onNotify={notify}
+            />
+          )}
+
+          {route === 'users-detail' && (
+            <UserDetailPermissionsPage
+              users={users}
+              selectedUserId={selectedUserId}
+              onSelectUser={setSelectedUserId}
+              onUpdateUser={handleUpdateUser}
+              onDeleteUser={handleDeleteUser}
+              onNavigate={handleNavigate}
+              onNotify={notify}
+            />
+          )}
+
           {route !== 'dashboard' &&
             route !== 'documents-list' &&
             route !== 'documents-create' &&
             route !== 'documents-revision' &&
             route !== 'documents-approval-workflow' &&
             route !== 'documents-distribution' &&
-            route !== 'documents-archive' && (
+            route !== 'documents-archive' &&
+            route !== 'users-list' &&
+            route !== 'users-create' &&
+            route !== 'users-detail' &&
+            route !== 'settings' && (
               <OperationalModulePage route={route} onNavigate={handleNavigate} onNotify={notify} />
             )}
         </LayoutShell>

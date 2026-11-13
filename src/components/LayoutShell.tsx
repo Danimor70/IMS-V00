@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ImsDocument, NotificationItem, RouteId } from '../types/ims';
+import { ImsDocument, NotificationItem, RouteId, UserAccount } from '../types/ims';
 
 interface LayoutShellProps {
   currentRoute: RouteId;
@@ -10,6 +10,8 @@ interface LayoutShellProps {
   onMarkAllRead: () => void;
   onReadNotification: (id: string, targetRoute: RouteId) => void;
   documents: ImsDocument[];
+  users?: UserAccount[];
+  onSelectUserForDetail?: (id: string) => void;
   onNotify: (title: string, message?: string, type?: 'success' | 'info' | 'warning' | 'error') => void;
   children: React.ReactNode;
 }
@@ -32,6 +34,8 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
   onMarkAllRead,
   onReadNotification,
   documents,
+  users = [],
+  onSelectUserForDetail,
   onNotify,
   children,
 }) => {
@@ -45,6 +49,7 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
     capa: false,
     kpi: false,
     hse: false,
+    settings: false,
   });
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -149,7 +154,16 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
       { id: 'legal', label: 'الزامات قانونی و استانداردها', icon: 'gavel', route: 'legal' },
       { id: 'management-review', label: 'جلسات و بازنگری مدیریت', icon: 'groups', route: 'management-review' },
       { id: 'reports', label: 'گزارش‌ها و تحلیل‌های مدیریتی', icon: 'bar_chart', route: 'reports' },
-      { id: 'settings', label: 'مدیریت کاربران و تنظیمات', icon: 'settings', route: 'settings' },
+      {
+        id: 'settings',
+        label: 'مدیریت کاربران و تنظیمات',
+        icon: 'settings',
+        children: [
+          { label: 'فهرست کاربران و تنظیمات', route: 'users-list' },
+          { label: 'ثبت دستی کاربر جدید', route: 'users-create' },
+          { label: 'پروفایل و ماتریس دسترسی کاربر', route: 'users-detail' },
+        ],
+      },
     ],
     [cartableCount]
   );
@@ -159,16 +173,36 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
     if (!q) return [];
     const docMatches = documents
       .filter((d) => d.code.toLowerCase().includes(q) || d.title.toLowerCase().includes(q) || d.unit.toLowerCase().includes(q))
-      .slice(0, 5)
+      .slice(0, 4)
       .map((d) => ({
         id: d.id,
         title: d.title,
         subtitle: `${d.code} • ${d.unit}`,
         route: (d.status === 'منسوخ' ? 'documents-archive' : 'documents-list') as RouteId,
         icon: 'description',
+        userId: undefined as string | undefined,
       }));
 
-    const routeMatches: { id: string; title: string; subtitle: string; route: RouteId; icon: string }[] = [];
+    const userMatches = users
+      .filter(
+        (u) =>
+          u.firstName.toLowerCase().includes(q) ||
+          u.lastName.toLowerCase().includes(q) ||
+          `${u.firstName} ${u.lastName}`.toLowerCase().includes(q) ||
+          u.personnelCode.toLowerCase().includes(q) ||
+          u.username.toLowerCase().includes(q)
+      )
+      .slice(0, 4)
+      .map((u) => ({
+        id: u.id,
+        title: `${u.honorific} ${u.firstName} ${u.lastName}`,
+        subtitle: `${u.personnelCode} • ${u.roleTitle}`,
+        route: 'users-detail' as RouteId,
+        icon: 'badge',
+        userId: u.id as string | undefined,
+      }));
+
+    const routeMatches: { id: string; title: string; subtitle: string; route: RouteId; icon: string; userId?: string }[] = [];
     navGroups.forEach((g) => {
       if (g.route && g.label.toLowerCase().includes(q)) {
         routeMatches.push({ id: g.id, title: g.label, subtitle: 'ماژول سامانه', route: g.route, icon: g.icon });
@@ -180,8 +214,8 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
       });
     });
 
-    return [...docMatches, ...routeMatches.slice(0, 4)];
-  }, [searchQuery, documents, navGroups]);
+    return [...userMatches, ...docMatches, ...routeMatches.slice(0, 3)];
+  }, [searchQuery, documents, users, navGroups]);
 
   const unreadCount = notifications.filter((n) => n.unread).length;
   const filteredNotifs = notifications.filter((n) => notifFilter === 'all' || n.category === notifFilter);
@@ -241,8 +275,12 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
         {navGroups.map((group) => {
           const isGroupActive =
             (group.route && currentRoute === group.route) ||
+            (group.id === 'settings' && currentRoute === 'settings') ||
             (group.children?.some((c) => c.route === currentRoute) ?? false);
-          const isExpanded = !!expandedGroups[group.id] || (group.children?.some((c) => c.route === currentRoute) ?? false);
+          const isExpanded =
+            !!expandedGroups[group.id] ||
+            (group.id === 'settings' && currentRoute === 'settings') ||
+            (group.children?.some((c) => c.route === currentRoute) ?? false);
 
           if (!group.children) {
             return (
@@ -304,7 +342,8 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
               {!sidebarCollapsed && isExpanded && (
                 <div className="pr-4 mr-3 border-r border-border-hairline space-y-0.5 py-1">
                   {group.children.map((child) => {
-                    const active = currentRoute === child.route;
+                    const active =
+                      currentRoute === child.route || (currentRoute === 'settings' && child.route === 'users-list');
                     return (
                       <button
                         key={child.route}
@@ -422,7 +461,15 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
                         <button
                           key={res.id}
                           type="button"
-                          onMouseDown={() => handleNavClick(res.route)}
+                          onMouseDown={() => {
+                            if (res.userId && onSelectUserForDetail) {
+                              onSelectUserForDetail(res.userId);
+                              setSidebarOpenMobile(false);
+                              setSearchFocused(false);
+                            } else {
+                              handleNavClick(res.route);
+                            }
+                          }}
                           className="w-full text-right px-4 py-2.5 hover:bg-surface-container-low flex items-center gap-3 transition-colors cursor-pointer"
                         >
                           <span className="material-symbols-outlined !text-[18px] text-secondary">{res.icon}</span>

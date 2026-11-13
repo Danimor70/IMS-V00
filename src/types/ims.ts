@@ -35,7 +35,10 @@ export type RouteId =
   | 'legal'
   | 'management-review'
   | 'reports'
-  | 'settings';
+  | 'settings'
+  | 'users-list'
+  | 'users-create'
+  | 'users-detail';
 
 export type DocStatus = 'مصوب' | 'در جریان بررسی' | 'نیازمند بازنگری' | 'منسوخ' | 'پیش‌نویس';
 
@@ -253,3 +256,79 @@ export interface OperationalModuleConfig {
   kpis: { label: string; value: string; note: string; tone: 'primary' | 'tertiary' | 'warning' | 'critical' }[];
   rows: OperationalRow[];
 }
+
+export type UserAccountStatus =
+  | 'فعال / برخط'
+  | 'فعال'
+  | 'فعال / سطح کلان'
+  | 'فعال / دارای توکن امنیتی C3'
+  | 'انقضای رمز / موقت'
+  | 'معلق / غیرفعال';
+
+export type RbacLevel =
+  | 'L5 - Admin'
+  | 'L4 - Supervisor'
+  | 'L3 - Lead Auditor'
+  | 'L2 - Specialist'
+  | 'L1 - Operator';
+
+export type RbacPermissionGroupId = 'A' | 'B' | 'C';
+
+export interface RbacGroupDef {
+  id: RbacPermissionGroupId;
+  title: string;
+  subtitle: string;
+  icon: string;
+  tone: 'primary' | 'tertiary' | 'secondary';
+}
+
+export interface RbacPermissionDef {
+  id: string;
+  groupId: RbacPermissionGroupId;
+  title: string;
+  description: string;
+  tag?: string;
+  tagTone?: 'primary' | 'tertiary' | 'warning' | 'critical' | 'secondary';
+}
+
+export interface UserAuditLogEntry {
+  id: string;
+  timestamp: string;
+  action: string;
+  actor: string;
+  actorRole: string;
+  ipOrSource: string;
+  statusText: string;
+  statusTone: 'tertiary' | 'secondary' | 'neutral' | 'warning';
+}
+
+export interface UserAccount {
+  id: string;
+  honorific: string;
+  firstName: string;
+  lastName: string;
+  personnelCode: string;
+  mobile: string;
+  extension: string;
+  management: string;
+  unit: string;
+  roleTitle: string;
+  directManager: string;
+  directSupervisor: string;
+  username: string;
+  securityBadge: string;
+  securityLevel: 'C1' | 'C2' | 'C3' | 'C4';
+  rbacLevel: RbacLevel;
+  accountStatus: UserAccountStatus;
+  siteLocation: string;
+  ptwPrivilege: string;
+  digitalSignatureValidity: string;
+  lastAccessReview: string;
+  mfaEnabled: boolean;
+  forcePasswordChange: boolean;
+  otWifiAllowed: boolean;
+  hardwareTokenType: string;
+  permissions: string[];
+  auditLogs: UserAuditLogEntry[];
+}
+
