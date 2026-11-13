@@ -1,0 +1,899 @@
+<!DOCTYPE html><html dir="rtl" lang="fa"><head></head><body class="bg-[#EAF0F5] font-body-md text-on-surface antialiased min-h-screen"><svg aria-hidden="true" class="inline-defs-container" style="position:absolute;width:0;height:0;overflow:hidden"></svg><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}
+.custom-scrollbar::-webkit-scrollbar{width:4px;}
+.custom-scrollbar::-webkit-scrollbar-track{background:transparent;}
+.custom-scrollbar::-webkit-scrollbar-thumb{background:#c3c6cd;border-radius:4px;}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover{background:#9aa0a6;}
+</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"surface-variant":"#dde3e8","on-primary-fixed-variant":"#324861","tertiary-fixed":"#cde5ff","on-surface-variant":"#43474d","on-tertiary":"#ffffff","primary-fixed":"#d0e4ff","secondary-container":"#9bceff","tertiary-container":"#003126","on-secondary-fixed":"#001d32","surface-dim":"#d5dbe0","background":"#eaf0f5","error":"#dc2626","on-secondary":"#ffffff","on-tertiary-container":"#3fa187","surface-container-lowest":"#ffffff","primary":"#142c43","surface":"#eaf0f5","surface-container":"#e9eff4","on-secondary-container":"#1b5883","surface-container-low":"#f4f8fb","surface-container-highest":"#dde3e8","inverse-on-surface":"#ebf1f6","on-background":"#161c20","outline-variant":"#c3c6cd","on-tertiary-fixed-variant":"#005140","tertiary-fixed-dim":"#78d8bb","on-surface":"#161c20","inverse-primary":"#b1c9e6","inverse-surface":"#2b3135","outline":"#74777d","secondary-fixed-dim":"#97ccfd","primary-fixed-dim":"#b1c9e6","on-error":"#ffffff","secondary-fixed":"#cde5ff","surface-container-high":"#e3e9ee","secondary":"#1e5a85","on-primary-container":"#ffffff","on-primary-fixed":"#021d33","on-primary":"#ffffff","on-tertiary-fixed":"#002018","surface-bright":"#ffffff","error-container":"#fee2e2","surface-tint":"#142c43","primary-container":"#142c43","on-secondary-fixed-variant":"#004a75","tertiary":"#16846b","on-error-container":"#991b1b"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-lg":"1.5rem","space-xl":"2rem","gutter-sm":"1rem","space-xs":"0.25rem",gutter:"1.5rem","space-sm":"0.5rem","margin-mobile":"0.75rem","space-md":"1rem",margin:"1.5rem"},fontFamily:{"headline-xl":["Vazirmatn"],"body-md":["Vazirmatn"],"label-lg":["Vazirmatn"],"headline-md":["Vazirmatn"],"label-md":["Vazirmatn"],"headline-sm":["Vazirmatn"],"body-lg":["Vazirmatn"],"label-code":["Inter"],"headline-lg-mobile":["Vazirmatn"],"title-lg":["Vazirmatn"],"headline-xl-mobile":["Vazirmatn"],"headline-lg":["Vazirmatn"],"title-md":["Vazirmatn"],"body-sm":["Vazirmatn"]},fontSize:{"headline-xl":["36px",{lineHeight:"60px",letterSpacing:"0px",fontWeight:"600"}],"body-md":["14px",{lineHeight:"21px",letterSpacing:"0px",fontWeight:"400"}],"label-lg":["13px",{lineHeight:"20px",letterSpacing:"0px",fontWeight:"600"}],"headline-md":["22px",{lineHeight:"32px",letterSpacing:"0px",fontWeight:"600"}],"label-md":["12px",{lineHeight:"16px",letterSpacing:"0px",fontWeight:"500"}],"headline-sm":["20px",{lineHeight:"26px",letterSpacing:"0px",fontWeight:"600"}],"body-lg":["15px",{lineHeight:"24px",letterSpacing:"0px",fontWeight:"400"}],"label-code":["13px",{lineHeight:"16px",letterSpacing:"0px",fontWeight:"500"}],"headline-lg-mobile":["24px",{lineHeight:"32px",letterSpacing:"0px",fontWeight:"600"}],"title-lg":["18px",{lineHeight:"26px",letterSpacing:"0px",fontWeight:"600"}],"headline-xl-mobile":["28px",{lineHeight:"40px",letterSpacing:"0px",fontWeight:"600"}],"headline-lg":["30px",{lineHeight:"36px",letterSpacing:"0px",fontWeight:"600"}],"title-md":["16px",{lineHeight:"20px",letterSpacing:"0px",fontWeight:"600"}],"body-sm":["12px",{lineHeight:"18px",letterSpacing:"0px",fontWeight:"400"}]}}}};</script>
+<!-- Updated Right Sidebar with 14 IMS Navigation Items -->
+<aside class="fixed right-0 top-0 h-full w-72 bg-white shadow-[-4px_0px_16px_0px_rgba(15,23,42,0.04)] z-50 flex flex-col justify-between overflow-y-auto custom-scrollbar border-l border-slate-200/70">
+<div class="flex flex-col">
+<!-- Brand / Plant Header -->
+<div class="px-space-md py-space-md flex items-center justify-between border-b border-surface-container-high shrink-0">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-[#142C43] flex items-center justify-center text-white shadow-sm shrink-0">
+<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="flex flex-col text-right">
+<span class="font-title-md text-title-md text-on-surface leading-tight font-bold">پتروشیمی آپادانا</span>
+<span class="font-label-md text-label-md text-[#1E5A85] font-medium">سامانه یکپارچه مدیریت (IMS)</span>
+</div>
+</div>
+<div class="px-space-xs py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-code text-label-code font-semibold">A-IMS</div>
+</div>
+<!-- Navigation Menu Items (14 Categories) -->
+<nav class="flex-1 px-space-sm py-space-sm flex flex-col gap-1 text-right">
+<!-- 1. داشبورد (Active) -->
+<a aria-current="page" class="flex items-center justify-between px-space-md py-2.5 bg-[#142C43] text-white font-semibold rounded-xl shadow-sm transition-all duration-200 group" data-path="dashboard" href="#">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<rect height="7" rx="1.5" width="7" x="3" y="3"></rect>
+<rect height="7" rx="1.5" width="7" x="14" y="3"></rect>
+<rect height="7" rx="1.5" width="7" x="14" y="14"></rect>
+<rect height="7" rx="1.5" width="7" x="3" y="14"></rect>
+</svg>
+<span class="font-body-md text-body-md">داشبورد</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-[#16846B] ring-2 ring-white/30"></span>
+</a><a class="flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150 group" href="#"><div class="flex items-center gap-2.5"><svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 13.5h3.86a2.25 2.25 0 012.012 1.244l.256.512a2.25 2.25 0 002.013 1.244h3.218a2.25 2.25 0 002.013-1.244l.256-.512a2.25 2.25 0 012.013-1.244h3.859m-19.5.03v5.22a2.25 2.25 0 002.25 2.25h15a2.25 2.25 0 002.25-2.25v-5.22m-19.5 0l2.404-9.616A2.25 2.25 0 017.348 2.25h9.304a2.25 2.25 0 012.194 1.634l2.404 9.616"></path></svg><span class="font-body-md text-body-md font-medium">کارتابل اقدامات</span></div><span class="px-2 py-0.5 rounded-full bg-[#d0e4ff] text-[#1E5A85] font-label-md text-label-md font-bold">۴</span></a>
+<!-- 2. مدیریت مستندات و سوابق (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت مستندات و سوابق</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4 hidden">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">فهرست مستندات</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">ثبت مستند جدید</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">بازنگری مستندات</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">گردش تأیید مستندات</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">توزیع و دسترسی به مستندات</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">بایگانی</a>
+</div>
+</div>
+<!-- 3. مدیریت فرآیندها (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت فرآیندها</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4 hidden">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">شناسنامه فرآیندها</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">نقشه فرآیندها</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">تعاملات فرآیندی</a>
+</div>
+</div>
+<!-- 4. مدیریت ریسک و فرصت (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#d97706]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت ریسک و فرصت</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4 hidden">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">شناسایی ریسک‌ها</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">ارزیابی ریسک</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">برنامه‌های کنترلی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">فرصت‌های بهبود</a>
+</div>
+</div>
+<!-- 5. مدیریت ممیزی (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#16846B]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت ممیزی</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4 hidden">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">برنامه ممیزی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">ممیزی داخلی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">ممیزی خارجی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">چک‌لیست‌های ممیزی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">یافته‌های ممیزی</a>
+</div>
+</div>
+<!-- 6. مدیریت عدم انطباق و اقدامات اصلاحی (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#dc2626]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">عدم انطباق و CAPA</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4 hidden">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">ثبت عدم انطباق</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">بررسی علل ریشه‌ای</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">اقدامات اصلاحی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">ارزیابی اثربخشی</a>
+</div>
+</div>
+<!-- 7. مدیریت اهداف و شاخص‌ها (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25l2.25-2.25 2.25 2.25 4.5-4.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت اهداف و شاخص‌ها</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4 hidden">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">اهداف سازمانی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">شاخص‌های عملکردی KPI</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">پایش و ارزیابی عملکرد</a>
+</div>
+</div>
+<!-- 8. مدیریت تغییرات (Single item) -->
+<a class="flex items-center gap-2.5 px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" href="#">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت تغییرات (MOC)</span>
+</a>
+<!-- 9. مدیریت HSE (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#dc2626]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت HSE</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4 hidden">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">حوادث و شبه‌حوادث</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">بازرسی‌های HSE</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">اقدامات اصلاحی HSE</a>
+</div>
+</div>
+<!-- 10. مدیریت آموزش و شایستگی (Single item) -->
+<a class="flex items-center gap-2.5 px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" href="#">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت آموزش و شایستگی</span>
+</a>
+<!-- 11. مدیریت الزامات قانونی و استانداردها (Single item) -->
+<a class="flex items-center gap-2.5 px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" href="#">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.333A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.583V21m16.5 0H3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">الزامات قانونی و استانداردها</span>
+</a>
+<!-- 12. جلسات و بازنگری مدیریت (Single item) -->
+<a class="flex items-center gap-2.5 px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" href="#">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">جلسات و بازنگری مدیریت</span>
+</a>
+<!-- 13. گزارش‌ها و تحلیل‌های مدیریتی (Single item) -->
+<a class="flex items-center gap-2.5 px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" href="#">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">گزارش‌ها و تحلیل‌های مدیریتی</span>
+</a>
+<!-- 14. مدیریت کاربران و تنظیمات (Single item) -->
+<a class="flex items-center gap-2.5 px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" href="#">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.15.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت کاربران و تنظیمات</span>
+</a>
+</nav>
+</div>
+<!-- Sidebar Footer Status Widget -->
+
+</aside>
+<div class="pr-72"><header class="fixed top-0 right-72 left-0 h-16 bg-white/95 backdrop-blur-md shadow-[0_1px_6px_rgba(0,0,0,0.04)] border-b border-slate-200/70 z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md"><button class="w-10 h-10 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">menu</span></button><div class="relative flex items-center w-80"><span class="material-symbols-outlined absolute right-3 text-outline text-[20px]">search</span><input class="w-full h-10 pr-10 pl-4 bg-surface-container-low rounded-full border border-slate-200/60 font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-[#1E5A85] transition-all" placeholder="جستجو..." type="text"></div></div><div class="flex items-center gap-space-md"><div class="relative flex items-center" id="notifications-wrapper">
+<button aria-expanded="false" aria-haspopup="true" class="relative w-10 h-10 rounded-full hover:bg-surface-container flex items-center justify-center text-[#1E5A85] bg-[#d0e4ff]/40 transition-colors focus:outline-none cursor-pointer" id="notifications-trigger-btn" title="اعلان‌ها و هشدارها" type="button">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#dc2626] rounded-full ring-2 ring-white animate-pulse"></span>
+</button>
+<!-- Notifications Dropdown Menu (Hidden by default, interactive toggle) -->
+<div class="transition-all duration-200 ease-out origin-top-left absolute left-0 top-12 w-96 sm:w-[420px] bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden flex flex-col text-right opacity-0 scale-95 pointer-events-none hidden" id="notifications-dropdown-menu">
+<!-- Header of Dropdown -->
+<div class="p-space-md border-b border-slate-200/80 bg-white">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[#142C43] text-[20px]">notifications_active</span>
+<h3 class="font-title-md text-title-md text-[#142C43] font-bold">اعلان‌ها و هشدارهای سیستم</h3>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-[#dc2626] font-label-md text-label-md font-bold">
+          ۳ خوانده‌نشده
+        </span>
+</div>
+<div class="flex items-center justify-between mt-2 pt-1">
+<span class="font-body-sm text-body-sm text-outline">سامانه مانیتورینگ بلادرنگ سایت عسلویه</span>
+<button class="font-label-md text-label-md text-[#1E5A85] hover:underline font-medium transition-colors" type="button">
+          علامت‌گذاری همه به عنوان خوانده‌شده
+        </button>
+</div>
+<!-- Filter Category Tags -->
+<div class="flex items-center gap-1.5 mt-space-sm overflow-x-auto pb-0.5">
+<button class="px-2.5 py-1 rounded-full text-label-md font-label-md bg-[#142C43] text-white font-semibold transition-colors" type="button">
+          همه (۵)
+        </button>
+<button class="px-2.5 py-1 rounded-full text-label-md font-label-md bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-medium border border-slate-200/70" type="button">
+          هشدارهای HSE (۲)
+        </button>
+<button class="px-2.5 py-1 rounded-full text-label-md font-label-md bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-medium border border-slate-200/70" type="button">
+          ممیزی و CAPA (۲)
+        </button>
+<button class="px-2.5 py-1 rounded-full text-label-md font-label-md bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-medium border border-slate-200/70" type="button">
+          سیستمی (۱)
+        </button>
+</div>
+</div>
+<!-- Notification Items List -->
+<div class="max-h-[380px] overflow-y-auto divide-y divide-slate-100 bg-[#EAF0F5]/30">
+<!-- Item 1: HSE Alert (Unread & Urgent) -->
+<div class="p-space-md bg-white hover:bg-surface-container-low/80 transition-colors flex gap-space-sm cursor-pointer relative">
+<span class="absolute right-2 top-4 w-1.5 h-1.5 rounded-full bg-[#dc2626]"></span>
+<div class="w-9 h-9 rounded-xl bg-error-container/60 text-[#dc2626] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+</div>
+<div class="flex-1 flex flex-col gap-1 pr-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded text-[11px] font-bold bg-[#dc2626] text-white leading-tight">فوری</span>
+<span class="font-label-md text-label-md text-[#1E5A85] font-semibold">ایمنی و فرآیند (ISO 45001)</span>
+</div>
+<span class="font-label-code text-label-code text-outline text-[12px]">۱۰ دقیقه پیش</span>
+</div>
+<p class="font-body-sm text-body-sm text-[#142C43] font-semibold leading-snug">
+            هشدار فشار خط بخار بویلر ۳ واحد متانول
+          </p>
+<p class="font-label-md text-label-md text-on-surface-variant">
+            فشار سنسور به ۴۲.۵ بار رسید؛ بازبینی شیر اطمینان اضطراری الزامی است.
+          </p>
+</div>
+</div>
+<!-- Item 2: Permit to Work Approved (Unread) -->
+<div class="p-space-md bg-white hover:bg-surface-container-low/80 transition-colors flex gap-space-sm cursor-pointer relative">
+<span class="absolute right-2 top-4 w-1.5 h-1.5 rounded-full bg-[#16846B]"></span>
+<div class="w-9 h-9 rounded-xl bg-[#e6f4f1] text-[#16846B] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">local_fire_department</span>
+</div>
+<div class="flex-1 flex flex-col gap-1 pr-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded text-[11px] font-semibold bg-[#e6f4f1] text-[#16846B] leading-tight">مجوز کار</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">واحد الفین</span>
+</div>
+<span class="font-label-code text-label-code text-outline text-[12px]">۳۵ دقیقه پیش</span>
+</div>
+<p class="font-body-sm text-body-sm text-[#142C43] font-semibold leading-snug">
+            صدور پروانه کار گرم شماره <span class="font-label-code text-label-code text-[#1E5A85]">PTW-4409</span>
+</p>
+<p class="font-label-md text-label-md text-on-surface-variant">
+            توسط مهندس رضایی تأیید شد و عملیات جوشکاری فلنج آغاز گردید.
+          </p>
+</div>
+</div>
+<!-- Item 3: Quality Audit Schedule (Unread) -->
+<div class="p-space-md bg-white hover:bg-surface-container-low/80 transition-colors flex gap-space-sm cursor-pointer relative">
+<span class="absolute right-2 top-4 w-1.5 h-1.5 rounded-full bg-[#1E5A85]"></span>
+<div class="w-9 h-9 rounded-xl bg-[#d0e4ff] text-[#1E5A85] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">assignment_turned_in</span>
+</div>
+<div class="flex-1 flex flex-col gap-1 pr-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded text-[11px] font-semibold bg-[#d0e4ff] text-[#142C43] leading-tight">ISO 9001</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">ممیزی SGS</span>
+</div>
+<span class="font-label-code text-label-code text-outline text-[12px]">۱ ساعت پیش</span>
+</div>
+<p class="font-body-sm text-body-sm text-[#142C43] font-semibold leading-snug">
+            جلسه هماهنگی پیش‌ممیزی مراقبتی فردا ساعت ۰۹:۰۰
+          </p>
+<p class="font-label-md text-label-md text-on-surface-variant">
+            اتاق جلسات مدیریت تضمین کیفیت؛ مدارک چک‌لیست آزمایشگاه پیوست شد.
+          </p>
+</div>
+</div>
+<!-- Item 4: System Backup (Read) -->
+<div class="p-space-md bg-surface-container-low/40 hover:bg-surface-container-low transition-colors flex gap-space-sm cursor-pointer opacity-80">
+<div class="w-9 h-9 rounded-xl bg-surface-container text-outline flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">cloud_done</span>
+</div>
+<div class="flex-1 flex flex-col gap-1 pr-1">
+<div class="flex items-center justify-between">
+<span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-surface-container text-outline-variant leading-tight">سیستمی</span>
+<span class="font-label-code text-label-code text-outline text-[12px]">۳ ساعت پیش</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface font-medium leading-snug">
+            پشتیبان‌گیری خودکار پایگاه داده IMS با موفقیت انجام شد
+          </p>
+<p class="font-label-md text-label-md text-outline">
+            نسخه پشتیبان روی سرور ابری سایت ۲ ذخیره شد (حجم: ۱.۲ گیگابایت).
+          </p>
+</div>
+</div>
+</div>
+<!-- Footer of Dropdown -->
+<div class="p-3 bg-white border-t border-slate-200/80 flex items-center justify-between">
+<a class="w-full py-2 px-space-md rounded-xl bg-surface-container-low hover:bg-surface-container text-[#142C43] font-label-md text-label-md font-semibold transition-colors flex items-center justify-center gap-1.5" href="#">
+<span>مشاهده تمامی اعلان‌ها و گزارشات رویداد</span>
+<span class="material-symbols-outlined text-[16px] text-[#1E5A85]">arrow_back</span>
+</a>
+</div>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" title="راهنمای سامانه" type="button">
+<span class="material-symbols-outlined text-[22px]">help_outline</span>
+</button><div class="h-6 w-px bg-surface-container-high"></div><button class="w-10 h-10 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" title="تنظیمات و دسترسی‌ها" type="button"></button><div class="relative flex items-center" id="profile-wrapper"><button aria-expanded="false" aria-haspopup="true" class="flex items-center gap-space-sm cursor-pointer focus:outline-none p-1 rounded-xl hover:bg-surface-container transition-colors" id="profile-trigger-btn" type="button"><div class="text-left"><div class="font-label-lg text-label-lg text-on-surface leading-tight text-right">مهندس مهران کاظمی</div><div class="font-label-md text-label-md text-outline text-right">مدیر تضمین کیفیت و IMS</div></div><div class="w-8 h-8 rounded-full bg-[#142C43] flex items-center justify-center shadow-sm"><span class="material-symbols-outlined text-white text-[18px]">person</span></div><span class="material-symbols-outlined text-outline text-[18px] transition-transform duration-200" id="profile-chevron">expand_more</span></button><div class="transition-all duration-200 ease-out origin-top-left absolute left-0 top-12 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden flex flex-col text-right opacity-0 scale-95 pointer-events-none hidden" id="profile-dropdown-menu"><div class="p-space-md border-b border-slate-200/80 bg-surface-container-low"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-full bg-[#142C43] text-white flex items-center justify-center shadow-sm shrink-0"><span class="material-symbols-outlined text-[20px]">person</span></div><div class="flex flex-col"><span class="font-title-md text-title-md text-[#142C43] font-bold leading-tight">مهندس مهران کاظمی</span><span class="font-label-md text-label-md text-on-surface-variant">کد پرسنلی: ۹۴۰۲۱</span></div></div><div class="mt-2 pt-1 border-t border-slate-200/60 flex items-center justify-between text-outline font-label-md text-label-md"><span class="px-2 py-0.5 rounded bg-[#e6f4f1] text-[#16846B] font-semibold text-[11px]">مدیر ارشد کیفیت</span><span class="font-label-code text-label-code text-[11px]">سایت عسلویه</span></div></div><div class="py-1.5 flex flex-col"><a class="flex items-center gap-2.5 px-space-md py-2.5 text-on-surface hover:bg-surface-container hover:text-[#1E5A85] text-body-sm font-body-sm font-medium transition-colors" href="#"><span class="material-symbols-outlined text-[#1E5A85] text-[20px]">account_circle</span><span>مشاهده حساب کاربری</span></a><a class="flex items-center gap-2.5 px-space-md py-2.5 text-on-surface hover:bg-surface-container hover:text-[#1E5A85] text-body-sm font-body-sm font-medium transition-colors" href="#"><span class="material-symbols-outlined text-[#1E5A85] text-[20px]">lock_reset</span><span>تغییر رمز عبور</span></a></div><div class="border-t border-slate-200/70 p-1.5 bg-white"><a class="flex items-center gap-2.5 px-space-md py-2 text-[#dc2626] hover:bg-error-container/40 rounded-xl text-body-sm font-body-sm font-semibold transition-colors" href="#"><span class="material-symbols-outlined text-[#dc2626] text-[20px]">logout</span><span>خروج از سامانه</span></a></div></div></div></div></header><main class="w-full pt-16 bg-[#EAF0F5] min-h-[calc(100vh-64px)]"><div class="flex flex-col w-full">
+<div class="p-space-lg flex flex-col gap-space-lg max-w-[1560px] mx-auto w-full">
+<!-- Hero / Shift & IMS Health Banner -->
+<section class="relative w-full rounded-2xl bg-white border border-slate-200/80 overflow-hidden shadow-sm">
+<div class="absolute inset-0 bg-gradient-to-l from-[#142C43]/10 via-[#1E5A85]/5 to-transparent pointer-events-none"></div>
+<div class="relative z-10 p-space-lg md:p-space-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-space-lg">
+<div class="flex flex-col gap-space-xs max-w-2xl">
+<div class="flex items-center gap-space-xs">
+<span class="px-2.5 py-1 rounded-full bg-[#e6f4f1] text-[#16846B] font-label-md text-label-md flex items-center gap-1.5 shadow-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-[#16846B] animate-ping"></span>
+              پایش بلادرنگ ممیزی و فرآیندها
+            </span>
+<span class="font-label-code text-label-code text-outline">AP-IMS-OVERVIEW</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-[#142C43] mt-1 font-bold">سامانه جامع مدیریت یکپارچه (<span class="text-[#1E5A85] font-bold">IMS</span>) پتروشیمی آپادانا خلیج فارس</h1>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">داشبورد جامع نظارت بر عملکرد سیستم مدیریت یکپارچه، مستندات، پایش فرآیندی، ارزیابی ریسک‌ها و فرصت‌ها، ممیزی‌های دوره‌ای و پیگیری اقدامات اصلاحی (CAPA) بر اساس استانداردهای بین‌المللی ISO 9001، ISO 14001، ISO 45001 و ISO 50001 در شرکت پتروشیمی آپادانا خلیج فارس.</p>
+</div>
+<div class="flex flex-wrap items-center gap-space-md w-full lg:w-auto"><div class="flex items-center gap-space-md px-space-md py-3 rounded-xl bg-surface-container-low border border-slate-200/70 shadow-sm"><div class="w-12 h-12 rounded-xl bg-[#142C43] text-white flex items-center justify-center shadow-md"><span class="material-symbols-outlined text-[26px]">hub</span></div><div class="flex flex-col text-right"><span class="font-label-md text-label-md text-outline">شاخص کل یکپارچگی IMS</span><div class="flex items-baseline gap-1.5"><span class="font-headline-md text-headline-md text-[#16846B] font-bold">۹۶.۴٪</span><span class="font-label-md text-label-md text-on-surface-variant">بلوغ یکپارچه (Maturity L4)</span></div></div></div><div class="flex items-center gap-space-md px-space-md py-3 rounded-xl bg-surface-container-low border border-slate-200/70 shadow-sm"><div class="relative w-12 h-12 flex items-center justify-center"><svg class="w-12 h-12 -rotate-90" viewBox="0 0 36 36"><path class="text-surface-variant" d="M 18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path><path class="text-[#1E5A85]" d="M 18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="94.2, 100" stroke-linecap="round" stroke-width="3.5"></path></svg><span class="absolute font-label-lg text-label-lg font-bold text-[#142C43]">۹۴٪</span></div><div class="flex flex-col text-right"><span class="font-label-md text-label-md text-outline">نرخ انطباق فرآیندها و ممیزی‌ها</span><span class="font-title-md text-title-md text-on-surface font-semibold">ممیزی دوره‌ای و انطباق (Grade A)</span></div></div></div>
+</div>
+</section>
+<!-- 4 ISO Pillars KPI Grid -->
+<section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-space-md">
+<!-- ISO 9001 -->
+<div class="group p-space-md rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-full bg-[#d0e4ff] text-[#142C43] font-label-md text-label-md font-semibold">
+            ISO 9001:2015
+          </span>
+<div class="w-10 h-10 rounded-xl bg-[#1E5A85]/10 text-[#1E5A85] flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">verified</span>
+</div>
+</div>
+<div class="my-space-md">
+<span class="font-label-md text-label-md text-outline block mb-1">نرخ انطباق فرآیندهای کیفی</span>
+<div class="flex items-baseline justify-between">
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">۹۸.۲٪</span>
+<span class="flex items-center text-[#16846B] font-label-md text-label-md bg-[#e6f4f1] px-2 py-0.5 rounded-full font-semibold">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+              ۱.۴٪+
+            </span>
+</div>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#16846B] h-full rounded-full transition-all duration-500" style="width: 98.2%"></div>
+</div>
+</div>
+<!-- ISO 45001 -->
+<div class="group p-space-md rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-full bg-error-container text-on-error-container font-label-md text-label-md font-semibold">
+            ISO 45001:2018
+          </span>
+<div class="w-10 h-10 rounded-xl bg-error-container/40 text-error flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">shield_with_heart</span>
+</div>
+</div>
+<div class="my-space-md">
+<span class="font-label-md text-label-md text-outline block mb-1">ضریب تکرار حوادث ناتوان‌کننده (LTIFR)</span>
+<div class="flex items-baseline justify-between">
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">۰.۰۰</span>
+<span class="flex items-center text-[#16846B] font-label-md text-label-md bg-[#e6f4f1] px-2 py-0.5 rounded-full font-semibold">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+              ایده‌آل صفر
+            </span>
+</div>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#16846B] h-full rounded-full" style="width: 100%"></div>
+</div>
+</div>
+<!-- ISO 14001 -->
+<div class="group p-space-md rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-full bg-[#d0e4ff] text-[#1E5A85] font-label-md text-label-md font-semibold">
+            ISO 14001:2015
+          </span>
+<div class="w-10 h-10 rounded-xl bg-[#1E5A85]/10 text-[#1E5A85] flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">eco</span>
+</div>
+</div>
+<div class="my-space-md">
+<span class="font-label-md text-label-md text-outline block mb-1">پایش آنلاین آلایندگی فلر و پساب</span>
+<div class="flex items-baseline justify-between">
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">۹۹.۱٪</span>
+<span class="flex items-center text-[#1E5A85] font-label-md text-label-md bg-[#d0e4ff]/70 px-2 py-0.5 rounded-full font-semibold">
+<span class="material-symbols-outlined text-[16px]">done_all</span>
+              محدوده مجاز
+            </span>
+</div>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#1E5A85] h-full rounded-full transition-all duration-500" style="width: 99.1%"></div>
+</div>
+</div>
+<!-- ISO 50001 -->
+<div class="group p-space-md rounded-2xl bg-white border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-full bg-slate-100 text-[#142C43] font-label-md text-label-md font-semibold border border-slate-200">
+            ISO 50001:2018
+          </span>
+<div class="w-10 h-10 rounded-xl bg-[#142C43]/10 text-[#142C43] flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">bolt</span>
+</div>
+</div>
+<div class="my-space-md">
+<span class="font-label-md text-label-md text-outline block mb-1">شاخص عملکرد انرژی (EnPI)</span>
+<div class="flex items-baseline justify-between">
+<div class="flex items-baseline gap-1">
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">۴.۲</span>
+<span class="font-label-md text-label-md text-outline">MWh/ton</span>
+</div>
+<span class="flex items-center text-[#16846B] font-label-md text-label-md bg-[#e6f4f1] px-2 py-0.5 rounded-full font-semibold">
+<span class="material-symbols-outlined text-[16px]">trending_down</span>
+              ۳.۵٪- بهینه
+            </span>
+</div>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-[#142C43] h-full rounded-full transition-all duration-500" style="width: 86%"></div>
+</div>
+</div>
+</section><section class="flex flex-col gap-space-lg w-full"><div class="flex flex-col gap-space-sm"><div class="flex items-center justify-between"><div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#1E5A85]"></span><h3 class="font-title-md text-title-md text-[#142C43] font-bold">مدیریت مستندات و فرآیندها</h3></div><span class="px-2.5 py-0.5 rounded-full bg-[#d0e4ff] text-[#1E5A85] font-label-md text-label-md font-semibold">۳ شاخص کلیدی</span></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-md"><div class="p-space-md rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow"><div class="flex flex-col gap-1"><span class="font-label-md text-label-md text-outline">تعداد کل مستندات</span><span class="font-headline-lg text-headline-lg text-[#142C43] font-bold">۱,۴۲۰</span><span class="font-body-sm text-body-sm text-on-surface-variant">مصوب و جاری در کل سازمان</span></div><div class="w-12 h-12 rounded-xl bg-[#d0e4ff]/50 text-[#1E5A85] flex items-center justify-center shadow-sm shrink-0"><span class="material-symbols-outlined text-[26px]">description</span></div></div><div class="p-space-md rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow"><div class="flex flex-col gap-1"><span class="font-label-md text-label-md text-outline">مستندات در انتظار تأیید</span><div class="flex items-baseline gap-2"><span class="font-headline-lg text-headline-lg text-[#dc2626] font-bold">۱۸</span><span class="px-1.5 py-0.5 rounded text-[11px] font-bold bg-error-container text-[#dc2626]">اقدام فوری</span></div><span class="font-body-sm text-body-sm text-on-surface-variant">نیازمند اقدام فوری مراجع تایید</span></div><div class="w-12 h-12 rounded-xl bg-error-container/60 text-[#dc2626] flex items-center justify-center shadow-sm shrink-0"><span class="material-symbols-outlined text-[26px]">pending_actions</span></div></div><div class="p-space-md rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow"><div class="flex flex-col gap-1"><span class="font-label-md text-label-md text-outline">تعداد فرآیندهای سازمان</span><span class="font-headline-lg text-headline-lg text-[#142C43] font-bold">۵۴</span><span class="font-body-sm text-body-sm text-on-surface-variant">شناسنامه‌دار و تحت نظارت پایش</span></div><div class="w-12 h-12 rounded-xl bg-[#e6f4f1] text-[#16846B] flex items-center justify-center shadow-sm shrink-0"><span class="material-symbols-outlined text-[26px]">account_tree</span></div></div></div></div><div class="flex flex-col gap-space-sm"><div class="flex items-center justify-between"><div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#d97706]"></span><h3 class="font-title-md text-title-md text-[#142C43] font-bold">ریسک، عدم انطباق و ممیزی</h3></div><span class="px-2.5 py-0.5 rounded-full bg-[#d0e4ff] text-[#142C43] font-label-md text-label-md font-semibold">۴ شاخص کنترلی</span></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md"><div class="p-space-md rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow"><div class="flex flex-col gap-1"><span class="font-label-md text-label-md text-outline">تعداد ریسک‌های شناسایی‌شده</span><span class="font-headline-lg text-headline-lg text-[#142C43] font-bold">۱۸۶</span><span class="font-body-sm text-body-sm text-[#dc2626] font-medium">۱۲ ریسک با اولویت بحرانی</span></div><div class="w-12 h-12 rounded-xl bg-[#fee2e2]/60 text-[#dc2626] flex items-center justify-center shadow-sm shrink-0"><span class="material-symbols-outlined text-[26px]">security</span></div></div><div class="p-space-md rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow"><div class="flex flex-col gap-1"><span class="font-label-md text-label-md text-outline">عدم انطباق‌های باز</span><span class="font-headline-lg text-headline-lg text-[#d97706] font-bold">۹</span><span class="font-body-sm text-body-sm text-on-surface-variant">۴ مورد نیازمند تحلیل ریشه‌ای</span></div><div class="w-12 h-12 rounded-xl bg-surface-container text-[#d97706] flex items-center justify-center shadow-sm shrink-0"><span class="material-symbols-outlined text-[26px]">report_problem</span></div></div><div class="p-space-md rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow"><div class="flex flex-col gap-1"><span class="font-label-md text-label-md text-outline">اقدامات اصلاحی در انتظار</span><span class="font-headline-lg text-headline-lg text-[#1E5A85] font-bold">۱۴</span><span class="font-body-sm text-body-sm text-on-surface-variant">پیگیری پیشرفت اجرایی واحدها</span></div><div class="w-12 h-12 rounded-xl bg-[#d0e4ff]/40 text-[#1E5A85] flex items-center justify-center shadow-sm shrink-0"><span class="material-symbols-outlined text-[26px]">fact_check</span></div></div><div class="p-space-md rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow"><div class="flex flex-col gap-1"><span class="font-label-md text-label-md text-outline">ممیزی‌های برنامه‌ریزی‌شده</span><span class="font-headline-lg text-headline-lg text-[#16846B] font-bold">۶</span><span class="font-body-sm text-body-sm text-on-surface-variant">داخلی و خارجی در فصل جاری</span></div><div class="w-12 h-12 rounded-xl bg-[#e6f4f1] text-[#16846B] flex items-center justify-center shadow-sm shrink-0"><span class="material-symbols-outlined text-[26px]">event_available</span></div></div></div></div><div class="flex flex-col gap-space-sm"><div class="flex items-center justify-between"><div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#16846B]"></span><h3 class="font-title-md text-title-md text-[#142C43] font-bold">اهداف و بهبود استراتژیک</h3></div><span class="px-2.5 py-0.5 rounded-full bg-[#e6f4f1] text-[#16846B] font-label-md text-label-md font-semibold">شاخص کلان</span></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-space-md"><div class="lg:col-span-3 p-space-md rounded-2xl bg-white border border-slate-200/80 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md hover:shadow-md transition-shadow"><div class="flex items-center gap-space-md"><div class="w-14 h-14 rounded-2xl bg-[#e6f4f1] text-[#16846B] flex items-center justify-center shadow-sm shrink-0"><span class="material-symbols-outlined text-[32px]">track_changes</span></div><div class="flex flex-col"><div class="flex items-center gap-2"><span class="font-headline-lg text-headline-lg text-[#16846B] font-bold">۸۸.۵٪</span><span class="flex items-center text-[#16846B] font-label-md text-label-md bg-[#e6f4f1] px-2 py-0.5 rounded-full font-bold"><span class="material-symbols-outlined text-[16px]">trending_up</span>۴.۲٪+ رشد نسبت به دوره قبل</span></div><span class="font-title-md text-title-md text-[#142C43] font-semibold mt-0.5">درصد تحقق کل اهداف استراتژیک و فرآیندی سازمان</span><span class="font-body-sm text-body-sm text-on-surface-variant">ارزیابی بر پایه ۳۸ شاخص کلیدی عملکرد مصوب در بازنگری مدیریت</span></div></div><div class="w-full md:w-80 flex flex-col gap-1.5 shrink-0"><div class="flex justify-between font-label-md text-label-md"><span class="text-outline">پیشرفت کل برنامه راهبردی</span><span class="font-bold text-[#142C43]">۸۸.۵٪ از ۱۰۰٪</span></div><div class="w-full bg-surface-container-high h-2.5 rounded-full overflow-hidden"><div class="bg-[#16846B] h-full rounded-full transition-all duration-500" style="width: 88.5%"></div></div></div></div></div></div></section>
+<!-- Visual Analytics & Charts Section -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- CAPA & Inspection Trend Chart (8 Cols) -->
+<div class="lg:col-span-8 p-space-lg rounded-2xl bg-white border border-slate-200/80 shadow-sm flex flex-col justify-between">
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm pb-space-md">
+<div class="flex flex-col">
+<h2 class="font-title-lg text-title-lg text-[#142C43] font-bold">روند ممیزی‌های دوره‌ای و اقدامات اصلاحی (CAPA)</h2>
+<span class="font-body-sm text-body-sm text-outline">تحلیل مقایسه‌ای عدم انطباق‌های شناسایی‌شده در برابر بسته‌شده (۳ ماه اخیر)</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="flex items-center gap-1 font-label-md text-label-md text-outline">
+<span class="w-3 h-3 rounded-full bg-[#16846B]"></span>
+              رفع شده
+            </span>
+<span class="flex items-center gap-1 font-label-md text-label-md text-outline ml-2">
+<span class="w-3 h-3 rounded-full bg-[#9bceff]"></span>
+              بازرسی جدید
+            </span>
+</div>
+</div>
+<!-- Inline SVG Visualization -->
+<div class="w-full h-64 mt-2 relative flex flex-col justify-end">
+<svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 600 200">
+<!-- Grid Lines -->
+<line class="text-surface-container-high" stroke="currentColor" stroke-dasharray="4" stroke-width="1" x1="0" x2="600" y1="40" y2="40"></line>
+<line class="text-surface-container-high" stroke="currentColor" stroke-dasharray="4" stroke-width="1" x1="0" x2="600" y1="90" y2="90"></line>
+<line class="text-surface-container-high" stroke="currentColor" stroke-dasharray="4" stroke-width="1" x1="0" x2="600" y1="140" y2="140"></line>
+<line class="text-surface-container-highest" stroke="currentColor" stroke-width="1.5" x1="0" x2="600" y1="190" y2="190"></line>
+<!-- Area Fill for Solved CAPAs -->
+<defs>
+<linearGradient id="capaGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#16846B" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#16846B" stop-opacity="0.0"></stop>
+</linearGradient>
+</defs>
+<path d="M 40,150 Q 140,110 240,120 T 440,60 T 560,35 L 560,190 L 40,190 Z" fill="url(#capaGradient)"></path>
+<!-- Trend Line (Resolved) -->
+<path d="M 40,150 Q 140,110 240,120 T 440,60 T 560,35" fill="none" stroke="#16846B" stroke-linecap="round" stroke-width="3"></path>
+<!-- Bar Chart (Audits Conducted) -->
+<!-- Month 1: Mehr -->
+<rect fill="#9bceff" height="90" opacity="0.75" rx="4" width="22" x="70" y="100"></rect>
+<rect fill="#1E5A85" height="120" opacity="0.9" rx="4" width="22" x="96" y="70"></rect>
+<!-- Month 2: Aban -->
+<rect fill="#9bceff" height="110" opacity="0.75" rx="4" width="22" x="230" y="80"></rect>
+<rect fill="#1E5A85" height="135" opacity="0.9" rx="4" width="22" x="256" y="55"></rect>
+<!-- Month 3: Azar -->
+<rect fill="#9bceff" height="125" opacity="0.75" rx="4" width="22" x="390" y="65"></rect>
+<rect fill="#1E5A85" height="150" opacity="0.9" rx="4" width="22" x="416" y="40"></rect>
+<!-- Ongoing Current Period -->
+<rect fill="#9bceff" height="140" opacity="0.75" rx="4" width="22" x="520" y="50"></rect>
+<rect fill="#142C43" height="160" opacity="1" rx="4" width="22" x="546" y="30"></rect>
+<!-- Data Dots -->
+<circle cx="40" cy="150" fill="#16846B" r="4" stroke="#ffffff" stroke-width="2"></circle>
+<circle cx="240" cy="120" fill="#16846B" r="4" stroke="#ffffff" stroke-width="2"></circle>
+<circle cx="440" cy="60" fill="#16846B" r="4" stroke="#ffffff" stroke-width="2"></circle>
+<circle cx="560" cy="35" fill="#16846B" r="5" stroke="#ffffff" stroke-width="2"></circle>
+</svg>
+<!-- X-Axis Labels -->
+<div class="flex justify-between items-center text-outline font-label-md text-label-md pt-2 px-6">
+<span>مهر ۱۴۰۳</span>
+<span>آبان ۱۴۰۳</span>
+<span>آذر ۱۴۰۳</span>
+<span class="text-[#1E5A85] font-semibold">دی‌ماه جاری (هفته ۳)</span>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-wrap items-center justify-between gap-space-sm bg-surface-container-low border border-slate-200/60 px-space-md py-2.5 rounded-xl">
+<div class="flex items-center gap-space-xs font-body-sm text-body-sm text-on-surface">
+<span class="material-symbols-outlined text-[#16846B] text-[20px]">task_alt</span>
+<span>تعداد کل CAPAهای مختومه این دوره: <strong class="text-[#16846B] font-bold">۱۴۲ مورد</strong> از ۱۵۴ مورد اعلامی</span>
+</div>
+<button class="px-space-md py-1.5 rounded-full bg-[#142C43] text-white font-label-md text-label-md font-semibold hover:bg-[#1E5A85] transition-colors" type="button">
+            مشاهده گزارش تفصیلی CAPA
+          </button>
+</div>
+</div>
+<!-- PTW (Permit to Work) Distribution Ring (4 Cols) -->
+<div class="lg:col-span-4 p-space-lg rounded-2xl bg-white border border-slate-200/80 shadow-sm flex flex-col justify-between">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex flex-col">
+<h2 class="font-title-lg text-title-lg text-[#142C43] font-bold">پروانه‌های کار فعال (PTW)</h2>
+<span class="font-body-sm text-body-sm text-outline">توزیع مجوزهای ایمنی شیفت در حال کار</span>
+</div>
+<span class="px-2.5 py-0.5 rounded-full bg-[#d0e4ff] text-[#142C43] font-label-code text-label-code font-semibold">
+            ۶۸ مجوز
+          </span>
+</div>
+<!-- Donut Chart -->
+<div class="relative flex items-center justify-center my-space-md">
+<svg class="w-48 h-48 -rotate-90" viewBox="0 0 100 100">
+<!-- Background circle -->
+<circle class="text-surface-container-high" cx="50" cy="50" fill="none" r="38" stroke="currentColor" stroke-width="12"></circle>
+<!-- Hot Work (38%) -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#dc2626" stroke-dasharray="90.7 238.7" stroke-dashoffset="0" stroke-width="12"></circle>
+<!-- Cold Work (47%) -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#142C43" stroke-dasharray="112.2 238.7" stroke-dashoffset="-90.7" stroke-width="12"></circle>
+<!-- Confined Space (15%) -->
+<circle cx="50" cy="50" fill="none" r="38" stroke="#1E5A85" stroke-dasharray="35.8 238.7" stroke-dashoffset="-202.9" stroke-width="12"></circle>
+</svg>
+<div class="absolute flex flex-col items-center justify-center text-center">
+<span class="font-headline-lg text-headline-lg text-[#142C43] font-bold">۶۸</span>
+<span class="font-label-md text-label-md text-outline">کل پروانه‌ها</span>
+</div>
+</div>
+<!-- Legend breakdown -->
+<div class="flex flex-col gap-2.5">
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low border border-slate-200/60">
+<div class="flex items-center gap-space-xs">
+<span class="w-3 h-3 rounded-full bg-[#dc2626]"></span>
+<span class="font-body-sm text-body-sm text-on-surface">کار گرم (Hot Work)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">۲۶</span>
+<span class="font-label-md text-label-md text-outline">(۳۸٪)</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low border border-slate-200/60">
+<div class="flex items-center gap-space-xs">
+<span class="w-3 h-3 rounded-full bg-[#142C43]"></span>
+<span class="font-body-sm text-body-sm text-on-surface">کار سرد (Cold Work)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">۳۲</span>
+<span class="font-label-md text-label-md text-outline">(۴۷٪)</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low border border-slate-200/60">
+<div class="flex items-center gap-space-xs">
+<span class="w-3 h-3 rounded-full bg-[#1E5A85]"></span>
+<span class="font-body-sm text-body-sm text-on-surface">فضای بسته (Confined Space)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg font-bold text-on-surface">۱۰</span>
+<span class="font-label-md text-label-md text-outline">(۱۵٪)</span>
+</div>
+</div>
+</div>
+</div>
+</section><section class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg"><div class="lg:col-span-6 p-space-lg rounded-2xl bg-white border border-slate-200/80 shadow-sm flex flex-col justify-between"><div class="flex items-center justify-between pb-space-sm"><div class="flex flex-col"><h3 class="font-title-lg text-title-lg text-[#142C43] font-bold">وضعیت مستندات بر اساس چرخه تایید و انتشار</h3><span class="font-body-sm text-body-sm text-outline">تحلیل توزیع ۱,۴۲۰ سند ثبت‌شده در سامانه مستندات</span></div><span class="px-2.5 py-0.5 rounded-full bg-[#d0e4ff] text-[#1E5A85] font-label-code text-label-code font-semibold">IMS Docs</span></div><div class="flex flex-col sm:flex-row items-center justify-center gap-space-lg my-space-sm"><div class="relative flex items-center justify-center"><svg class="w-40 h-40 -rotate-90" viewBox="0 0 100 100"><circle class="text-surface-container-high" cx="50" cy="50" fill="none" r="38" stroke="currentColor" stroke-width="12"></circle><circle cx="50" cy="50" fill="none" r="38" stroke="#16846B" stroke-dasharray="181.4 238.7" stroke-dashoffset="0" stroke-width="12"></circle><circle cx="50" cy="50" fill="none" r="38" stroke="#1E5A85" stroke-dasharray="33.4 238.7" stroke-dashoffset="-181.4" stroke-width="12"></circle><circle cx="50" cy="50" fill="none" r="38" stroke="#dc2626" stroke-dasharray="23.9 238.7" stroke-dashoffset="-214.8" stroke-width="12"></circle></svg><div class="absolute flex flex-col items-center justify-center text-center"><span class="font-headline-lg text-headline-lg text-[#142C43] font-bold">۱,۴۲۰</span><span class="font-label-md text-label-md text-outline">کل مدارک</span></div></div><div class="flex flex-col gap-2 w-full sm:w-60"><div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low border border-slate-200/60"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#16846B]"></span><span class="font-body-sm text-body-sm text-on-surface">منتشر شده و مصوب</span></div><div class="flex items-center gap-1.5"><span class="font-label-lg text-label-lg font-bold text-on-surface">۱,۰۷۹</span><span class="font-label-md text-label-md text-[#16846B] font-semibold">(۷۶٪)</span></div></div><div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low border border-slate-200/60"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#1E5A85]"></span><span class="font-body-sm text-body-sm text-on-surface">در حال بازنگری دوره‌ای</span></div><div class="flex items-center gap-1.5"><span class="font-label-lg text-label-lg font-bold text-on-surface">۱۹۹</span><span class="font-label-md text-label-md text-[#1E5A85] font-semibold">(۱۴٪)</span></div></div><div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low border border-slate-200/60"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#dc2626]"></span><span class="font-body-sm text-body-sm text-on-surface">در انتظار تأیید مراجع</span></div><div class="flex items-center gap-1.5"><span class="font-label-lg text-label-lg font-bold text-on-surface">۱۴۲</span><span class="font-label-md text-label-md text-[#dc2626] font-semibold">(۱۰٪)</span></div></div></div></div><div class="pt-2 border-t border-slate-100 flex items-center justify-between text-outline font-label-md text-label-md"><span>آخرین به‌روزرسانی بانک مدارک: امروز</span><span class="text-[#1E5A85] font-semibold">شاخص اعتبار مدارک: ۹۸.۶٪</span></div></div><div class="lg:col-span-6 p-space-lg rounded-2xl bg-white border border-slate-200/80 shadow-sm flex flex-col justify-between"><div class="flex items-center justify-between pb-space-sm"><div class="flex flex-col"><h3 class="font-title-lg text-title-lg text-[#142C43] font-bold">توزیع عدم‌انطباق‌ها بر اساس شدت و ماژول‌های ISO</h3><span class="font-body-sm text-body-sm text-outline">تفکیک موارد شناسایی‌شده در ممیزی‌ها و پایش میدانی</span></div><div class="flex items-center gap-2"><span class="flex items-center gap-1 text-[11px] font-medium text-outline"><span class="w-2.5 h-2.5 rounded bg-[#dc2626]"></span>بحرانی</span><span class="flex items-center gap-1 text-[11px] font-medium text-outline"><span class="w-2.5 h-2.5 rounded bg-[#d97706]"></span>متوسط</span><span class="flex items-center gap-1 text-[11px] font-medium text-outline"><span class="w-2.5 h-2.5 rounded bg-[#16846B]"></span>جزیی</span></div></div><div class="flex flex-col gap-3.5 my-space-sm"><div class="flex flex-col gap-1"><div class="flex justify-between font-label-md text-label-md"><span class="font-semibold text-[#142C43]">کیفیت (ISO 9001)</span><span class="font-label-code text-label-code text-outline">۳ مورد (۱ بحرانی، ۲ جزیی)</span></div><div class="w-full bg-surface-container-high h-3 rounded-full flex overflow-hidden"><div class="bg-[#dc2626] h-full" style="width: 33.3%"></div><div class="bg-[#16846B] h-full" style="width: 66.7%"></div></div></div><div class="flex flex-col gap-1"><div class="flex justify-between font-label-md text-label-md"><span class="font-semibold text-[#142C43]">ایمنی و بهداشت حرفه‌ای (ISO 45001)</span><span class="font-label-code text-label-code text-outline">۴ مورد (۲ بحرانی، ۱ متوسط، ۱ جزیی)</span></div><div class="w-full bg-surface-container-high h-3 rounded-full flex overflow-hidden"><div class="bg-[#dc2626] h-full" style="width: 50%"></div><div class="bg-[#d97706] h-full" style="width: 25%"></div><div class="bg-[#16846B] h-full" style="width: 25%"></div></div></div><div class="flex flex-col gap-1"><div class="flex justify-between font-label-md text-label-md"><span class="font-semibold text-[#142C43]">محیط زیست (ISO 14001)</span><span class="font-label-code text-label-code text-outline">۲ مورد (۱ متوسط، ۱ جزیی)</span></div><div class="w-full bg-surface-container-high h-3 rounded-full flex overflow-hidden"><div class="bg-[#d97706] h-full" style="width: 50%"></div><div class="bg-[#16846B] h-full" style="width: 50%"></div></div></div><div class="flex flex-col gap-1"><div class="flex justify-between font-label-md text-label-md"><span class="font-semibold text-[#142C43]">مدیریت انرژی (ISO 50001)</span><span class="font-label-code text-label-code text-outline">۱ مورد (متوسط)</span></div><div class="w-full bg-surface-container-high h-3 rounded-full flex overflow-hidden"><div class="bg-[#d97706] h-full" style="width: 100%"></div></div></div></div><div class="pt-2 border-t border-slate-100 flex items-center justify-between text-outline font-label-md text-label-md"><span>مجموع کل عدم‌انطباق‌های باز: ۹ مورد</span><span class="text-[#16846B] font-semibold">نرخ کنترل عدم‌انطباق: ۹۱٪</span></div></div></section>
+<!-- Operational Split: Actions Table + Upcoming Audits -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- Incident & CAPA Monitor Table (8 Cols) -->
+<div class="lg:col-span-8 rounded-2xl bg-white border border-slate-200/80 shadow-sm p-space-lg flex flex-col">
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-space-md gap-space-sm">
+<div>
+<h2 class="font-title-lg text-title-lg text-[#142C43] font-bold">جدول پایش اقدامات اصلاحی و رویدادهای اخیر</h2>
+<span class="font-body-sm text-body-sm text-outline">ثبت عدم‌انطباق‌ها، ممیزی‌های داخلی و هشدارهای HSE در ۲۴ ساعت گذشته</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-3 py-1.5 rounded-full bg-surface-container-low border border-slate-200/70 text-on-surface-variant hover:text-[#1E5A85] font-label-md text-label-md flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-[#1E5A85]">filter_list</span>
+              فیلتر استاندارد
+            </button>
+<button class="px-3 py-1.5 rounded-full bg-surface-container-low border border-slate-200/70 text-on-surface-variant hover:text-[#1E5A85] font-label-md text-label-md flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-[#1E5A85]">download</span>
+              خروجی اکسل
+            </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-right">
+<thead>
+<tr class="bg-surface-container-low text-outline font-label-md text-label-md rounded-xl">
+<th class="py-3 px-space-md rounded-r-xl">کد پیگیری</th>
+<th class="py-3 px-space-sm">استاندارد</th>
+<th class="py-3 px-space-sm">شرح موضوع / عدم انطباق</th>
+<th class="py-3 px-space-sm">واحد عملیاتی</th>
+<th class="py-3 px-space-sm">اولویت</th>
+<th class="py-3 px-space-sm">وضعیت</th>
+<th class="py-3 px-space-md rounded-l-xl">مسئول رسیدگی</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-body-sm divide-y divide-slate-100">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors">
+<td class="py-3.5 px-space-md font-label-code text-label-code font-bold text-[#142C43]">CAPA-45-092</td>
+<td class="py-3.5 px-space-sm">
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-md text-label-md font-semibold">ISO 45001</span>
+</td>
+<td class="py-3.5 px-space-sm text-on-surface font-medium">نقص در کالیبراسیون سنسور گاز LEL ایستگاه کمپرسور</td>
+<td class="py-3.5 px-space-sm text-on-surface-variant">واحد الفین</td>
+<td class="py-3.5 px-space-sm">
+<span class="px-2 py-0.5 rounded-full bg-[#dc2626] text-white font-label-md text-label-md font-bold">فوری</span>
+</td>
+<td class="py-3.5 px-space-sm">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface font-label-md text-label-md">در حال اقدام</span>
+</td>
+<td class="py-3.5 px-space-md text-outline">مهندس رضایی (ابزاردقیق)</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors">
+<td class="py-3.5 px-space-md font-label-code text-label-code font-bold text-[#142C43]">CAPA-14-118</td>
+<td class="py-3.5 px-space-sm">
+<span class="px-2 py-0.5 rounded-full bg-[#d0e4ff] text-[#1E5A85] font-label-md text-label-md font-semibold">ISO 14001</span>
+</td>
+<td class="py-3.5 px-space-sm text-on-surface font-medium">نوسان دبی پساب خروجی حوضچه خنثی‌سازی تصفیه‌خانه</td>
+<td class="py-3.5 px-space-sm text-on-surface-variant">واحد یوتیلیتی</td>
+<td class="py-3.5 px-space-sm">
+<span class="px-2 py-0.5 rounded-full bg-[#9bceff]/50 text-[#1E5A85] font-label-md text-label-md font-semibold">متوسط</span>
+</td>
+<td class="py-3.5 px-space-sm">
+<span class="px-2.5 py-0.5 rounded-full bg-[#e6f4f1] text-[#16846B] font-label-md text-label-md font-semibold">تأیید شده</span>
+</td>
+<td class="py-3.5 px-space-md text-outline">مهندس شمس (محیط‌زیست)</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors">
+<td class="py-3.5 px-space-md font-label-code text-label-code font-bold text-[#142C43]">CAPA-90-204</td>
+<td class="py-3.5 px-space-sm">
+<span class="px-2 py-0.5 rounded-full bg-[#e6f4f1] text-[#16846B] font-label-md text-label-md font-semibold">ISO 9001</span>
+</td>
+<td class="py-3.5 px-space-sm text-on-surface font-medium">مغایرت در مستندسازی نتایج تست خلوص متانول صادراتی</td>
+<td class="py-3.5 px-space-sm text-on-surface-variant">آزمایشگاه مرکزی</td>
+<td class="py-3.5 px-space-sm">
+<span class="px-2 py-0.5 rounded-full bg-surface-variant text-on-surface font-label-md text-label-md">عادی</span>
+</td>
+<td class="py-3.5 px-space-sm">
+<span class="px-2.5 py-0.5 rounded-full bg-[#142C43] text-white font-label-md text-label-md font-semibold">اقدام نهایی</span>
+</td>
+<td class="py-3.5 px-space-md text-outline">دکتر کریمی (کنترل کیفیت)</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/70 transition-colors">
+<td class="py-3.5 px-space-md font-label-code text-label-code font-bold text-[#142C43]">CAPA-50-063</td>
+<td class="py-3.5 px-space-sm">
+<span class="px-2 py-0.5 rounded-full bg-slate-100 text-[#142C43] font-label-md text-label-md font-semibold border border-slate-200">ISO 50001</span>
+</td>
+<td class="py-3.5 px-space-sm text-on-surface font-medium">افزایش اتلاف حرارتی در بویلر کمکی شماره ۳</td>
+<td class="py-3.5 px-space-sm text-on-surface-variant">واحد متانول</td>
+<td class="py-3.5 px-space-sm">
+<span class="px-2 py-0.5 rounded-full bg-[#9bceff]/50 text-[#1E5A85] font-label-md text-label-md font-semibold">متوسط</span>
+</td>
+<td class="py-3.5 px-space-sm">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface font-label-md text-label-md">در حال بررسی</span>
+</td>
+<td class="py-3.5 px-space-md text-outline">مهندس افشار (انرژی)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Upcoming Audits & Assessments (4 Cols) -->
+<div class="lg:col-span-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm p-space-lg flex flex-col gap-space-md">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex flex-col">
+<h2 class="font-title-lg text-title-lg text-[#142C43] font-bold">ممیزی‌های پیش‌رو</h2>
+<span class="font-body-sm text-body-sm text-outline">برنامه ممیزی شخص ثالث و مراقبتی</span>
+</div>
+<span class="w-8 h-8 rounded-full bg-[#1E5A85]/10 text-[#1E5A85] flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">calendar_month</span>
+</span>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- Audit Item 1 -->
+<div class="p-space-md rounded-xl bg-surface-container-low border border-slate-200/60 flex flex-col gap-space-xs hover:bg-surface-container transition-all">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-[#d0e4ff] text-[#142C43] font-label-md text-label-md font-semibold">ممیزی مراقبتی نوبت دوم</span>
+<span class="font-label-code text-label-code text-[#1E5A85] font-bold">۵ روز مانده</span>
+</div>
+<div class="font-title-md text-title-md text-on-surface mt-1 font-semibold">ممیزی خارجی ISO 9001 و ISO 45001</div>
+<div class="flex items-center gap-space-sm text-outline font-body-sm text-body-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">domain</span>
+                سرممیز شرکت SGS
+              </span>
+<span>•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                ۲۴ دی‌ماه ۱۴۰۳
+              </span>
+</div>
+<div class="text-on-surface-variant font-label-md text-label-md mt-1">
+              واحدهای هدف: بهره‌برداری الفین، مخازن صادراتی، HSE سایت
+            </div>
+</div>
+<!-- Audit Item 2 -->
+<div class="p-space-md rounded-xl bg-surface-container-low border border-slate-200/60 flex flex-col gap-space-xs hover:bg-surface-container transition-all">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-[#d0e4ff] text-[#1E5A85] font-label-md text-label-md font-semibold">ممیزی تمدید گواهینامه</span>
+<span class="font-label-code text-label-code text-[#1E5A85] font-bold">۱۸ روز مانده</span>
+</div>
+<div class="font-title-md text-title-md text-on-surface mt-1 font-semibold">ممیزی جامع محیط زیست ISO 14001</div>
+<div class="flex items-center gap-space-sm text-outline font-body-sm text-body-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">domain</span>
+                تیم ممیزی توف نورد (TUV)
+              </span>
+<span>•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                ۷ بهمن‌ماه ۱۴۰۳
+              </span>
+</div>
+<div class="text-on-surface-variant font-label-md text-label-md mt-1">
+              واحدهای هدف: سیستم تصفیه پساب صنعتی، مدیریت پسماند شیمیایی
+            </div>
+</div>
+<!-- Audit Item 3 -->
+<div class="p-space-md rounded-xl bg-surface-container-low border border-slate-200/60 flex flex-col gap-space-xs hover:bg-surface-container transition-all">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded-full bg-slate-100 text-[#142C43] font-label-md text-label-md font-semibold border border-slate-200">ممیزی داخلی دوره‌ای</span>
+<span class="font-label-code text-label-code text-outline font-bold">۳۲ روز مانده</span>
+</div>
+<div class="font-title-md text-title-md text-on-surface mt-1 font-semibold">ارزیابی انطباق استاندارد انرژی ISO 50001</div>
+<div class="flex items-center gap-space-sm text-outline font-body-sm text-body-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">group</span>
+                کمیته انرژی پتروشیمی آپادانا
+              </span>
+<span>•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                ۲۱ بهمن‌ماه ۱۴۰۳
+              </span>
+</div>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-full bg-surface-container border border-slate-200 text-[#142C43] font-label-lg text-label-lg font-semibold hover:bg-surface-container-high transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[18px] text-[#1E5A85]">event_note</span>
+          مشاهده تقویم کامل سالانه ممیزی‌ها
+        </button>
+</div>
+</section><section class="w-full rounded-2xl bg-white border border-slate-200/80 shadow-sm p-space-lg flex flex-col gap-space-md"><div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-space-sm gap-space-sm"><div class="flex flex-col"><div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-[#1E5A85]"></span><h2 class="font-title-lg text-title-lg text-[#142C43] font-bold">آخرین فعالیت‌های سامانه</h2></div><span class="font-body-sm text-body-sm text-outline">رویدادنگار بلادرنگ تغییرات مستندات، عدم انطباق‌ها، ممیزی‌ها و شاخص‌ها</span></div><div class="flex items-center gap-space-xs"><span class="px-2.5 py-1 rounded-full bg-[#e6f4f1] text-[#16846B] font-label-md text-label-md font-semibold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#16846B] animate-pulse"></span>ثبت برخط</span><button class="px-3 py-1.5 rounded-full bg-surface-container-low border border-slate-200/70 text-on-surface-variant hover:text-[#1E5A85] font-label-md text-label-md flex items-center gap-1 transition-colors" type="button"><span class="material-symbols-outlined text-[16px] text-[#1E5A85]">history</span>مشاهده آرشیو کامل فعالیت‌ها</button></div></div><div class="overflow-x-auto"><table class="w-full text-right"><thead><tr class="bg-surface-container-low text-outline font-label-md text-label-md rounded-xl"><th class="py-3 px-space-md rounded-r-xl">شرح فعالیت</th><th class="py-3 px-space-sm">ماژول مربوطه</th><th class="py-3 px-space-sm">کاربر انجام‌دهنده</th><th class="py-3 px-space-sm">تاریخ و ساعت</th><th class="py-3 px-space-md rounded-l-xl">وضعیت</th></tr></thead><tbody class="font-body-sm text-body-sm divide-y divide-slate-100"><tr class="hover:bg-surface-container-low/70 transition-colors"><td class="py-3.5 px-space-md text-on-surface font-medium"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#dc2626] text-[18px]">error_outline</span><span>ثبت عدم انطباق جدید در واحد الفین</span></div></td><td class="py-3.5 px-space-sm"><span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-md text-label-md font-semibold">عدم انطباق و CAPA</span></td><td class="py-3.5 px-space-sm text-on-surface-variant font-medium">مهندس احمدی (کارشناس ارشد بازرسی)</td><td class="py-3.5 px-space-sm font-label-code text-label-code text-outline">امروز ۱۴:۲۰</td><td class="py-3.5 px-space-md"><span class="px-2.5 py-0.5 rounded-full bg-[#9bceff]/50 text-[#1E5A85] font-label-md text-label-md font-semibold">در دست بررسی</span></td></tr><tr class="hover:bg-surface-container-low/70 transition-colors"><td class="py-3.5 px-space-md text-on-surface font-medium"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#16846B] text-[18px]">task</span><span>تصویب و انتشار ویرایش چهارم روش اجرایی مدیریت ریسک</span></div></td><td class="py-3.5 px-space-sm"><span class="px-2 py-0.5 rounded-full bg-[#d0e4ff] text-[#1E5A85] font-label-md text-label-md font-semibold">مدیریت مستندات</span></td><td class="py-3.5 px-space-sm text-on-surface-variant font-medium">دکتر شمس (مدیر تضمین کیفیت)</td><td class="py-3.5 px-space-sm font-label-code text-label-code text-outline">امروز ۱۱:۴۵</td><td class="py-3.5 px-space-md"><span class="px-2.5 py-0.5 rounded-full bg-[#e6f4f1] text-[#16846B] font-label-md text-label-md font-semibold">تصویب شد</span></td></tr><tr class="hover:bg-surface-container-low/70 transition-colors"><td class="py-3.5 px-space-md text-on-surface font-medium"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#142C43] text-[18px]">check_circle</span><span>بستن اقدام اصلاحی CAPA-45-090 مرتبط با سنسور LEL</span></div></td><td class="py-3.5 px-space-sm"><span class="px-2 py-0.5 rounded-full bg-error-container text-[#dc2626] font-label-md text-label-md font-semibold">مدیریت HSE</span></td><td class="py-3.5 px-space-sm text-on-surface-variant font-medium">مهندس رضایی (ابزاردقیق)</td><td class="py-3.5 px-space-sm font-label-code text-label-code text-outline">دیروز ۱۶:۳۰</td><td class="py-3.5 px-space-md"><span class="px-2.5 py-0.5 rounded-full bg-[#142C43] text-white font-label-md text-label-md font-semibold">مختومه</span></td></tr><tr class="hover:bg-surface-container-low/70 transition-colors"><td class="py-3.5 px-space-md text-on-surface font-medium"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#16846B] text-[18px]">assignment_turned_in</span><span>ثبت یافته‌های ممیزی داخلی واحد یوتیلیتی</span></div></td><td class="py-3.5 px-space-sm"><span class="px-2 py-0.5 rounded-full bg-[#e6f4f1] text-[#16846B] font-label-md text-label-md font-semibold">مدیریت ممیزی</span></td><td class="py-3.5 px-space-sm text-on-surface-variant font-medium">مهندس کریمی (سرممیز کیفیت)</td><td class="py-3.5 px-space-sm font-label-code text-label-code text-outline">دیروز ۱۰:۱۵</td><td class="py-3.5 px-space-md"><span class="px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface font-label-md text-label-md font-semibold">تکمیل‌شده</span></td></tr><tr class="hover:bg-surface-container-low/70 transition-colors"><td class="py-3.5 px-space-md text-on-surface font-medium"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-[#1E5A85] text-[18px]">analytics</span><span>به‌روزرسانی شاخص عملکردی EnPI بویلر کمکی</span></div></td><td class="py-3.5 px-space-sm"><span class="px-2 py-0.5 rounded-full bg-slate-100 text-[#142C43] font-label-md text-label-md font-semibold border border-slate-200">اهداف و شاخص‌ها</span></td><td class="py-3.5 px-space-sm text-on-surface-variant font-medium">مهندس افشار (مدیر انرژی)</td><td class="py-3.5 px-space-sm font-label-code text-label-code text-outline">۲ روز پیش</td><td class="py-3.5 px-space-md"><span class="px-2.5 py-0.5 rounded-full bg-[#d0e4ff] text-[#142C43] font-label-md text-label-md font-semibold">تایید نهایی</span></td></tr></tbody></table></div></section><section class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg"><div class="lg:col-span-6 p-space-lg rounded-2xl bg-white border border-slate-200/80 shadow-sm flex flex-col justify-between"><div class="flex items-center justify-between pb-space-sm"><div class="flex flex-col"><h3 class="font-title-lg text-title-lg text-[#142C43] font-bold">وضعیت مستندات بر اساس چرخه تایید و انتشار</h3><span class="font-body-sm text-body-sm text-outline">تحلیل توزیع ۱,۴۲۰ سند ثبت‌شده در سامانه مستندات</span></div><span class="px-2.5 py-0.5 rounded-full bg-[#d0e4ff] text-[#1E5A85] font-label-code text-label-code font-semibold">IMS Docs</span></div><div class="flex flex-col sm:flex-row items-center justify-center gap-space-lg my-space-sm"><div class="relative flex items-center justify-center"><svg class="w-40 h-40 -rotate-90" viewBox="0 0 100 100"><circle class="text-surface-container-high" cx="50" cy="50" fill="none" r="38" stroke="currentColor" stroke-width="12"></circle><circle cx="50" cy="50" fill="none" r="38" stroke="#16846B" stroke-dasharray="181.4 238.7" stroke-dashoffset="0" stroke-width="12"></circle><circle cx="50" cy="50" fill="none" r="38" stroke="#1E5A85" stroke-dasharray="33.4 238.7" stroke-dashoffset="-181.4" stroke-width="12"></circle><circle cx="50" cy="50" fill="none" r="38" stroke="#dc2626" stroke-dasharray="23.9 238.7" stroke-dashoffset="-214.8" stroke-width="12"></circle></svg><div class="absolute flex flex-col items-center justify-center text-center"><span class="font-headline-lg text-headline-lg text-[#142C43] font-bold">۱,۴۲۰</span><span class="font-label-md text-label-md text-outline">کل مدارک</span></div></div><div class="flex flex-col gap-2 w-full sm:w-60"><div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low border border-slate-200/60"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#16846B]"></span><span class="font-body-sm text-body-sm text-on-surface">منتشر شده و مصوب</span></div><div class="flex items-center gap-1.5"><span class="font-label-lg text-label-lg font-bold text-on-surface">۱,۰۷۹</span><span class="font-label-md text-label-md text-[#16846B] font-semibold">(۷۶٪)</span></div></div><div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low border border-slate-200/60"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#1E5A85]"></span><span class="font-body-sm text-body-sm text-on-surface">در حال بازنگری دوره‌ای</span></div><div class="flex items-center gap-1.5"><span class="font-label-lg text-label-lg font-bold text-on-surface">۱۹۹</span><span class="font-label-md text-label-md text-[#1E5A85] font-semibold">(۱۴٪)</span></div></div><div class="flex items-center justify-between p-2 rounded-lg bg-surface-container-low border border-slate-200/60"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#dc2626]"></span><span class="font-body-sm text-body-sm text-on-surface">در انتظار تأیید مراجع</span></div><div class="flex items-center gap-1.5"><span class="font-label-lg text-label-lg font-bold text-on-surface">۱۴۲</span><span class="font-label-md text-label-md text-[#dc2626] font-semibold">(۱۰٪)</span></div></div></div></div><div class="pt-2 border-t border-slate-100 flex items-center justify-between text-outline font-label-md text-label-md"><span>آخرین به‌روزرسانی بانک مدارک: امروز</span><span class="text-[#1E5A85] font-semibold">شاخص اعتبار مدارک: ۹۸.۶٪</span></div></div><div class="lg:col-span-6 p-space-lg rounded-2xl bg-white border border-slate-200/80 shadow-sm flex flex-col justify-between"><div class="flex items-center justify-between pb-space-sm"><div class="flex flex-col"><h3 class="font-title-lg text-title-lg text-[#142C43] font-bold">توزیع عدم‌انطباق‌ها بر اساس شدت و ماژول‌های ISO</h3><span class="font-body-sm text-body-sm text-outline">تفکیک موارد شناسایی‌شده در ممیزی‌ها و پایش میدانی</span></div><div class="flex items-center gap-2"><span class="flex items-center gap-1 text-[11px] font-medium text-outline"><span class="w-2.5 h-2.5 rounded bg-[#dc2626]"></span>بحرانی</span><span class="flex items-center gap-1 text-[11px] font-medium text-outline"><span class="w-2.5 h-2.5 rounded bg-[#d97706]"></span>متوسط</span><span class="flex items-center gap-1 text-[11px] font-medium text-outline"><span class="w-2.5 h-2.5 rounded bg-[#16846B]"></span>جزیی</span></div></div><div class="flex flex-col gap-3.5 my-space-sm"><div class="flex flex-col gap-1"><div class="flex justify-between font-label-md text-label-md"><span class="font-semibold text-[#142C43]">کیفیت (ISO 9001)</span><span class="font-label-code text-label-code text-outline">۳ مورد (۱ بحرانی، ۲ جزیی)</span></div><div class="w-full bg-surface-container-high h-3 rounded-full flex overflow-hidden"><div class="bg-[#dc2626] h-full" style="width: 33.3%"></div><div class="bg-[#16846B] h-full" style="width: 66.7%"></div></div></div><div class="flex flex-col gap-1"><div class="flex justify-between font-label-md text-label-md"><span class="font-semibold text-[#142C43]">ایمنی و بهداشت حرفه‌ای (ISO 45001)</span><span class="font-label-code text-label-code text-outline">۴ مورد (۲ بحرانی، ۱ متوسط، ۱ جزیی)</span></div><div class="w-full bg-surface-container-high h-3 rounded-full flex overflow-hidden"><div class="bg-[#dc2626] h-full" style="width: 50%"></div><div class="bg-[#d97706] h-full" style="width: 25%"></div><div class="bg-[#16846B] h-full" style="width: 25%"></div></div></div><div class="flex flex-col gap-1"><div class="flex justify-between font-label-md text-label-md"><span class="font-semibold text-[#142C43]">محیط زیست (ISO 14001)</span><span class="font-label-code text-label-code text-outline">۲ مورد (۱ متوسط، ۱ جزیی)</span></div><div class="w-full bg-surface-container-high h-3 rounded-full flex overflow-hidden"><div class="bg-[#d97706] h-full" style="width: 50%"></div><div class="bg-[#16846B] h-full" style="width: 50%"></div></div></div><div class="flex flex-col gap-1"><div class="flex justify-between font-label-md text-label-md"><span class="font-semibold text-[#142C43]">مدیریت انرژی (ISO 50001)</span><span class="font-label-code text-label-code text-outline">۱ مورد (متوسط)</span></div><div class="w-full bg-surface-container-high h-3 rounded-full flex overflow-hidden"><div class="bg-[#d97706] h-full" style="width: 100%"></div></div></div></div><div class="pt-2 border-t border-slate-100 flex items-center justify-between text-outline font-label-md text-label-md"><span>مجموع کل عدم‌انطباق‌های باز: ۹ مورد</span><span class="text-[#16846B] font-semibold">نرخ کنترل عدم‌انطباق: ۹۱٪</span></div></div></section>
+</div>
+</div></main><footer class="w-full bg-white border-t border-slate-200 py-space-md px-space-lg flex flex-col sm:flex-row items-center justify-between text-outline gap-space-sm"><div class="flex items-center gap-space-xs font-body-sm text-body-sm"><span class="material-symbols-outlined text-[18px] text-[#16846B]">verified_user</span><span>سامانه جامع مدیریت یکپارچه پتروشیمی آپادانا خلیج فارس (سهامی عام)</span></div><div class="flex items-center gap-space-md font-label-md text-label-md"><span class="font-label-code text-label-code text-[#142C43] font-medium">IMS Version 3.4.0</span><span class="text-outline-variant">|</span><span>کلیه حقوق مادی و معنوی محفوظ است ۱۴۰۳ ©</span></div></footer></div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Accordion toggle handler for the 14-item navigation menu
+  const accordions = document.querySelectorAll('.menu-accordion');
+  accordions.forEach(function (accordion) {
+    const trigger = accordion.querySelector('.accordion-trigger');
+    const content = accordion.querySelector('.accordion-content');
+    const chevron = accordion.querySelector('.chevron-icon');
+
+    if (trigger && content) {
+      trigger.addEventListener('click', function () {
+        const isHidden = content.classList.contains('hidden');
+        if (isHidden) {
+          content.classList.remove('hidden');
+          if (chevron) {
+            chevron.classList.add('-rotate-90');
+          }
+        } else {
+          content.classList.add('hidden');
+          if (chevron) {
+            chevron.classList.remove('-rotate-90');
+          }
+        }
+      });
+    }
+  });
+
+  // Notifications Dropdown Logic
+  const triggerBtn = document.getElementById('notifications-trigger-btn');
+  const dropdownMenu = document.getElementById('notifications-dropdown-menu');
+  const wrapper = document.getElementById('notifications-wrapper');
+
+  if (!triggerBtn || !dropdownMenu) return;
+
+  function openDropdown() {
+    dropdownMenu.classList.remove('hidden');
+    void dropdownMenu.offsetWidth;
+    dropdownMenu.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+    dropdownMenu.classList.add('opacity-100', 'scale-100');
+    triggerBtn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeDropdown() {
+    dropdownMenu.classList.remove('opacity-100', 'scale-100');
+    dropdownMenu.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+    triggerBtn.setAttribute('aria-expanded', 'false');
+    setTimeout(function () {
+      if (triggerBtn.getAttribute('aria-expanded') === 'false') {
+        dropdownMenu.classList.add('hidden');
+      }
+    }, 200);
+  }
+
+  function toggleDropdown() {
+    const isExpanded = triggerBtn.getAttribute('aria-expanded') === 'true';
+    if (isExpanded) {
+      closeDropdown();
+    } else {
+      openDropdown();
+    }
+  }
+
+  triggerBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    toggleDropdown();
+  });
+
+  // Click outside to close
+  document.addEventListener('click', function (e) {
+    if (wrapper && !wrapper.contains(e.target)) {
+      if (triggerBtn.getAttribute('aria-expanded') === 'true') {
+        closeDropdown();
+      }
+    }
+  });
+
+  // Close with Esc key
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && triggerBtn.getAttribute('aria-expanded') === 'true') {
+      closeDropdown();
+    }
+  });
+});
+</script>
+
+
+<script>(function(){const profileTrigger=document.getElementById('profile-trigger-btn');const profileDropdown=document.getElementById('profile-dropdown-menu');const profileWrapper=document.getElementById('profile-wrapper');const profileChevron=document.getElementById('profile-chevron');if(!profileTrigger||!profileDropdown)return;function openProfileDropdown(){profileDropdown.classList.remove('hidden');void profileDropdown.offsetWidth;profileDropdown.classList.remove('opacity-0','scale-95','pointer-events-none');profileDropdown.classList.add('opacity-100','scale-100');if(profileChevron)profileChevron.classList.add('rotate-180');profileTrigger.setAttribute('aria-expanded','true');}function closeProfileDropdown(){profileDropdown.classList.remove('opacity-100','scale-100');profileDropdown.classList.add('opacity-0','scale-95','pointer-events-none');if(profileChevron)profileChevron.classList.remove('rotate-180');profileTrigger.setAttribute('aria-expanded','false');setTimeout(function(){if(profileTrigger.getAttribute('aria-expanded')==='false'){profileDropdown.classList.add('hidden');}},200);}function toggleProfileDropdown(){const isExpanded=profileTrigger.getAttribute('aria-expanded')==='true';if(isExpanded){closeProfileDropdown();}else{openProfileDropdown();}}profileTrigger.addEventListener('click',function(e){e.stopPropagation();toggleProfileDropdown();});document.addEventListener('click',function(e){if(profileWrapper&&!profileWrapper.contains(e.target)){if(profileTrigger.getAttribute('aria-expanded')==='true'){closeProfileDropdown();}}});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&profileTrigger.getAttribute('aria-expanded')==='true'){closeProfileDropdown();}});})();</script></body></html>

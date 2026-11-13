@@ -1,0 +1,231 @@
+<!DOCTYPE html><html dir="rtl" lang="fa"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ورود به بخش مدیریت | شرکت پتروشیمی آپادانا خلیج فارس</title>
+<!-- Tailwind CSS CDN with forms plugin -->
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<!-- Google Fonts: Vazirmatn for Persian Typography -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<!-- Font Awesome CDN for exact UI icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<!-- BEGIN: Custom Tailwind Configuration -->
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Vazirmatn', 'Tahoma', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              cyan: '#00c3db',
+              teal: '#00afc7',
+              darkTeal: '#008ba3',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- END: Custom Tailwind Configuration -->
+<!-- BEGIN: Custom Visual Styling -->
+<style data-purpose="custom-layout-styles">
+    /* Base Persian Font */
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+    }
+
+    /* Soft sky background replicating the reference aesthetic */
+    .sky-background {
+      background: radial-gradient(circle at 50% 30%, #eef7fc 0%, #d8ebf7 50%, #bcdcee 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle ambient cloud accents */
+    .cloud-shape-1 {
+      position: absolute;
+      top: -60px;
+      left: 10%;
+      width: 480px;
+      height: 280px;
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 70%);
+      border-radius: 50%;
+      filter: blur(24px);
+      pointer-events: none;
+    }
+    
+    .cloud-shape-2 {
+      position: absolute;
+      bottom: 5%;
+      right: 5%;
+      width: 520px;
+      height: 320px;
+      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 70%);
+      border-radius: 50%;
+      filter: blur(30px);
+      pointer-events: none;
+    }
+
+    /* Iconic circular card with soft outer depth matching reference */
+    .circular-login-card {
+      width: 490px;
+      height: 490px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 15px 45px rgba(50, 107, 140, 0.16), 0 2px 10px rgba(50, 107, 140, 0.08);
+      border: 3px solid rgba(255, 255, 255, 0.95);
+    }
+
+    /* Inner soft inset shadow on inputs */
+    .custom-input {
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease-in-out;
+    }
+    .custom-input:focus {
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 0 0 2px rgba(0, 195, 219, 0.35);
+    }
+
+    /* Button gradient with subtle division line as seen in screenshot */
+    .teal-action-btn {
+      background: linear-gradient(180deg, #10cfd9 0%, #00b8c6 100%);
+      box-shadow: 0 4px 10px rgba(0, 184, 198, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+    .teal-action-btn:hover {
+      background: linear-gradient(180deg, #18dbe5 0%, #00c6d5 100%);
+      transform: translateY(-1px);
+    }
+    .teal-action-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 6px rgba(0, 184, 198, 0.3);
+    }
+  </style>
+<!-- END: Custom Visual Styling -->
+</head>
+<body class="sky-background min-h-screen h-screen flex flex-col items-center justify-between p-4 selection:bg-cyan-500 selection:text-white overflow-y-auto sm:overflow-hidden">
+<!-- Ambient Cloud Decorative Background Elements -->
+<div aria-hidden="true" class="cloud-shape-1"></div>
+<div aria-hidden="true" class="cloud-shape-2"></div>
+<!-- BEGIN: Top Organization Header -->
+<header class="w-full max-w-5xl pt-6 px-4 flex flex-col md:flex-row items-center justify-between text-slate-600 text-sm z-10" data-purpose="top-header">
+<div class="flex items-center space-x-3 space-x-reverse mb-3 md:mb-0">
+<!-- Petrochemical Emblematical Node Icon -->
+<div class="w-10 h-10 rounded-full bg-white/80 shadow-sm flex items-center justify-center text-teal-600 border border-teal-100">
+<i class="fa-solid fa-atom text-xl"></i>
+</div>
+<div>
+<h1 class="font-bold text-slate-800 text-base">شرکت پتروشیمی آپادانا خلیج فارس</h1>
+<p class="text-xs text-slate-500">سامانه جامع مدیریت یکپارچه (IMS)</p>
+</div>
+</div>
+<!-- Live System Badge -->
+<div class="hidden sm:flex items-center space-x-2 space-x-reverse bg-white/60 backdrop-blur-sm px-3.5 py-1.5 rounded-full border border-slate-200/60 shadow-xs text-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+<span class="text-slate-600">درگاه امن احراز هویت پرسنلی</span>
+</div>
+</header>
+<!-- END: Top Organization Header -->
+<!-- BEGIN: Main Login Section -->
+<main class="w-full flex-1 flex items-center justify-center py-2 sm:py-4 z-10 my-auto" data-purpose="login-container">
+<!-- BEGIN: Circular Login Card (Replicating Reference Design) -->
+<div class="circular-login-card flex flex-col items-center justify-center px-10 py-8 relative" data-purpose="circular-card">
+<!-- Home/Organization Central Building Icon -->
+<div class="mb-2 text-slate-300 hover:text-slate-400 transition-colors" data-purpose="card-top-icon">
+<i class="fa-solid fa-house-chimney text-3xl"></i>
+</div>
+<!-- Main Heading in Cyan/Teal -->
+<h2 class="text-xl sm:text-2xl font-extrabold text-[#00c0db] mb-6 tracking-tight text-center" data-purpose="card-title">
+        ورود به سامانه مدیریت یکپارچه</h2>
+<!-- Login Form Element -->
+<form action="#" class="w-full max-w-[270px] flex flex-col items-center" data-purpose="login-form" method="POST" onsubmit="event.preventDefault();">
+<!-- Username Input Field -->
+<div class="w-full mb-3.5 relative" data-purpose="username-field">
+<input autocomplete="username" class="custom-input w-full bg-white text-slate-700 placeholder-slate-400 text-xs sm:text-sm font-medium border border-slate-300 rounded-md py-2.5 pr-3 pl-9 focus:outline-none focus:border-cyan-400" dir="rtl" id="username" name="username" placeholder="نام کاربری" required="" type="text">
+<!-- User Icon on left inside input -->
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+<i class="fa-solid fa-user text-sm"></i>
+</div>
+</div>
+<!-- Password Input Field -->
+<div class="w-full mb-3.5 relative" data-purpose="password-field">
+<input autocomplete="current-password" class="custom-input w-full bg-white text-slate-700 placeholder-slate-400 text-xs sm:text-sm font-medium border border-slate-300 rounded-md py-2.5 pr-3 pl-9 focus:outline-none focus:border-cyan-400" dir="rtl" id="password" name="password" placeholder="کلمه عبور" required="" type="password">
+<!-- Key Icon on left inside input matching reference -->
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+<i class="fa-solid fa-key text-xs"></i>
+</div>
+</div>
+<!-- Remember Me Checkbox -->
+<div class="w-full flex items-center justify-center space-x-2 space-x-reverse mb-6 text-slate-600 text-xs select-none" data-purpose="remember-me">
+<input class="h-3.5 w-3.5 text-cyan-500 focus:ring-cyan-400 border-slate-300 rounded cursor-pointer" id="remember-me" name="remember-me" type="checkbox">
+<label class="cursor-pointer text-slate-500 font-normal hover:text-slate-700 transition-colors" for="remember-me">
+            مرا به خاطر بسپار
+          </label>
+</div>
+<!-- Primary Action Button: "ورود" + Key/Lock Icon -->
+<button class="teal-action-btn w-36 h-10 rounded text-white font-medium flex items-center justify-between px-4 transition-all duration-200 border border-teal-500/50" data-purpose="submit-button" id="btn-login" type="submit">
+<!-- Button Text -->
+<span class="text-sm font-bold tracking-wide">ورود</span>
+<!-- Subtle Vertical Divider inside button matching reference styling -->
+<span class="w-[1px] h-6 bg-white/30 block mx-1"></span>
+<!-- Open Lock Icon -->
+<i class="fa-solid fa-lock-open text-sm text-white"></i>
+</button>
+</form>
+<!-- End Form -->
+<!-- Subtle System Version Indicator inside Card Base -->
+<span class="absolute bottom-5 text-[10px] text-slate-400/80 tracking-widest uppercase">
+        PGAPCO • IMS Ver 4.2
+      </span>
+</div>
+<!-- END: Circular Login Card -->
+</main>
+<!-- END: Main Login Section -->
+<!-- BEGIN: Site Footer -->
+<footer class="w-full text-center pb-3 pt-1 z-10 mt-auto" data-purpose="site-footer">
+<div class="max-w-xl mx-auto px-4 flex flex-col items-center">
+<p class="text-xs text-slate-500 mb-1">
+        شرکت پتروشیمی آپادانا خلیج فارس (سهامی خاص) - منطقه ویژه اقتصادی انرژی پارس
+      </p>
+<div class="flex items-center space-x-4 space-x-reverse text-[11px] text-slate-400">
+<span>سامانه مدیریت یکپارچه IMS</span>
+<span>•</span>
+<a class="hover:text-cyan-600 transition-colors" href="https://pgapco.ir" rel="noopener noreferrer" target="_blank">
+          وب‌سایت رسمی (pgapco.ir)
+        </a>
+<span>•</span>
+<span>پشتیبانی فناوری اطلاعات</span>
+</div>
+</div>
+</footer>
+<!-- END: Site Footer -->
+<!-- BEGIN: Client Interactivity Script -->
+<script data-purpose="form-interactions">
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginButton = document.getElementById('btn-login');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+
+      // Autofocus user field on load
+      if (usernameInput) {
+        usernameInput.focus();
+      }
+
+      // Visual feedback on submit attempt
+      loginButton.addEventListener('click', (e) => {
+        if (!usernameInput.value.trim() || !passwordInput.value.trim()) {
+          // Provide subtle shake or focus indication
+          if (!usernameInput.value.trim()) {
+            usernameInput.focus();
+          } else {
+            passwordInput.focus();
+          }
+        }
+      });
+    });
+  </script>
+<!-- END: Client Interactivity Script -->
+
+
+</body></html>

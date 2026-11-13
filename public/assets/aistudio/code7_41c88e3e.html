@@ -1,0 +1,1659 @@
+<!DOCTYPE html><html dir="rtl" lang="fa"><head><meta content="web_dashboard" name="shell-type">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"><style id="persian-typography-fix">body, input, button, select, textarea, * { font-family: 'Vazirmatn', 'B Vazir', 'Tahoma', system-ui, -apple-system, sans-serif !important; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; } .material-symbols-outlined { font-family: 'Material Symbols Outlined' !important; } .custom-table-scrollbar::-webkit-scrollbar { height: 12px !important; } .custom-table-scrollbar::-webkit-scrollbar-track { background: #e2e8f0 !important; border-radius: 6px !important; } .custom-table-scrollbar::-webkit-scrollbar-thumb { background: #1e5a85 !important; border-radius: 6px !important; } .custom-table-scrollbar::-webkit-scrollbar-thumb:hover { background: #142c43 !important; }</style></head><body class="bg-[#EAF0F5] font-body-md text-on-surface antialiased min-h-screen"><svg aria-hidden="true" class="inline-defs-container" style="position:absolute;width:0;height:0;overflow:hidden"></svg><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_dashboard" name="shell-type"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}
+.custom-scrollbar::-webkit-scrollbar{width:4px;}
+.custom-scrollbar::-webkit-scrollbar-track{background:transparent;}
+.custom-scrollbar::-webkit-scrollbar-thumb{background:#c3c6cd;border-radius:4px;}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover{background:#9aa0a6;}
+</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"surface-variant":"#dde3e8","on-primary-fixed-variant":"#324861","tertiary-fixed":"#cde5ff","on-surface-variant":"#43474d","on-tertiary":"#ffffff","primary-fixed":"#d0e4ff","secondary-container":"#9bceff","tertiary-container":"#003126","on-secondary-fixed":"#001d32","surface-dim":"#d5dbe0","background":"#eaf0f5","error":"#dc2626","on-secondary":"#ffffff","on-tertiary-container":"#3fa187","surface-container-lowest":"#ffffff","primary":"#142c43","surface":"#eaf0f5","surface-container":"#e9eff4","on-secondary-container":"#1b5883","surface-container-low":"#f4f8fb","surface-container-highest":"#dde3e8","inverse-on-surface":"#ebf1f6","on-background":"#161c20","outline-variant":"#c3c6cd","on-tertiary-fixed-variant":"#005140","tertiary-fixed-dim":"#78d8bb","on-surface":"#161c20","inverse-primary":"#b1c9e6","inverse-surface":"#2b3135","outline":"#74777d","secondary-fixed-dim":"#97ccfd","primary-fixed-dim":"#b1c9e6","on-error":"#ffffff","secondary-fixed":"#cde5ff","surface-container-high":"#e3e9ee","secondary":"#1e5a85","on-primary-container":"#ffffff","on-primary-fixed":"#021d33","on-primary":"#ffffff","on-tertiary-fixed":"#002018","surface-bright":"#ffffff","error-container":"#fee2e2","surface-tint":"#142c43","primary-container":"#142c43","on-secondary-fixed-variant":"#004a75","tertiary":"#16846b","on-error-container":"#991b1b"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-lg":"1.5rem","space-xl":"2rem","gutter-sm":"1rem","space-xs":"0.25rem",gutter:"1.5rem","space-sm":"0.5rem","margin-mobile":"0.75rem","space-md":"1rem",margin:"1.5rem"},fontFamily:{"headline-xl":["Vazirmatn"],"body-md":["Vazirmatn"],"label-lg":["Vazirmatn"],"headline-md":["Vazirmatn"],"label-md":["Vazirmatn"],"headline-sm":["Vazirmatn"],"body-lg":["Vazirmatn"],"label-code":["Inter"],"headline-lg-mobile":["Vazirmatn"],"title-lg":["Vazirmatn"],"headline-xl-mobile":["Vazirmatn"],"headline-lg":["Vazirmatn"],"title-md":["Vazirmatn"],"body-sm":["Vazirmatn"]},fontSize:{"headline-xl":["36px",{lineHeight:"60px",letterSpacing:"0px",fontWeight:"600"}],"body-md":["14px",{lineHeight:"21px",letterSpacing:"0px",fontWeight:"400"}],"label-lg":["13px",{lineHeight:"20px",letterSpacing:"0px",fontWeight:"600"}],"headline-md":["22px",{lineHeight:"32px",letterSpacing:"0px",fontWeight:"600"}],"label-md":["12px",{lineHeight:"16px",letterSpacing:"0px",fontWeight:"500"}],"headline-sm":["20px",{lineHeight:"26px",letterSpacing:"0px",fontWeight:"600"}],"body-lg":["15px",{lineHeight:"24px",letterSpacing:"0px",fontWeight:"400"}],"label-code":["13px",{lineHeight:"16px",letterSpacing:"0px",fontWeight:"500"}],"headline-lg-mobile":["24px",{lineHeight:"32px",letterSpacing:"0px",fontWeight:"600"}],"title-lg":["18px",{lineHeight:"26px",letterSpacing:"0px",fontWeight:"600"}],"headline-xl-mobile":["28px",{lineHeight:"40px",letterSpacing:"0px",fontWeight:"600"}],"headline-lg":["30px",{lineHeight:"36px",letterSpacing:"0px",fontWeight:"600"}],"title-md":["16px",{lineHeight:"20px",letterSpacing:"0px",fontWeight:"600"}],"body-sm":["12px",{lineHeight:"18px",letterSpacing:"0px",fontWeight:"400"}]}}}};</script>
+<!-- Updated Right Sidebar with 14 IMS Navigation Items -->
+<aside class="fixed right-0 top-0 h-full w-72 bg-white shadow-[-4px_0px_16px_0px_rgba(15,23,42,0.04)] z-50 flex flex-col justify-between overflow-y-auto custom-scrollbar border-l border-slate-200/70">
+<div class="flex flex-col">
+<!-- Brand / Plant Header -->
+<div class="px-space-md py-space-md flex items-center justify-between border-b border-surface-container-high shrink-0">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-[#142C43] flex items-center justify-center text-white shadow-sm shrink-0">
+<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="flex flex-col text-right">
+<span class="font-title-md text-title-md text-on-surface leading-tight font-bold">پتروشیمی آپادانا</span>
+<span class="font-label-md text-label-md text-[#1E5A85] font-medium">سامانه یکپارچه مدیریت (IMS)</span>
+</div>
+</div>
+<div class="px-space-xs py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-code text-label-code font-semibold">A-IMS</div>
+</div>
+<!-- Navigation Menu Items (14 Categories) -->
+<nav class="flex-1 px-space-sm py-space-sm flex flex-col gap-1 text-right">
+<!-- 1. داشبورد (Active) -->
+<a class="flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150 group" data-path="dashboard" href="#">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<rect height="7" rx="1.5" width="7" x="3" y="3"></rect>
+<rect height="7" rx="1.5" width="7" x="14" y="3"></rect>
+<rect height="7" rx="1.5" width="7" x="14" y="14"></rect>
+<rect height="7" rx="1.5" width="7" x="3" y="14"></rect>
+</svg>
+<span class="font-body-md text-body-md">داشبورد</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-[#16846B] ring-2 ring-white/30"></span>
+</a><a class="flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150 group" href="#"><div class="flex items-center gap-2.5"><svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M2.25 13.5h3.86a2.25 2.25 0 012.012 1.244l.256.512a2.25 2.25 0 002.013 1.244h3.218a2.25 2.25 0 002.013-1.244l.256-.512a2.25 2.25 0 012.013-1.244h3.859m-19.5.03v5.22a2.25 2.25 0 002.25 2.25h15a2.25 2.25 0 002.25-2.25v-5.22m-19.5 0l2.404-9.616A2.25 2.25 0 017.348 2.25h9.304a2.25 2.25 0 012.194 1.634l2.404 9.616" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="font-body-md text-body-md font-medium">کارتابل اقدامات</span></div><span class="px-2 py-0.5 rounded-full bg-[#d0e4ff] text-[#1E5A85] font-label-md text-label-md font-bold">۴</span></a>
+<!-- 2. مدیریت مستندات و سوابق (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت مستندات و سوابق</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200 -rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors bg-[#142C43] text-white font-semibold shadow-sm" href="#">فهرست مستندات</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">ثبت مستند جدید</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">بازنگری مستندات</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">گردش تأیید مستندات</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">توزیع و دسترسی به مستندات</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">بایگانی</a>
+</div>
+</div>
+<!-- 3. مدیریت فرآیندها (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت فرآیندها</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4 hidden">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">شناسنامه فرآیندها</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">نقشه فرآیندها</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">تعاملات فرآیندی</a>
+</div>
+</div>
+<!-- 4. مدیریت ریسک و فرصت (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#d97706]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت ریسک و فرصت</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4 hidden">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">شناسایی ریسک‌ها</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">ارزیابی ریسک</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">برنامه‌های کنترلی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">فرصت‌های بهبود</a>
+</div>
+</div>
+<!-- 5. مدیریت ممیزی (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#16846B]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت ممیزی</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4 hidden">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">برنامه ممیزی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">ممیزی داخلی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">ممیزی خارجی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">چک‌لیست‌های ممیزی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">یافته‌های ممیزی</a>
+</div>
+</div>
+<!-- 6. مدیریت عدم انطباق و اقدامات اصلاحی (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#dc2626]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">عدم انطباق و CAPA</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4 hidden">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">ثبت عدم انطباق</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">بررسی علل ریشه‌ای</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">اقدامات اصلاحی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">ارزیابی اثربخشی</a>
+</div>
+</div>
+<!-- 7. مدیریت اهداف و شاخص‌ها (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25l2.25-2.25 2.25 2.25 4.5-4.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت اهداف و شاخص‌ها</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4 hidden">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">اهداف سازمانی</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">شاخص‌های عملکردی KPI</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">پایش و ارزیابی عملکرد</a>
+</div>
+</div>
+<!-- 8. مدیریت تغییرات (Single item) -->
+<a class="flex items-center gap-2.5 px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" href="#">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت تغییرات (MOC)</span>
+</a>
+<!-- 9. مدیریت HSE (Collapsible) -->
+<div class="menu-accordion flex flex-col">
+<button class="accordion-trigger w-full flex items-center justify-between px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" type="button">
+<div class="flex items-center gap-2.5">
+<svg class="w-5 h-5 shrink-0 text-[#dc2626]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت HSE</span>
+</div>
+<svg class="chevron-icon w-4 h-4 text-outline transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="accordion-content pr-7 pl-2 py-1 flex flex-col gap-1 border-r-2 border-[#1E5A85]/20 mr-4 hidden">
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">حوادث و شبه‌حوادث</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">بازرسی‌های HSE</a>
+<a class="py-1.5 px-2 rounded-lg text-body-sm font-body-sm text-on-surface-variant hover:text-[#1E5A85] hover:bg-surface-container/60 transition-colors" href="#">اقدامات اصلاحی HSE</a>
+</div>
+</div>
+<!-- 10. مدیریت آموزش و شایستگی (Single item) -->
+<a class="flex items-center gap-2.5 px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" href="#">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت آموزش و شایستگی</span>
+</a>
+<!-- 11. مدیریت الزامات قانونی و استانداردها (Single item) -->
+<a class="flex items-center gap-2.5 px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" href="#">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.333A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.583V21m16.5 0H3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">الزامات قانونی و استانداردها</span>
+</a>
+<!-- 12. جلسات و بازنگری مدیریت (Single item) -->
+<a class="flex items-center gap-2.5 px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" href="#">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">جلسات و بازنگری مدیریت</span>
+</a>
+<!-- 13. گزارش‌ها و تحلیل‌های مدیریتی (Single item) -->
+<a class="flex items-center gap-2.5 px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" href="#">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">گزارش‌ها و تحلیل‌های مدیریتی</span>
+</a>
+<!-- 14. مدیریت کاربران و تنظیمات (Single item) -->
+<a class="flex items-center gap-2.5 px-space-md py-2.5 rounded-xl text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all duration-150" href="#">
+<svg class="w-5 h-5 shrink-0 text-[#1E5A85]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.15.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-body-md text-body-md font-medium">مدیریت کاربران و تنظیمات</span>
+</a>
+</nav>
+</div>
+<!-- Sidebar Footer Status Widget -->
+</aside>
+<div class="pr-72"><header class="fixed top-0 right-72 left-0 h-16 bg-white/95 backdrop-blur-md shadow-[0_1px_6px_rgba(0,0,0,0.04)] border-b border-slate-200/70 z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-md"><button class="w-10 h-10 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">menu</span></button><div class="relative flex items-center w-80"><span class="material-symbols-outlined absolute right-3 text-outline text-[20px]">search</span><input class="w-full h-10 pr-10 pl-4 bg-surface-container-low rounded-full border border-slate-200/60 font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:ring-2 focus:ring-[#1E5A85] transition-all" placeholder="جستجو..." type="text"></div></div><div class="flex items-center gap-space-md"><div class="relative flex items-center" id="notifications-wrapper">
+<button aria-expanded="false" aria-haspopup="true" class="relative w-10 h-10 rounded-full hover:bg-surface-container flex items-center justify-center text-[#1E5A85] bg-[#d0e4ff]/40 transition-colors focus:outline-none cursor-pointer" id="notifications-trigger-btn" title="اعلان‌ها و هشدارها" type="button">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-[#dc2626] rounded-full ring-2 ring-white animate-pulse"></span>
+</button>
+<!-- Notifications Dropdown Menu (Hidden by default, interactive toggle) -->
+<div class="transition-all duration-200 ease-out origin-top-left absolute left-0 top-12 w-96 sm:w-[420px] bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden flex flex-col text-right opacity-0 scale-95 pointer-events-none hidden" id="notifications-dropdown-menu">
+<!-- Header of Dropdown -->
+<div class="p-space-md border-b border-slate-200/80 bg-white">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[#142C43] text-[20px]">notifications_active</span>
+<h3 class="font-title-md text-title-md text-[#142C43] font-bold">اعلان‌ها و هشدارهای سیستم</h3>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-[#dc2626] font-label-md text-label-md font-bold">
+          ۳ خوانده‌نشده
+        </span>
+</div>
+<div class="flex items-center justify-between mt-2 pt-1">
+<span class="font-body-sm text-body-sm text-outline">سامانه مانیتورینگ بلادرنگ سایت عسلویه</span>
+<button class="font-label-md text-label-md text-[#1E5A85] hover:underline font-medium transition-colors" type="button">
+          علامت‌گذاری همه به عنوان خوانده‌شده
+        </button>
+</div>
+<!-- Filter Category Tags -->
+<div class="flex items-center gap-1.5 mt-space-sm overflow-x-auto pb-0.5">
+<button class="px-2.5 py-1 rounded-full text-label-md font-label-md bg-[#142C43] text-white font-semibold transition-colors" type="button">
+          همه (۵)
+        </button>
+<button class="px-2.5 py-1 rounded-full text-label-md font-label-md bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-medium border border-slate-200/70" type="button">
+          هشدارهای HSE (۲)
+        </button>
+<button class="px-2.5 py-1 rounded-full text-label-md font-label-md bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-medium border border-slate-200/70" type="button">
+          ممیزی و CAPA (۲)
+        </button>
+<button class="px-2.5 py-1 rounded-full text-label-md font-label-md bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-medium border border-slate-200/70" type="button">
+          سیستمی (۱)
+        </button>
+</div>
+</div>
+<!-- Notification Items List -->
+<div class="max-h-[380px] overflow-y-auto divide-y divide-slate-100 bg-[#EAF0F5]/30">
+<!-- Item 1: HSE Alert (Unread & Urgent) -->
+<div class="p-space-md bg-white hover:bg-surface-container-low/80 transition-colors flex gap-space-sm cursor-pointer relative">
+<span class="absolute right-2 top-4 w-1.5 h-1.5 rounded-full bg-[#dc2626]"></span>
+<div class="w-9 h-9 rounded-xl bg-error-container/60 text-[#dc2626] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">warning</span>
+</div>
+<div class="flex-1 flex flex-col gap-1 pr-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded text-[11px] font-bold bg-[#dc2626] text-white leading-tight">فوری</span>
+<span class="font-label-md text-label-md text-[#1E5A85] font-semibold">ایمنی و فرآیند (ISO 45001)</span>
+</div>
+<span class="font-label-code text-label-code text-outline text-[12px]">۱۰ دقیقه پیش</span>
+</div>
+<p class="font-body-sm text-body-sm text-[#142C43] font-semibold leading-snug">
+            هشدار فشار خط بخار بویلر ۳ واحد متانول
+          </p>
+<p class="font-label-md text-label-md text-on-surface-variant">
+            فشار سنسور به ۴۲.۵ بار رسید؛ بازبینی شیر اطمینان اضطراری الزامی است.
+          </p>
+</div>
+</div>
+<!-- Item 2: Permit to Work Approved (Unread) -->
+<div class="p-space-md bg-white hover:bg-surface-container-low/80 transition-colors flex gap-space-sm cursor-pointer relative">
+<span class="absolute right-2 top-4 w-1.5 h-1.5 rounded-full bg-[#16846B]"></span>
+<div class="w-9 h-9 rounded-xl bg-[#e6f4f1] text-[#16846B] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">local_fire_department</span>
+</div>
+<div class="flex-1 flex flex-col gap-1 pr-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded text-[11px] font-semibold bg-[#e6f4f1] text-[#16846B] leading-tight">مجوز کار</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">واحد الفین</span>
+</div>
+<span class="font-label-code text-label-code text-outline text-[12px]">۳۵ دقیقه پیش</span>
+</div>
+<p class="font-body-sm text-body-sm text-[#142C43] font-semibold leading-snug">
+            صدور پروانه کار گرم شماره <span class="font-label-code text-label-code text-[#1E5A85]">PTW-4409</span>
+</p>
+<p class="font-label-md text-label-md text-on-surface-variant">
+            توسط مهندس رضایی تأیید شد و عملیات جوشکاری فلنج آغاز گردید.
+          </p>
+</div>
+</div>
+<!-- Item 3: Quality Audit Schedule (Unread) -->
+<div class="p-space-md bg-white hover:bg-surface-container-low/80 transition-colors flex gap-space-sm cursor-pointer relative">
+<span class="absolute right-2 top-4 w-1.5 h-1.5 rounded-full bg-[#1E5A85]"></span>
+<div class="w-9 h-9 rounded-xl bg-[#d0e4ff] text-[#1E5A85] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+<span class="material-symbols-outlined text-[20px]">assignment_turned_in</span>
+</div>
+<div class="flex-1 flex flex-col gap-1 pr-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="px-1.5 py-0.5 rounded text-[11px] font-semibold bg-[#d0e4ff] text-[#142C43] leading-tight">ISO 9001</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">ممیزی SGS</span>
+</div>
+<span class="font-label-code text-label-code text-outline text-[12px]">۱ ساعت پیش</span>
+</div>
+<p class="font-body-sm text-body-sm text-[#142C43] font-semibold leading-snug">
+            جلسه هماهنگی پیش‌ممیزی مراقبتی فردا ساعت ۰۹:۰۰
+          </p>
+<p class="font-label-md text-label-md text-on-surface-variant">
+            اتاق جلسات مدیریت تضمین کیفیت؛ مدارک چک‌لیست آزمایشگاه پیوست شد.
+          </p>
+</div>
+</div>
+<!-- Item 4: System Backup (Read) -->
+<div class="p-space-md bg-surface-container-low/40 hover:bg-surface-container-low transition-colors flex gap-space-sm cursor-pointer opacity-80">
+<div class="w-9 h-9 rounded-xl bg-surface-container text-outline flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">cloud_done</span>
+</div>
+<div class="flex-1 flex flex-col gap-1 pr-1">
+<div class="flex items-center justify-between">
+<span class="px-1.5 py-0.5 rounded text-[11px] font-medium bg-surface-container text-outline-variant leading-tight">سیستمی</span>
+<span class="font-label-code text-label-code text-outline text-[12px]">۳ ساعت پیش</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface font-medium leading-snug">
+            پشتیبان‌گیری خودکار پایگاه داده IMS با موفقیت انجام شد
+          </p>
+<p class="font-label-md text-label-md text-outline">
+            نسخه پشتیبان روی سرور ابری سایت ۲ ذخیره شد (حجم: ۱.۲ گیگابایت).
+          </p>
+</div>
+</div>
+</div>
+<!-- Footer of Dropdown -->
+<div class="p-3 bg-white border-t border-slate-200/80 flex items-center justify-between">
+<a class="w-full py-2 px-space-md rounded-xl bg-surface-container-low hover:bg-surface-container text-[#142C43] font-label-md text-label-md font-semibold transition-colors flex items-center justify-center gap-1.5" href="#">
+<span>مشاهده تمامی اعلان‌ها و گزارشات رویداد</span>
+<span class="material-symbols-outlined text-[16px] text-[#1E5A85]">arrow_back</span>
+</a>
+</div>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" title="راهنمای سامانه" type="button">
+<span class="material-symbols-outlined text-[22px]">help_outline</span>
+</button><div class="h-6 w-px bg-surface-container-high"></div><button class="w-10 h-10 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors" title="تنظیمات و دسترسی‌ها" type="button"></button><div class="relative flex items-center" id="profile-wrapper"><button aria-expanded="false" aria-haspopup="true" class="flex items-center gap-space-sm cursor-pointer focus:outline-none p-1 rounded-xl hover:bg-surface-container transition-colors" id="profile-trigger-btn" type="button"><div class="text-left"><div class="font-label-lg text-label-lg text-on-surface leading-tight text-right">مهندس مهران کاظمی</div><div class="font-label-md text-label-md text-outline text-right">مدیر تضمین کیفیت و IMS</div></div><div class="w-8 h-8 rounded-full bg-[#142C43] flex items-center justify-center shadow-sm"><span class="material-symbols-outlined text-white text-[18px]">person</span></div><span class="material-symbols-outlined text-outline text-[18px] transition-transform duration-200" id="profile-chevron">expand_more</span></button><div class="transition-all duration-200 ease-out origin-top-left absolute left-0 top-12 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 overflow-hidden flex flex-col text-right opacity-0 scale-95 pointer-events-none hidden" id="profile-dropdown-menu"><div class="p-space-md border-b border-slate-200/80 bg-surface-container-low"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-full bg-[#142C43] text-white flex items-center justify-center shadow-sm shrink-0"><span class="material-symbols-outlined text-[20px]">person</span></div><div class="flex flex-col"><span class="font-title-md text-title-md text-[#142C43] font-bold leading-tight">مهندس مهران کاظمی</span><span class="font-label-md text-label-md text-on-surface-variant">کد پرسنلی: ۹۴۰۲۱</span></div></div><div class="mt-2 pt-1 border-t border-slate-200/60 flex items-center justify-between text-outline font-label-md text-label-md"><span class="px-2 py-0.5 rounded bg-[#e6f4f1] text-[#16846B] font-semibold text-[11px]">مدیر ارشد کیفیت</span><span class="font-label-code text-label-code text-[11px]">سایت عسلویه</span></div></div><div class="py-1.5 flex flex-col"><a class="flex items-center gap-2.5 px-space-md py-2.5 text-on-surface hover:bg-surface-container hover:text-[#1E5A85] text-body-sm font-body-sm font-medium transition-colors" href="#"><span class="material-symbols-outlined text-[#1E5A85] text-[20px]">account_circle</span><span>مشاهده حساب کاربری</span></a><a class="flex items-center gap-2.5 px-space-md py-2.5 text-on-surface hover:bg-surface-container hover:text-[#1E5A85] text-body-sm font-body-sm font-medium transition-colors" href="#"><span class="material-symbols-outlined text-[#1E5A85] text-[20px]">lock_reset</span><span>تغییر رمز عبور</span></a></div><div class="border-t border-slate-200/70 p-1.5 bg-white"><a class="flex items-center gap-2.5 px-space-md py-2 text-[#dc2626] hover:bg-error-container/40 rounded-xl text-body-sm font-body-sm font-semibold transition-colors" href="#"><span class="material-symbols-outlined text-[#dc2626] text-[20px]">logout</span><span>خروج از سامانه</span></a></div></div></div></div></header><main class="w-full pt-16 bg-[#EAF0F5] min-h-[calc(100vh-64px)]"><div class="flex flex-col w-full">
+<!-- Top Command Strip & Contextual Breadcrumb -->
+<div class="px-gutter py-space-md flex flex-col gap-space-md" style="font-family: Vazirmatn, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Helvetica, Arial, sans-serif; font-feature-settings: &quot;ss01&quot;, &quot;tnum&quot;;">
+<!-- Breadcrumb & Plant Node Marker -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm">
+<nav aria-label="مسیریابی" class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant">
+<a class="hover:text-secondary flex items-center gap-1 transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px]">home</span>
+<span>خانه</span>
+</a>
+<span class="text-outline-variant">/</span>
+<span class="text-on-surface-variant">مدیریت مستندات و سوابق</span>
+<span class="text-outline-variant">/</span>
+<span class="font-bold text-primary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-success-iso"></span>
+          فهرست مستندات و سوابق مصوب
+        </span>
+</nav>
+<!-- Technical Metatag Badges -->
+<div class="flex items-center gap-space-sm flex-wrap">
+<div class="flex items-center gap-1 px-space-sm py-1 rounded-full bg-surface-container-low border-hairline font-label-code text-label-code text-primary">
+
+
+</div>
+<div class="flex items-center gap-1 px-space-sm py-1 rounded-full bg-surface-container text-on-surface-variant font-label-code text-label-code">
+<span class="material-symbols-outlined text-[14px]">history</span>
+<span>آخرین بروزرسانی شاخص: امروز ۰۸:۴۵</span>
+</div>
+</div>
+</div>
+<!-- Title and Executive Action Strip -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md bg-surface-card p-space-lg rounded-xl shadow-sm">
+<div class="flex flex-col gap-1 max-w-3xl">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-primary-container text-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[24px]">folder_managed</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary font-bold tracking-tight">
+            فهرست مستندات&nbsp;</h1>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 leading-relaxed">
+          مرجع رسمی شناسایی، صحه‌گذاری نگارش‌ها و چرخه پایش اعتبار مدارک مهندسی، دستورالعمل‌های فرآیندی و سوابق کیفی مجتمع پتروشیمی آپادانا خلیج فارس
+        </p>
+</div>
+<!-- Action Cluster -->
+<div class="flex items-center gap-space-sm flex-wrap self-end lg:self-center">
+<!-- Dynamic Selection Export Pill (Reveals count) -->
+<button class="group flex items-center gap-2 px-space-md py-2.5 rounded-full bg-secondary text-white font-label-lg text-label-lg transition-all duration-200 shadow-sm hover:shadow opacity-50 cursor-not-allowed" id="btn-export-selected" disabled="true">
+<span class="material-symbols-outlined text-[18px]">rule_folder</span>
+<span>خروجی موارد انتخابی</span>
+<span class="w-5 h-5 rounded-full bg-white/20 text-white font-label-code text-[11px] flex items-center justify-center font-bold" id="selected-badge-count">0</span>
+</button>
+<!-- Master Exports -->
+<div class="relative inline-flex">
+<button class="flex items-center gap-1.5 px-space-md py-2.5 rounded-full bg-surface-container-low text-primary hover:bg-surface-container font-label-lg text-label-lg transition-all duration-150" id="btn-export-excel">
+<span class="material-symbols-outlined text-success-iso text-[18px]">table_view</span>
+<span>خروجی Excel کامل</span>
+</button>
+</div>
+<button class="flex items-center gap-1.5 px-space-md py-2.5 rounded-full bg-surface-container-low text-primary hover:bg-surface-container font-label-lg text-label-lg transition-all duration-150" id="btn-export-pdf">
+<span class="material-symbols-outlined text-critical-hse text-[18px]">picture_as_pdf</span>
+<span>خروجی PDF کامل</span>
+</button>
+<!-- Reset Button -->
+<button class="w-10 h-10 rounded-full bg-surface-container-low hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors" id="btn-reset-filters" title="بازنشانی تمام فیلترهای جستجو">
+<span class="material-symbols-outlined text-[20px]">filter_alt_off</span>
+</button>
+<!-- Create Document CTA -->
+<button class="flex items-center gap-2 px-space-lg py-2.5 rounded-full bg-primary text-white hover:bg-secondary font-label-lg text-label-lg shadow-sm transition-all duration-200">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>ثبت مستند جدید</span>
+</button>
+</div>
+</div>
+<!-- KPI Summary Section -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-space-md" style="font-family: Vazirmatn, -apple-system, BlinkMacSystemFont, sans-serif; font-feature-settings: &quot;tnum&quot;, &quot;ss01&quot;;">
+<!-- Card 1: Total Docs -->
+<div class="bg-surface-card rounded-xl p-space-md flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow" style="border: 2px solid rgb(20, 44, 67);">
+
+<div class="flex flex-col gap-1 z-10">
+<span class="font-label-md text-label-md text-on-surface-variant">کل مستندات فعال سامانه</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-lg text-headline-lg font-bold text-primary">۱,۴۲۰</span>
+
+</div>
+
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center text-primary shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[26px]">library_books</span>
+</div>
+</div>
+<!-- Card 2: Approved / Valid -->
+<div class="bg-surface-card rounded-xl p-space-md flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow" style="border: 2px solid rgb(22, 132, 107);">
+
+<div class="flex flex-col gap-1 z-10">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-success-iso animate-pulse"></span>
+<span class="font-label-md text-label-md text-on-surface-variant">مستندات معتبر</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-lg text-headline-lg font-bold text-success-iso">۱,۰۷۹</span>
+
+</div>
+<div class="flex items-center gap-1 mt-1">
+
+
+</div>
+</div>
+<div class="w-12 h-12 rounded-xl bg-[#E6F5F1] text-success-iso flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[26px]">verified</span>
+</div>
+</div>
+<!-- Card 3: Pending Review / Workflow -->
+<div class="bg-surface-card rounded-xl p-space-md flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow" style="border: 2px solid rgb(217, 119, 6);">
+
+<div class="flex flex-col gap-1 z-10">
+<span class="font-label-md text-label-md text-on-surface-variant">در انتظار تأیید</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-lg text-headline-lg font-bold text-warning-capa">۱۹۴</span>
+
+</div>
+<div class="flex items-center gap-1 mt-1">
+
+
+</div>
+</div>
+<div class="w-12 h-12 rounded-xl bg-[#FEF3C7] text-warning-capa flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[26px]">pending_actions</span>
+</div>
+</div>
+<!-- Card 4: Expired / Rejected -->
+<div class="bg-surface-card rounded-xl p-space-md flex items-center justify-between shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow" style="border: 2px solid rgb(220, 38, 38);">
+
+<div class="flex flex-col gap-1 z-10">
+<span class="font-label-md text-label-md text-on-surface-variant">نامعتبر</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-lg text-headline-lg font-bold text-critical-hse">۱۴۷</span>
+
+</div>
+<div class="flex items-center gap-1 mt-1">
+
+
+</div>
+</div>
+<div class="w-12 h-12 rounded-xl bg-[#FEE2E2] text-critical-hse flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[26px]">warning</span>
+</div>
+</div>
+</div>
+<!-- Active Filter Ribbon Notification / Quick Presets -->
+<div class="bg-surface-card px-space-md py-2.5 rounded-xl flex flex-wrap items-center justify-between gap-space-sm text-body-sm shadow-sm">
+<div class="flex items-center gap-space-sm flex-wrap">
+<span class="font-label-lg text-label-lg text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px] text-secondary">tune</span>
+          فیلترهای سریع سازمانی:
+        </span>
+<button class="quick-filter-tag px-3 py-1 rounded-full font-label-md text-label-md font-semibold transition-colors bg-primary text-white" data-status="all" type="button">
+          همه مستندات (۱,۴۲۰)
+        </button>
+<button class="quick-filter-tag px-3 py-1 rounded-full hover:bg-surface-variant font-label-md text-label-md transition-colors bg-surface-container text-on-surface-variant" data-status="approved" type="button">
+          صرفاً مصوب معتبر (۱,۰۷۹)
+        </button>
+<button class="quick-filter-tag px-3 py-1 rounded-full hover:bg-surface-variant font-label-md text-label-md transition-colors bg-surface-container text-on-surface-variant" data-status="pending" type="button">
+          نیازمند امضای من (۱۹۴)
+        </button>
+<button class="quick-filter-tag px-3 py-1 rounded-full hover:bg-surface-variant font-label-md text-label-md transition-colors bg-surface-container text-on-surface-variant" data-status="urgent-expiring" type="button">
+          انقضا تا ۳۰ روز آینده (۳۸)
+        </button>
+</div>
+
+</div>
+<!-- Comprehensive Data Table Card with Integrated Column Filters -->
+<div class="bg-surface-card rounded-xl shadow-sm flex flex-col overflow-hidden">
+<!-- Table Wrapper with horizontal custom scroll -->
+<div class="px-space-md py-2.5 bg-[#EAF0F5] border-b border-hairline flex flex-wrap items-center gap-space-sm text-body-sm font-label-md justify-center"><div class="flex items-center gap-2"><button type="button" onclick="document.getElementById('table-scroll-container').scrollBy({ left: -320, behavior: 'smooth' })" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#1E5A85]/30 hover:bg-[#1E5A85] hover:text-white text-[#1E5A85] text-label-md font-label-md shadow-sm transition-all duration-150 cursor-pointer" title="پیمایش به ستون‌های بعدی (چپ)"><span class="material-symbols-outlined text-[16px]">arrow_forward</span></button><button type="button" onclick="document.getElementById('table-scroll-container').scrollBy({ left: 320, behavior: 'smooth' })" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#1E5A85]/30 hover:bg-[#1E5A85] hover:text-white text-[#1E5A85] text-label-md font-label-md shadow-sm transition-all duration-150 cursor-pointer" title="پیمایش به ستون‌های اولیه (راست)"><span class="material-symbols-outlined text-[16px]">arrow_back</span></button></div></div><div class="overflow-x-auto custom-table-scrollbar pb-4" id="table-scroll-container">
+<table class="w-full text-right border-collapse min-w-[1240px]" id="doc-registry-table" style="min-width: 1540px; width: 100%; table-layout: fixed;">
+<thead>
+<!-- Primary Column Header Names -->
+<tr class="bg-surface-container text-primary font-label-lg text-label-lg"><th class="py-3 px-2 text-center whitespace-nowrap" scope="col" style="width: 65px; min-width: 65px;"><div class="flex items-center justify-center gap-1"><input class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" id="check-all-rows" title="انتخاب همه سطرهای صفحه" type="checkbox"><span class="font-body-sm text-outline">ردیف</span></div></th><th class="py-3 px-3 whitespace-nowrap" scope="col" style="width: 150px; min-width: 150px;"><div class="flex items-center gap-1"><span>شماره سند</span><span class="material-symbols-outlined text-[14px] text-outline">tag</span></div></th><th class="py-3 px-3 whitespace-nowrap" scope="col" style="width: 130px; min-width: 130px;">نوع سند</th><th class="py-3 px-3" scope="col" style="width: 320px; min-width: 300px;">شرح کامل مدرک و عنوان مهندسی</th><th class="py-3 px-3 text-center whitespace-nowrap" scope="col" style="width: 120px; min-width: 120px;">وضعیت مدرک</th><th class="py-3 px-3 whitespace-nowrap" scope="col" style="width: 150px; min-width: 140px;">مدیریت متولی</th><th class="py-3 px-3 whitespace-nowrap" scope="col" style="width: 140px; min-width: 130px;">واحد عملیاتی</th><th class="py-3 px-3 whitespace-nowrap text-center" scope="col" style="width: 115px; min-width: 110px;">تاریخ ثبت</th><th class="py-3 px-3 whitespace-nowrap text-center" scope="col" style="width: 115px; min-width: 110px;">تاریخ بازبینی</th><th class="py-3 px-3 whitespace-nowrap text-center" scope="col" style="width: 130px; min-width: 120px;">بازنگری بعدی</th><th class="py-3 px-2 text-center whitespace-nowrap" scope="col" style="width: 80px; min-width: 75px;">جزییات</th><th class="py-3 px-2 text-center whitespace-nowrap" scope="col" style="width: 110px; min-width: 105px;">دریافت فایل</th></tr>
+<!-- Secondary Row: Granular Column Filters -->
+<tr class="bg-surface-container-low border-hairline">
+<!-- Filter: Row check empty -->
+<td class="p-1.5 text-center">
+<button class="text-outline hover:text-primary transition-colors" id="btn-clear-column-filters" title="پاک‌سازی فیلترهای این جدول" type="button">
+<span class="material-symbols-outlined text-[16px]">restart_alt</span>
+</button>
+</td>
+<!-- Filter: Doc Code Input -->
+<td class="p-1.5">
+<div class="relative">
+<input class="w-full h-8 px-2 pl-6 bg-white rounded text-label-code text-body-sm text-primary placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-secondary" id="filter-doc-code" placeholder="جستجو کد..." type="text">
+<span class="material-symbols-outlined absolute left-1.5 top-1.5 text-[15px] text-outline pointer-events-none">search</span>
+</div>
+</td>
+<!-- Filter: Doc Type Dropdown -->
+<td class="p-1.5">
+<select class="w-full h-8 px-2 bg-white rounded text-body-sm font-body-sm text-primary focus:outline-none focus:ring-1 focus:ring-secondary cursor-pointer" id="filter-doc-type">
+<option value="">همه انواع</option>
+<option value="روش اجرایی">روش اجرایی (SOP)</option>
+<option value="دستورالعمل کاری">دستورالعمل کاری (WI)</option>
+<option value="خط‌مشی">خط‌مشی (POL)</option>
+<option value="نظام‌نامه">نظام‌نامه (MAN)</option>
+<option value="فرم سازمانی">فرم (FRM)</option>
+<option value="چک‌لیست">چک‌لیست (CHK)</option>
+</select>
+</td>
+<!-- Filter: Title Input -->
+<td class="p-1.5">
+<div class="relative">
+<input class="w-full h-8 px-2 pl-6 bg-white rounded text-body-sm text-primary placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-secondary" id="filter-doc-title" placeholder="فیلتر بر اساس عنوان سند..." type="text">
+<span class="material-symbols-outlined absolute left-1.5 top-1.5 text-[15px] text-outline pointer-events-none">search</span>
+</div>
+</td>
+<!-- Filter: Status Dropdown -->
+<td class="p-1.5">
+<select class="w-full h-8 px-1.5 bg-white rounded text-body-sm font-body-sm text-primary focus:outline-none focus:ring-1 focus:ring-secondary cursor-pointer" id="filter-doc-status"><option value="">همه وضعیت‌ها</option><option value="approved">معتبر</option><option value="pending">در انتظار تأیید</option><option value="rejected">نامعتبر</option></select>
+</td>
+<!-- Filter: Management Dropdown -->
+<td class="p-1.5">
+<select class="w-full h-8 px-1.5 bg-white rounded text-body-sm font-body-sm text-primary focus:outline-none focus:ring-1 focus:ring-secondary cursor-pointer" id="filter-doc-management">
+<option value="">همه مدیریت‌ها</option>
+<option value="مدیریت بهره‌برداری">مدیریت بهره‌برداری</option>
+<option value="مدیریت HSE">مدیریت HSE</option>
+<option value="مدیریت تضمین کیفیت و IMS">تضمین کیفیت و IMS</option>
+<option value="مدیریت فنی و مهندسی">فنی و مهندسی</option>
+<option value="مدیریت بازرگانی">مدیریت بازرگانی</option>
+</select>
+</td>
+<!-- Filter: Unit Dropdown -->
+<td class="p-1.5">
+<select class="w-full h-8 px-1.5 bg-white rounded text-body-sm font-body-sm text-primary focus:outline-none focus:ring-1 focus:ring-secondary cursor-pointer" id="filter-doc-unit">
+<option value="">همه واحدها</option>
+<option value="واحد متانول">واحد متانول</option>
+<option value="واحد الفین">واحد الفین</option>
+<option value="واحد یوتیلیتی">واحد یوتیلیتی</option>
+<option value="آزمایشگاه مرکزی">آزمایشگاه مرکزی</option>
+<option value="آتش‌نشانی و ایمنی">آتش‌نشانی و ایمنی</option>
+</select>
+</td>
+<!-- Filter: Reg Date (Input) -->
+<td class="p-1.5">
+<input class="w-full h-8 px-1.5 bg-white rounded text-label-code text-[11px] text-center text-primary placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-secondary" id="filter-reg-date" placeholder="۱۴۰۲/..." type="text">
+</td>
+<!-- Filter: Revision Date (Input) -->
+<td class="p-1.5">
+<input class="w-full h-8 px-1.5 bg-white rounded text-label-code text-[11px] text-center text-primary placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-secondary" id="filter-rev-date" placeholder="۱۴۰۳/..." type="text">
+</td>
+<!-- Filter: Expiry Date (Input) -->
+<td class="p-1.5">
+<input class="w-full h-8 px-1.5 bg-white rounded text-label-code text-[11px] text-center text-primary placeholder:text-outline focus:outline-none focus:ring-1 focus:ring-secondary" id="filter-exp-date" placeholder="۱۴۰۴/..." type="text">
+</td>
+<!-- Filler for Actions -->
+<td class="p-1.5 text-center text-outline font-label-md">-</td>
+<td class="p-1.5 text-center text-outline font-label-md">-</td>
+</tr>
+</thead>
+<!-- Table Body with Industrial Petrochemical Documents -->
+<tbody class="divide-y divide-surface-container font-body-sm text-body-sm text-on-surface" id="table-body-rows">
+<!-- Row 1: SOP Methanol -->
+<tr class="hover:bg-surface-container-low transition-colors group doc-row" data-mgmt="مدیریت بهره‌برداری" data-status="approved" data-type="روش اجرایی" data-unit="واحد متانول">
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+<span class="font-label-code text-label-code text-outline">۱</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1 font-label-code text-label-code font-bold text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>SOP-PRC-042</span>
+</div>
+<span class="font-label-code text-[11px] text-outline mr-2.5">Rev: 04</span>
+</td>
+<td class="py-3 px-3 font-medium text-primary">
+                روش اجرایی
+              </td>
+<td class="py-3 px-3">
+<div class="flex flex-col">
+<span class="font-title-md text-body-md font-semibold text-primary">راه‌اندازی و تخلیه اضطراری راکتور سنتز متانول شماره ۲</span>
+<span class="font-body-sm text-outline text-[12px] line-clamp-1">استاندارد عملیات ایمن در فشار کاری ۸۵ بار با در نظر گرفتن سناریوهای مهار گاز سنتز</span>
+</div>
+</td>
+<td class="py-3 px-3 text-center"><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E6F5F1] text-success-iso font-label-md text-label-md font-bold"><span class="w-1.5 h-1.5 rounded-full bg-success-iso"></span>معتبر</span></td>
+<td class="py-3 px-3 font-medium text-primary">مدیریت بهره‌برداری</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-md">واحد متانول</span>
+</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-outline">۱۴۰۱/۰۲/۱۵</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-primary font-semibold">۱۴۰۳/۰۴/۱۰</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-success-iso font-semibold">۱۴۰۴/۰۴/۱۰</td>
+<td class="py-3 px-3 text-center">
+<button class="btn-doc-detail w-8 h-8 rounded-full hover:bg-surface-container text-secondary flex items-center justify-center transition-colors mx-auto" title="مشاهده گردش کار و تاریخچه نگارش" type="button">
+<span class="material-symbols-outlined text-[18px]">info</span>
+</button>
+</td>
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="w-7 h-7 rounded hover:bg-surface-container text-critical-hse flex items-center justify-center transition-colors" title="دریافت نسخه PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="w-7 h-7 rounded hover:bg-surface-container text-secondary flex items-center justify-center transition-colors" title="دریافت پیوست Word" type="button">
+<span class="material-symbols-outlined text-[18px]">download_for_offline</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: WI HSE Hot Work -->
+<tr class="hover:bg-surface-container-low transition-colors group doc-row" data-mgmt="مدیریت HSE" data-status="approved" data-type="دستورالعمل کاری" data-unit="آتش‌نشانی و ایمنی">
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+<span class="font-label-code text-label-code text-outline">۲</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1 font-label-code text-label-code font-bold text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>WI-HSE-118</span>
+</div>
+<span class="font-label-code text-[11px] text-outline mr-2.5">Rev: 06</span>
+</td>
+<td class="py-3 px-3 font-medium text-primary">
+                دستورالعمل کاری
+              </td>
+<td class="py-3 px-3">
+<div class="flex flex-col">
+<span class="font-title-md text-body-md font-semibold text-primary">الزامات صدور پروانه کار گرم و تست گاز در زون‌های انفجاری Zone 1 &amp; 2</span>
+<span class="font-body-sm text-outline text-[12px] line-clamp-1">انطباق با ماده ۱۱ آیین‌نامه ایمنی وزارت نفت و دستورالعمل پایش LEL اتمسفر</span>
+</div>
+</td>
+<td class="py-3 px-3 text-center"><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E6F5F1] text-success-iso font-label-md text-label-md font-bold"><span class="w-1.5 h-1.5 rounded-full bg-success-iso"></span>معتبر</span></td>
+<td class="py-3 px-3 font-medium text-primary">مدیریت HSE</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-md">آتش‌نشانی و ایمنی</span>
+</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-outline">۱۴۰۰/۱۱/۲۰</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-primary font-semibold">۱۴۰۳/۰۲/۱۵</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-success-iso font-semibold">۱۴۰۴/۰۲/۱۵</td>
+<td class="py-3 px-3 text-center">
+<button class="btn-doc-detail w-8 h-8 rounded-full hover:bg-surface-container text-secondary flex items-center justify-center transition-colors mx-auto" title="مشاهده گردش کار و تاریخچه نگارش" type="button">
+<span class="material-symbols-outlined text-[18px]">info</span>
+</button>
+</td>
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="w-7 h-7 rounded hover:bg-surface-container text-critical-hse flex items-center justify-center transition-colors" title="دریافت نسخه PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="w-7 h-7 rounded hover:bg-surface-container text-secondary flex items-center justify-center transition-colors" title="دریافت پیوست Word" type="button">
+<span class="material-symbols-outlined text-[18px]">download_for_offline</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: POL QA IMS Manual -->
+<tr class="hover:bg-surface-container-low transition-colors group doc-row" data-mgmt="مدیریت تضمین کیفیت و IMS" data-status="approved" data-type="خط‌مشی" data-unit="آزمایشگاه مرکزی">
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+<span class="font-label-code text-label-code text-outline">۳</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1 font-label-code text-label-code font-bold text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>POL-QA-001</span>
+</div>
+<span class="font-label-code text-[11px] text-outline mr-2.5">Rev: 08</span>
+</td>
+<td class="py-3 px-3 font-medium text-primary">
+                خط‌مشی
+              </td>
+<td class="py-3 px-3">
+<div class="flex flex-col">
+<span class="font-title-md text-body-md font-semibold text-primary">خط‌مشی یکپارچه کیفیت، بهداشت شغلی، محیط‌زیست و انرژی (HSEQ-EnMS)</span>
+<span class="font-body-sm text-outline text-[12px] line-clamp-1">بیانیه تعهد مدیریت ارشد به استانداردهای چهارگانه بین‌المللی مجتمع آپادانا</span>
+</div>
+</td>
+<td class="py-3 px-3 text-center"><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E6F5F1] text-success-iso font-label-md text-label-md font-bold"><span class="w-1.5 h-1.5 rounded-full bg-success-iso"></span>معتبر</span></td>
+<td class="py-3 px-3 font-medium text-primary">مدیریت تضمین کیفیت و IMS</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-md">آزمایشگاه مرکزی</span>
+</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-outline">۱۳۹۹/۰۶/۰۱</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-primary font-semibold">۱۴۰۳/۰۱/۲۰</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-success-iso font-semibold">۱۴۰۴/۰۱/۲۰</td>
+<td class="py-3 px-3 text-center">
+<button class="btn-doc-detail w-8 h-8 rounded-full hover:bg-surface-container text-secondary flex items-center justify-center transition-colors mx-auto" title="مشاهده گردش کار و تاریخچه نگارش" type="button">
+<span class="material-symbols-outlined text-[18px]">info</span>
+</button>
+</td>
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="w-7 h-7 rounded hover:bg-surface-container text-critical-hse flex items-center justify-center transition-colors" title="دریافت نسخه PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="w-7 h-7 rounded hover:bg-surface-container text-secondary flex items-center justify-center transition-colors" title="دریافت پیوست Word" type="button">
+<span class="material-symbols-outlined text-[18px]">download_for_offline</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4: Pending Document (Utility) -->
+<tr class="hover:bg-surface-container-low transition-colors group doc-row bg-[#FEF3C7]/20" data-mgmt="مدیریت فنی و مهندسی" data-status="pending" data-type="روش اجرایی" data-unit="واحد یوتیلیتی">
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+<span class="font-label-code text-label-code text-outline">۴</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1 font-label-code text-label-code font-bold text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-warning-capa"></span>
+<span>SOP-UTL-019</span>
+</div>
+<span class="font-label-code text-[11px] text-outline mr-2.5">Rev: 03 (Draft)</span>
+</td>
+<td class="py-3 px-3 font-medium text-primary">
+                روش اجرایی
+              </td>
+<td class="py-3 px-3">
+<div class="flex flex-col">
+<span class="font-title-md text-body-md font-semibold text-primary">روش کنترل کیفی و تصفیه پساب‌های روغنی پکیج OWS واحد یوتیلیتی</span>
+<span class="font-body-sm text-outline text-[12px] line-clamp-1">ارزیابی مجدد سنسورهای پایش آنلاین COD و TOC بر اساس الزامات جدید محیط زیست عسلویه</span>
+</div>
+</td>
+<td class="py-3 px-3 text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FEF3C7] text-warning-capa font-label-md text-label-md font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-warning-capa"></span>
+                  در انتظار تأیید
+                </span>
+</td>
+<td class="py-3 px-3 font-medium text-primary">مدیریت فنی و مهندسی</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-md">واحد یوتیلیتی</span>
+</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-outline">۱۴۰۳/۰۶/۰۵</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-primary font-semibold">۱۴۰۳/۰۸/۰۱</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-warning-capa font-bold">۱۴۰۳/۰۹/۰۱ (فوری)</td>
+<td class="py-3 px-3 text-center">
+<button class="btn-doc-detail w-8 h-8 rounded-full hover:bg-surface-container text-secondary flex items-center justify-center transition-colors mx-auto" title="مشاهده گردش کار و تاریخچه نگارش" type="button">
+<span class="material-symbols-outlined text-[18px]">info</span>
+</button>
+</td>
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="w-7 h-7 rounded hover:bg-surface-container text-critical-hse flex items-center justify-center transition-colors" title="پیش‌نویس PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="w-7 h-7 rounded hover:bg-surface-container text-secondary flex items-center justify-center transition-colors" title="دریافت فایل پیش‌نویس" type="button">
+<span class="material-symbols-outlined text-[18px]">draft</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 5: Rejected / Expired Doc (Olefin) -->
+<tr class="hover:bg-surface-container-low transition-colors group doc-row bg-[#FEE2E2]/20" data-mgmt="مدیریت بهره‌برداری" data-status="rejected" data-type="دستورالعمل کاری" data-unit="واحد الفین">
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+<span class="font-label-code text-label-code text-outline">۵</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1 font-label-code text-label-code font-bold text-critical-hse">
+<span class="w-1.5 h-1.5 rounded-full bg-critical-hse"></span>
+<span>WI-OLF-204</span>
+</div>
+<span class="font-label-code text-[11px] text-critical-hse mr-2.5">Rev: 01 (منقضی)</span>
+</td>
+<td class="py-3 px-3 font-medium text-primary">
+                دستورالعمل کاری
+              </td>
+<td class="py-3 px-3">
+<div class="flex flex-col">
+<span class="font-title-md text-body-md font-semibold text-critical-hse">دستورالعمل کنترل دمای کوئنش تاور واحد الفین در شرایط بار حداکثری</span>
+<span class="font-body-sm text-outline text-[12px] line-clamp-1">به علت عدم انطباق با گزارش CAPA-1402-99 و تغییرات کاتالیست جدید از درجه اعتبار ساقط شد</span>
+</div>
+</td>
+<td class="py-3 px-3 text-center"><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FEE2E2] text-critical-hse font-label-md text-label-md font-bold"><span class="w-1.5 h-1.5 rounded-full bg-critical-hse"></span>نامعتبر</span></td>
+<td class="py-3 px-3 font-medium text-primary">مدیریت بهره‌برداری</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-md">واحد الفین</span>
+</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-outline">۱۴۰۱/۰۱/۱۰</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-outline">۱۴۰۲/۰۶/۱۰</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-critical-hse font-bold">۱۴۰۳/۰۶/۱۰ (منقضی)</td>
+<td class="py-3 px-3 text-center">
+<button class="btn-doc-detail w-8 h-8 rounded-full hover:bg-surface-container text-secondary flex items-center justify-center transition-colors mx-auto" title="مشاهده گردش کار و تاریخچه نگارش" type="button">
+<span class="material-symbols-outlined text-[18px]">info</span>
+</button>
+</td>
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="w-7 h-7 rounded hover:bg-surface-container text-critical-hse flex items-center justify-center transition-colors" title="نسخه آرشیو شده PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="w-7 h-7 rounded hover:bg-surface-container text-outline opacity-50 cursor-not-allowed flex items-center justify-center" title="عدم دسترسی به فایل ادیت" type="button">
+<span class="material-symbols-outlined text-[18px]">block</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 6: Quality Form -->
+<tr class="hover:bg-surface-container-low transition-colors group doc-row" data-mgmt="مدیریت تضمین کیفیت و IMS" data-status="approved" data-type="فرم سازمانی" data-unit="آزمایشگاه مرکزی">
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+<span class="font-label-code text-label-code text-outline">۶</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1 font-label-code text-label-code font-bold text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>FRM-LAB-055</span>
+</div>
+<span class="font-label-code text-[11px] text-outline mr-2.5">Rev: 05</span>
+</td>
+<td class="py-3 px-3 font-medium text-primary">
+                فرم سازمانی
+              </td>
+<td class="py-3 px-3">
+<div class="flex flex-col">
+<span class="font-title-md text-body-md font-semibold text-primary">فرم ثبت نتایج آنالیز کروماتوگرافی گازی (GC) خروجی استریپر متانول</span>
+<span class="font-body-sm text-outline text-[12px] line-clamp-1">ماتریس کالیبراسیون دستگاه و پایش ناخالصی‌های اتانول و آب طبق استاندارد ASTM D1152</span>
+</div>
+</td>
+<td class="py-3 px-3 text-center"><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E6F5F1] text-success-iso font-label-md text-label-md font-bold"><span class="w-1.5 h-1.5 rounded-full bg-success-iso"></span>معتبر</span></td>
+<td class="py-3 px-3 font-medium text-primary">مدیریت تضمین کیفیت و IMS</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-md">آزمایشگاه مرکزی</span>
+</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-outline">۱۴۰۰/۰۳/۱۴</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-primary font-semibold">۱۴۰۳/۰۳/۱۴</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-success-iso font-semibold">۱۴۰۴/۰۳/۱۴</td>
+<td class="py-3 px-3 text-center">
+<button class="btn-doc-detail w-8 h-8 rounded-full hover:bg-surface-container text-secondary flex items-center justify-center transition-colors mx-auto" title="مشاهده گردش کار و تاریخچه نگارش" type="button">
+<span class="material-symbols-outlined text-[18px]">info</span>
+</button>
+</td>
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="w-7 h-7 rounded hover:bg-surface-container text-critical-hse flex items-center justify-center transition-colors" title="دریافت نسخه PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="w-7 h-7 rounded hover:bg-surface-container text-secondary flex items-center justify-center transition-colors" title="دریافت قالب اکسل فرم" type="button">
+<span class="material-symbols-outlined text-[18px]">table_chart</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 7: Checklist HSE -->
+<tr class="hover:bg-surface-container-low transition-colors group doc-row" data-mgmt="مدیریت HSE" data-status="approved" data-type="چک‌لیست" data-unit="آتش‌نشانی و ایمنی">
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+<span class="font-label-code text-label-code text-outline">۷</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1 font-label-code text-label-code font-bold text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>CHK-SAF-102</span>
+</div>
+<span class="font-label-code text-[11px] text-outline mr-2.5">Rev: 04</span>
+</td>
+<td class="py-3 px-3 font-medium text-primary">
+                چک‌لیست
+              </td>
+<td class="py-3 px-3">
+<div class="flex flex-col">
+<span class="font-title-md text-body-md font-semibold text-primary">چک‌لیست بازرسی روزانه سیستم‌های اطفاء حریق فوم و اسپرینکلر مخازن کروی</span>
+<span class="font-body-sm text-outline text-[12px] line-clamp-1">بررسی شیرهای هیدرانت، فشار رینگ آب آتشنشانی و مانیتورهای پرتابل محوطه مخازن</span>
+</div>
+</td>
+<td class="py-3 px-3 text-center"><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E6F5F1] text-success-iso font-label-md text-label-md font-bold"><span class="w-1.5 h-1.5 rounded-full bg-success-iso"></span>معتبر</span></td>
+<td class="py-3 px-3 font-medium text-primary">مدیریت HSE</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-md">آتش‌نشانی و ایمنی</span>
+</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-outline">۱۴۰۱/۰۷/۱۰</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-primary font-semibold">۱۴۰۳/۰۵/۰۱</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-success-iso font-semibold">۱۴۰۴/۰۵/۰۱</td>
+<td class="py-3 px-3 text-center">
+<button class="btn-doc-detail w-8 h-8 rounded-full hover:bg-surface-container text-secondary flex items-center justify-center transition-colors mx-auto" title="مشاهده گردش کار و تاریخچه نگارش" type="button">
+<span class="material-symbols-outlined text-[18px]">info</span>
+</button>
+</td>
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="w-7 h-7 rounded hover:bg-surface-container text-critical-hse flex items-center justify-center transition-colors" title="دریافت نسخه PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="w-7 h-7 rounded hover:bg-surface-container text-secondary flex items-center justify-center transition-colors" title="دریافت چک‌لیست" type="button">
+<span class="material-symbols-outlined text-[18px]">checklist</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 8: Commercial Procurement SOP -->
+<tr class="hover:bg-surface-container-low transition-colors group doc-row" data-mgmt="مدیریت بازرگانی" data-status="approved" data-type="روش اجرایی" data-unit="واحد متانول">
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+<span class="font-label-code text-label-code text-outline">۸</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1 font-label-code text-label-code font-bold text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>SOP-COM-012</span>
+</div>
+<span class="font-label-code text-[11px] text-outline mr-2.5">Rev: 02</span>
+</td>
+<td class="py-3 px-3 font-medium text-primary">
+                روش اجرایی
+              </td>
+<td class="py-3 px-3">
+<div class="flex flex-col">
+<span class="font-title-md text-body-md font-semibold text-primary">ارزیابی، تایید صلاحیت و رتبه‌بندی تامین‌کنندگان مواد شیمیایی و کاتالیست‌ها</span>
+<span class="font-body-sm text-outline text-[12px] line-clamp-1">انطباق بند ۸.۴ استاندارد ISO 9001 و کنترل زنجیره تامین مواد حساس فرآیندی</span>
+</div>
+</td>
+<td class="py-3 px-3 text-center"><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E6F5F1] text-success-iso font-label-md text-label-md font-bold"><span class="w-1.5 h-1.5 rounded-full bg-success-iso"></span>معتبر</span></td>
+<td class="py-3 px-3 font-medium text-primary">مدیریت بازرگانی</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-md">واحد متانول</span>
+</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-outline">۱۴۰۲/۰۱/۱۵</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-primary font-semibold">۱۴۰۳/۰۶/۱۱</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-success-iso font-semibold">۱۴۰۴/۰۶/۱۱</td>
+<td class="py-3 px-3 text-center">
+<button class="btn-doc-detail w-8 h-8 rounded-full hover:bg-surface-container text-secondary flex items-center justify-center transition-colors mx-auto" title="مشاهده گردش کار و تاریخچه نگارش" type="button">
+<span class="material-symbols-outlined text-[18px]">info</span>
+</button>
+</td>
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="w-7 h-7 rounded hover:bg-surface-container text-critical-hse flex items-center justify-center transition-colors" title="دریافت نسخه PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="w-7 h-7 rounded hover:bg-surface-container text-secondary flex items-center justify-center transition-colors" title="دریافت فایل پیوست Word" type="button">
+<span class="material-symbols-outlined text-[18px]">download_for_offline</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 9: Manual IMS Core -->
+<tr class="hover:bg-surface-container-low transition-colors group doc-row" data-mgmt="مدیریت تضمین کیفیت و IMS" data-status="approved" data-type="نظام‌نامه" data-unit="آزمایشگاه مرکزی">
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+<span class="font-label-code text-label-code text-outline">۹</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1 font-label-code text-label-code font-bold text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>MAN-IMS-003</span>
+</div>
+<span class="font-label-code text-[11px] text-outline mr-2.5">Rev: 07</span>
+</td>
+<td class="py-3 px-3 font-medium text-primary">
+                نظام‌نامه
+              </td>
+<td class="py-3 px-3">
+<div class="flex flex-col">
+<span class="font-title-md text-body-md font-semibold text-primary">نظام‌نامه جامع مدیریت انرژی پتروشیمی آپادانا بر اساس استاندارد ISO 50001:2018</span>
+<span class="font-body-sm text-outline text-[12px] line-clamp-1">تعیین خط مبنای انرژی (EnB)، شاخص‌های کلیدی عملکرد EnPIs و نقشه‌های مصارف بار حرارتی بویلرها</span>
+</div>
+</td>
+<td class="py-3 px-3 text-center"><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#E6F5F1] text-success-iso font-label-md text-label-md font-bold"><span class="w-1.5 h-1.5 rounded-full bg-success-iso"></span>معتبر</span></td>
+<td class="py-3 px-3 font-medium text-primary">مدیریت تضمین کیفیت و IMS</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-md">واحد یوتیلیتی</span>
+</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-outline">۱۴۰۱/۰۹/۰۱</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-primary font-semibold">۱۴۰۳/۰۴/۱۸</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-success-iso font-semibold">۱۴۰۴/۰۴/۱۸</td>
+<td class="py-3 px-3 text-center">
+<button class="btn-doc-detail w-8 h-8 rounded-full hover:bg-surface-container text-secondary flex items-center justify-center transition-colors mx-auto" title="مشاهده گردش کار و تاریخچه نگارش" type="button">
+<span class="material-symbols-outlined text-[18px]">info</span>
+</button>
+</td>
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="w-7 h-7 rounded hover:bg-surface-container text-critical-hse flex items-center justify-center transition-colors" title="دریافت نسخه PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="w-7 h-7 rounded hover:bg-surface-container text-secondary flex items-center justify-center transition-colors" title="دریافت پیوست Word" type="button">
+<span class="material-symbols-outlined text-[18px]">download_for_offline</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 10: Pending MOC Document -->
+<tr class="hover:bg-surface-container-low transition-colors group doc-row bg-[#FEF3C7]/20" data-mgmt="مدیریت فنی و مهندسی" data-status="pending" data-type="روش اجرایی" data-unit="واحد الفین">
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1.5">
+<input class="row-checkbox w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox">
+<span class="font-label-code text-label-code text-outline">۱۰</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-1 font-label-code text-label-code font-bold text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-warning-capa"></span>
+<span>SOP-ENG-033</span>
+</div>
+<span class="font-label-code text-[11px] text-outline mr-2.5">Rev: 03 (Pending)</span>
+</td>
+<td class="py-3 px-3 font-medium text-primary">
+                روش اجرایی
+              </td>
+<td class="py-3 px-3">
+<div class="flex flex-col">
+<span class="font-title-md text-body-md font-semibold text-primary">فرآیند ارزیابی ریسک در مدیریت تغییرات تکنولوژی و تجهیزات (MOC)</span>
+<span class="font-body-sm text-outline text-[12px] line-clamp-1">تکمیل متدولوژی HAZOP و چک‌لیست‌های پیش‌راه‌اندازی PSSR برای پروژه‌های اصلاح خطوط فرآیندی</span>
+</div>
+</td>
+<td class="py-3 px-3 text-center">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FEF3C7] text-warning-capa font-label-md text-label-md font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-warning-capa"></span>
+                  در انتظار تأیید
+                </span>
+</td>
+<td class="py-3 px-3 font-medium text-primary">مدیریت فنی و مهندسی</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-md">واحد الفین</span>
+</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-outline">۱۴۰۳/۰۷/۱۰</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-primary font-semibold">۱۴۰۳/۰۸/۱۵</td>
+<td class="py-3 px-3 font-label-code text-[12px] text-warning-capa font-semibold">۱۴۰۳/۰۹/۱۵</td>
+<td class="py-3 px-3 text-center">
+<button class="btn-doc-detail w-8 h-8 rounded-full hover:bg-surface-container text-secondary flex items-center justify-center transition-colors mx-auto" title="مشاهده گردش کار و تاریخچه نگارش" type="button">
+<span class="material-symbols-outlined text-[18px]">info</span>
+</button>
+</td>
+<td class="py-3 px-3 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="w-7 h-7 rounded hover:bg-surface-container text-critical-hse flex items-center justify-center transition-colors" title="پیش‌نویس PDF" type="button">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+</button>
+<button class="w-7 h-7 rounded hover:bg-surface-container text-secondary flex items-center justify-center transition-colors" title="دریافت فایل ویرایش" type="button">
+<span class="material-symbols-outlined text-[18px]">draft</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Footer & Advanced Pagination Controls -->
+<div class="p-space-md border-t border-hairline bg-surface-card flex flex-col md:flex-row items-center justify-between gap-space-md">
+<!-- Right: Current Count Indicator -->
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+
+<span>نمایش</span>
+<span class="font-bold text-primary font-label-code" id="page-count-start">۱</span>
+<span>تا</span>
+<span class="font-bold text-primary font-label-code" id="page-count-end">10</span>
+<span>از کل</span>
+<span class="font-bold text-primary font-label-code">۱,۴۲۰</span>
+<span>سند ثبت شده</span>
+</div>
+<!-- Middle: Page Size Selector -->
+<div class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant">
+<label class="whitespace-nowrap" for="select-page-size">تعداد در هر صفحه:</label>
+<select class="h-8 px-2.5 bg-surface-container-low rounded-lg text-primary font-label-code text-label-code border-hairline focus:ring-1 focus:ring-secondary focus:outline-none cursor-pointer" id="select-page-size">
+<option selected="" value="10">۱۰ ردیف</option>
+<option value="20">۲۰ ردیف</option>
+<option value="50">۵۰ ردیف</option>
+<option value="100">۱۰۰ ردیف</option>
+</select>
+</div>
+<!-- Left: Pagination Buttons & Quick Jump -->
+<div class="flex items-center gap-1.5">
+<!-- First Page -->
+<button class="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container text-primary flex items-center justify-center transition-colors disabled:opacity-40" disabled="" title="صفحه اول" type="button">
+<span class="material-symbols-outlined text-[18px]">keyboard_double_arrow_right</span>
+</button>
+<!-- Previous Page -->
+<button class="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container text-primary flex items-center justify-center transition-colors disabled:opacity-40" disabled="" title="صفحه قبلی" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+<!-- Numeric Pages -->
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-lg bg-primary text-white font-label-code text-label-code font-bold flex items-center justify-center shadow-sm" type="button">
+              ۱
+            </button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container text-primary font-label-code text-label-code flex items-center justify-center transition-colors" type="button">
+              ۲
+            </button>
+<button class="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container text-primary font-label-code text-label-code flex items-center justify-center transition-colors" type="button">
+              ۳
+            </button>
+<span class="text-outline px-1">...</span>
+<button class="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container text-primary font-label-code text-label-code flex items-center justify-center transition-colors" type="button">
+              ۱۴۲
+            </button>
+</div>
+<!-- Next Page -->
+<button class="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container text-primary flex items-center justify-center transition-colors" title="صفحه بعدی" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<!-- Last Page -->
+<button class="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container text-primary flex items-center justify-center transition-colors" title="صفحه آخر" type="button">
+<span class="material-symbols-outlined text-[18px]">keyboard_double_arrow_left</span>
+</button>
+<!-- Quick Jump Form -->
+<div class="hidden xl:flex items-center gap-1 mr-2 pr-2 border-r border-hairline font-body-sm text-outline">
+<span>برو به:</span>
+<input class="w-12 h-8 px-1 text-center font-label-code text-label-code text-primary bg-surface-container-low rounded focus:outline-none focus:ring-1 focus:ring-secondary" max="142" min="1" type="number" value="1">
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Document Detail & Approval Workflow Modal (Drawer) -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-200 opacity-0 hidden" id="modal-doc-detail">
+<div class="bg-surface-card rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col p-space-lg text-right transform transition-transform duration-200 scale-95" id="modal-content-box">
+<!-- Modal Header -->
+<div class="flex items-center justify-between pb-space-md border-b border-hairline">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-xl bg-secondary text-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[22px]">history_edu</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-primary font-bold">شناسنامه و تاریخچه گردش کار سند</span>
+<span class="font-label-code text-label-code px-2 py-0.5 rounded bg-primary-fixed text-primary font-bold">SOP-PRC-042</span>
+</div>
+<span class="font-body-sm text-outline">سیستم مدیریت ایمنی فرآیند (PSM) - پتروشیمی آپادانا</span>
+</div>
+</div>
+<button class="w-9 h-9 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface-variant flex items-center justify-center transition-colors" id="btn-close-modal" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Modal Body -->
+<div class="py-space-md flex flex-col gap-space-md font-body-md text-body-md text-on-surface">
+<!-- Quick Meta grid -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-sm bg-surface-container-low p-space-md rounded-xl">
+<div class="flex flex-col">
+<span class="font-label-md text-outline">کد مدرک:</span>
+<span class="font-label-code font-bold text-primary">SOP-PRC-042</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-outline">نگارش فعلی:</span>
+<span class="font-label-code font-bold text-secondary">Rev: 04</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-outline">تاریخ تصویب اولیه:</span>
+<span class="font-label-code font-bold text-primary">۱۴۰۱/۰۲/۱۵</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-outline">سطح محرمانگی:</span>
+<span class="font-label-md font-bold text-critical-hse">محرمانه - داخلی مجتمع</span>
+</div>
+</div>
+<!-- Document Signoff / Approval Chain -->
+<div class="flex flex-col gap-2">
+<h4 class="font-title-md text-title-md text-primary font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-success-iso text-[18px]">verified_user</span>
+            چرخه توشیح و امضاکنندگان قانونی (الکترونیکی)
+          </h4>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm mt-1">
+<div class="p-space-sm bg-white rounded-lg border-hairline flex flex-col gap-1">
+<span class="font-label-md text-outline">تهیه‌کننده (کارشناس فرآیند):</span>
+<span class="font-bold text-primary">مهندس علیرضا سلیمانی</span>
+<span class="font-label-code text-[11px] text-success-iso flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">check_circle</span> امضا شده: ۱۴۰۳/۰۴/۰۲
+              </span>
+</div>
+<div class="p-space-sm bg-white rounded-lg border-hairline flex flex-col gap-1" style="border: 2px solid rgb(22, 132, 107);">
+<span class="font-label-md text-outline">بررسی‌کننده (رئیس واحد متانول):</span>
+<span class="font-bold text-primary">مهندس بابک رستمی</span>
+<span class="font-label-code text-[11px] text-success-iso flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">check_circle</span> امضا شده: ۱۴۰۳/۰۴/۰۶
+              </span>
+</div>
+<div class="p-space-sm bg-white rounded-lg border-hairline flex flex-col gap-1" style="border: 2px solid rgb(217, 119, 6);">
+<span class="font-label-md text-outline">تصویب‌کننده نهایی (مدیر مجتمع):</span>
+<span class="font-bold text-primary">دکتر سید حمید حسینی</span>
+<span class="font-label-code text-[11px] text-success-iso flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">check_circle</span> ابلاغ شده: ۱۴۰۳/۰۴/۱۰
+              </span>
+</div>
+</div>
+</div>
+<!-- Revision History Timeline -->
+<div class="flex flex-col gap-2">
+<h4 class="font-title-md text-title-md text-primary font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[18px]">timeline</span>
+            سوابق تغییرات و نسخه‌ها (Revision History)
+          </h4>
+<div class="flex flex-col gap-2 mt-1">
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-start gap-space-sm">
+<span class="px-2 py-0.5 rounded bg-success-iso text-white font-label-code text-[11px] font-bold">Rev 04</span>
+<div class="flex-1 flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">اصلاح سناریوی افت فشار کمپرسور گاز بازیافتی</span>
+<span class="font-label-code text-[11px] text-outline">۱۴۰۳/۰۴/۱۰</span>
+</div>
+<p class="font-body-sm text-outline mt-0.5">افزودن لاجیک بستن خودکار شیر اضطراری XV-204 طبق اقدام اصلاحی CAPA-1403-12</p>
+</div>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-low flex items-start gap-space-sm opacity-75">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest text-primary font-label-code text-[11px] font-bold">Rev 03</span>
+<div class="flex-1 flex flex-col">
+<div class="flex items-center justify-between">
+<span class="font-bold text-primary">بازبینی سالانه دوره‌ای</span>
+<span class="font-label-code text-[11px] text-outline">۱۴۰۲/۰۳/۱۵</span>
+</div>
+<p class="font-body-sm text-outline mt-0.5">بدون تغییر در مراحل اجرایی، تمدید اعتبار بدون تغییر فرآیند</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="pt-space-md border-t border-hairline flex items-center justify-between">
+<div class="flex items-center gap-2">
+<button class="px-space-md py-2 rounded-full bg-secondary text-white font-label-md text-label-md hover:bg-primary transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">print</span>
+<span>چاپ شناسنامه مدرک</span>
+</button>
+</div>
+<button class="px-space-lg py-2 rounded-full bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md transition-colors" id="btn-close-modal-bottom" type="button">
+          بستن پنجره
+        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Client-side Scripting -->
+<script>
+  (function () {
+    // 1. Sidebar Active State Enforcement
+    const docControlAccordion = document.querySelector('.menu-accordion');
+    if (docControlAccordion) {
+      const content = docControlAccordion.querySelector('.accordion-content');
+      const chevron = docControlAccordion.querySelector('.chevron-icon');
+      if (content) {
+        content.classList.remove('hidden');
+        if (chevron) chevron.classList.add('-rotate-90');
+        const docListLink = Array.from(content.querySelectorAll('a')).find(function (a) {
+          return a.textContent.includes('فهرست مستندات');
+        });
+        if (docListLink) {
+          docListLink.classList.remove('text-on-surface-variant');
+          docListLink.classList.add('bg-[#142C43]', 'text-white', 'font-semibold', 'shadow-sm');
+        }
+      }
+    }
+
+    // 2. Row Selection & Batch Export Activation
+    const checkAll = document.getElementById('check-all-rows');
+    const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+    const btnExportSelected = document.getElementById('btn-export-selected');
+    const selectedBadgeCount = document.getElementById('selected-badge-count');
+
+    function updateSelectionStatus() {
+      const selected = Array.from(rowCheckboxes).filter(function (cb) {
+        return cb.checked;
+      });
+      const count = selected.length;
+      if (selectedBadgeCount) selectedBadgeCount.textContent = count;
+
+      if (count > 0) {
+        btnExportSelected.removeAttribute('disabled');
+        btnExportSelected.classList.remove('opacity-50', 'cursor-not-allowed');
+      } else {
+        btnExportSelected.setAttribute('disabled', 'true');
+        btnExportSelected.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+
+      // Sync master checkbox state
+      if (checkAll) {
+        if (count === 0) {
+          checkAll.checked = false;
+          checkAll.indeterminate = false;
+        } else if (count === rowCheckboxes.length) {
+          checkAll.checked = true;
+          checkAll.indeterminate = false;
+        } else {
+          checkAll.checked = false;
+          checkAll.indeterminate = true;
+        }
+      }
+    }
+
+    if (checkAll) {
+      checkAll.addEventListener('change', function () {
+        rowCheckboxes.forEach(function (cb) {
+          cb.checked = checkAll.checked;
+          const tr = cb.closest('tr');
+          if (tr) {
+            if (checkAll.checked) {
+              tr.classList.add('bg-primary-fixed/20');
+            } else {
+              tr.classList.remove('bg-primary-fixed/20');
+            }
+          }
+        });
+        updateSelectionStatus();
+      });
+    }
+
+    rowCheckboxes.forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        const tr = cb.closest('tr');
+        if (tr) {
+          if (cb.checked) {
+            tr.classList.add('bg-primary-fixed/20');
+          } else {
+            tr.classList.remove('bg-primary-fixed/20');
+          }
+        }
+        updateSelectionStatus();
+      });
+    });
+
+    // 3. Client Filter Logic (Code, Title, Type, Status, Management, Unit)
+    const filterDocCode = document.getElementById('filter-doc-code');
+    const filterDocType = document.getElementById('filter-doc-type');
+    const filterDocTitle = document.getElementById('filter-doc-title');
+    const filterDocStatus = document.getElementById('filter-doc-status');
+    const filterDocMgmt = document.getElementById('filter-doc-management');
+    const filterDocUnit = document.getElementById('filter-doc-unit');
+    const btnClearFilters = document.getElementById('btn-clear-column-filters');
+    const btnResetAll = document.getElementById('btn-reset-filters');
+    const tableRows = document.querySelectorAll('#table-body-rows tr');
+
+    function applyFilters() {
+      const codeQuery = (filterDocCode ? filterDocCode.value : '').trim().toLowerCase();
+      const typeQuery = (filterDocType ? filterDocType.value : '').trim();
+      const titleQuery = (filterDocTitle ? filterDocTitle.value : '').trim().toLowerCase();
+      const statusQuery = (filterDocStatus ? filterDocStatus.value : '').trim();
+      const mgmtQuery = (filterDocMgmt ? filterDocMgmt.value : '').trim();
+      const unitQuery = (filterDocUnit ? filterDocUnit.value : '').trim();
+
+      let visibleCount = 0;
+
+      tableRows.forEach(function (row) {
+        const rowText = row.innerText.toLowerCase();
+        const rowStatus = row.getAttribute('data-status') || '';
+        const rowType = row.getAttribute('data-type') || '';
+        const rowMgmt = row.getAttribute('data-mgmt') || '';
+        const rowUnit = row.getAttribute('data-unit') || '';
+
+        const matchesCode = !codeQuery || rowText.includes(codeQuery);
+        const matchesType = !typeQuery || rowType.includes(typeQuery);
+        const matchesTitle = !titleQuery || rowText.includes(titleQuery);
+        const matchesStatus = !statusQuery || rowStatus === statusQuery;
+        const matchesMgmt = !mgmtQuery || rowMgmt.includes(mgmtQuery);
+        const matchesUnit = !unitQuery || rowUnit.includes(unitQuery);
+
+        if (matchesCode && matchesType && matchesTitle && matchesStatus && matchesMgmt && matchesUnit) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      const pageStart = document.getElementById('page-count-start');
+      const pageEnd = document.getElementById('page-count-end');
+      if (pageStart && pageEnd) {
+        pageStart.textContent = visibleCount > 0 ? '۱' : '۰';
+        pageEnd.textContent = visibleCount.toString();
+      }
+    }
+
+    [filterDocCode, filterDocTitle].forEach(function (input) {
+      if (input) input.addEventListener('input', applyFilters);
+    });
+
+    [filterDocType, filterDocStatus, filterDocMgmt, filterDocUnit].forEach(function (select) {
+      if (select) select.addEventListener('change', applyFilters);
+    });
+
+    function resetAllFilters() {
+      if (filterDocCode) filterDocCode.value = '';
+      if (filterDocType) filterDocType.value = '';
+      if (filterDocTitle) filterDocTitle.value = '';
+      if (filterDocStatus) filterDocStatus.value = '';
+      if (filterDocMgmt) filterDocMgmt.value = '';
+      if (filterDocUnit) filterDocUnit.value = '';
+      const reg = document.getElementById('filter-reg-date');
+      const rev = document.getElementById('filter-rev-date');
+      const exp = document.getElementById('filter-exp-date');
+      if (reg) reg.value = '';
+      if (rev) rev.value = '';
+      if (exp) exp.value = '';
+
+      // Reset Quick Tags
+      document.querySelectorAll('.quick-filter-tag').forEach(function (tag, index) {
+        if (index === 0) {
+          tag.classList.remove('bg-surface-container', 'text-on-surface-variant');
+          tag.classList.add('bg-primary', 'text-white');
+        } else {
+          tag.classList.remove('bg-primary', 'text-white');
+          tag.classList.add('bg-surface-container', 'text-on-surface-variant');
+        }
+      });
+
+      applyFilters();
+    }
+
+    if (btnClearFilters) btnClearFilters.addEventListener('click', resetAllFilters);
+    if (btnResetAll) btnResetAll.addEventListener('click', resetAllFilters);
+
+    // 4. Quick Filter Tags
+    const quickTags = document.querySelectorAll('.quick-filter-tag');
+    quickTags.forEach(function (tag) {
+      tag.addEventListener('click', function () {
+        quickTags.forEach(function (t) {
+          t.classList.remove('bg-primary', 'text-white');
+          t.classList.add('bg-surface-container', 'text-on-surface-variant');
+        });
+        tag.classList.remove('bg-surface-container', 'text-on-surface-variant');
+        tag.classList.add('bg-primary', 'text-white');
+
+        const statusAttr = tag.getAttribute('data-status');
+        if (filterDocStatus) {
+          if (statusAttr === 'all') {
+            filterDocStatus.value = '';
+          } else if (statusAttr === 'approved') {
+            filterDocStatus.value = 'approved';
+          } else if (statusAttr === 'pending') {
+            filterDocStatus.value = 'pending';
+          } else if (statusAttr === 'urgent-expiring') {
+            filterDocStatus.value = '';
+            if (filterDocCode) filterDocCode.value = '';
+          }
+          applyFilters();
+        }
+      });
+    });
+
+    // 5. Document History Modal Trigger
+    const modal = document.getElementById('modal-doc-detail');
+    const modalContent = document.getElementById('modal-content-box');
+    const detailButtons = document.querySelectorAll('.btn-doc-detail');
+    const btnCloseModal = document.getElementById('btn-close-modal');
+    const btnCloseModalBottom = document.getElementById('btn-close-modal-bottom');
+
+    function openModal() {
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      setTimeout(function () {
+        modal.classList.remove('opacity-0');
+        if (modalContent) {
+          modalContent.classList.remove('scale-95');
+          modalContent.classList.add('scale-100');
+        }
+      }, 10);
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.add('opacity-0');
+      if (modalContent) {
+        modalContent.classList.remove('scale-100');
+        modalContent.classList.add('scale-95');
+      }
+      setTimeout(function () {
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    detailButtons.forEach(function (btn) {
+      btn.addEventListener('click', openModal);
+    });
+
+    if (btnCloseModal) btnCloseModal.addEventListener('click', closeModal);
+    if (btnCloseModalBottom) btnCloseModalBottom.addEventListener('click', closeModal);
+
+    if (modal) {
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal();
+      });
+    }
+
+    // 6. Action buttons toast feedback (Mock Download / Exports)
+    const exportBtns = [
+      document.getElementById('btn-export-excel'),
+      document.getElementById('btn-export-pdf'),
+      document.getElementById('btn-export-selected')
+    ];
+
+    exportBtns.forEach(function (btn) {
+      if (btn) {
+        btn.addEventListener('click', function () {
+          const originalText = btn.innerHTML;
+          btn.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span><span>در حال ساخت فایل...</span>';
+          setTimeout(function () {
+            btn.innerHTML = originalText;
+          }, 1000);
+        });
+      }
+    });
+  })();
+</script></main><footer class="w-full bg-white border-t border-slate-200 py-space-md px-space-lg flex flex-col sm:flex-row items-center justify-between text-outline gap-space-sm"><div class="flex items-center gap-space-xs font-body-sm text-body-sm"><span class="material-symbols-outlined text-[18px] text-[#16846B]">verified_user</span><span>سامانه جامع مدیریت یکپارچه پتروشیمی آپادانا خلیج فارس (سهامی عام)</span></div><div class="flex items-center gap-space-md font-label-md text-label-md"><span class="font-label-code text-label-code text-[#142C43] font-medium">IMS Version 3.4.0</span><span class="text-outline-variant">|</span><span>کلیه حقوق مادی و معنوی محفوظ است ۱۴۰۳ ©</span></div></footer></div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Accordion toggle handler for the 14-item navigation menu
+  const accordions = document.querySelectorAll('.menu-accordion');
+  accordions.forEach(function (accordion) {
+    const trigger = accordion.querySelector('.accordion-trigger');
+    const content = accordion.querySelector('.accordion-content');
+    const chevron = accordion.querySelector('.chevron-icon');
+
+    if (trigger && content) {
+      trigger.addEventListener('click', function () {
+        const isHidden = content.classList.contains('hidden');
+        if (isHidden) {
+          content.classList.remove('hidden');
+          if (chevron) {
+            chevron.classList.add('-rotate-90');
+          }
+        } else {
+          content.classList.add('hidden');
+          if (chevron) {
+            chevron.classList.remove('-rotate-90');
+          }
+        }
+      });
+    }
+  });
+
+  // Notifications Dropdown Logic
+  const triggerBtn = document.getElementById('notifications-trigger-btn');
+  const dropdownMenu = document.getElementById('notifications-dropdown-menu');
+  const wrapper = document.getElementById('notifications-wrapper');
+
+  if (!triggerBtn || !dropdownMenu) return;
+
+  function openDropdown() {
+    dropdownMenu.classList.remove('hidden');
+    void dropdownMenu.offsetWidth;
+    dropdownMenu.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+    dropdownMenu.classList.add('opacity-100', 'scale-100');
+    triggerBtn.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeDropdown() {
+    dropdownMenu.classList.remove('opacity-100', 'scale-100');
+    dropdownMenu.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+    triggerBtn.setAttribute('aria-expanded', 'false');
+    setTimeout(function () {
+      if (triggerBtn.getAttribute('aria-expanded') === 'false') {
+        dropdownMenu.classList.add('hidden');
+      }
+    }, 200);
+  }
+
+  function toggleDropdown() {
+    const isExpanded = triggerBtn.getAttribute('aria-expanded') === 'true';
+    if (isExpanded) {
+      closeDropdown();
+    } else {
+      openDropdown();
+    }
+  }
+
+  triggerBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    toggleDropdown();
+  });
+
+  // Click outside to close
+  document.addEventListener('click', function (e) {
+    if (wrapper && !wrapper.contains(e.target)) {
+      if (triggerBtn.getAttribute('aria-expanded') === 'true') {
+        closeDropdown();
+      }
+    }
+  });
+
+  // Close with Esc key
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && triggerBtn.getAttribute('aria-expanded') === 'true') {
+      closeDropdown();
+    }
+  });
+});
+</script>
+<script>(function(){const profileTrigger=document.getElementById('profile-trigger-btn');const profileDropdown=document.getElementById('profile-dropdown-menu');const profileWrapper=document.getElementById('profile-wrapper');const profileChevron=document.getElementById('profile-chevron');if(!profileTrigger||!profileDropdown)return;function openProfileDropdown(){profileDropdown.classList.remove('hidden');void profileDropdown.offsetWidth;profileDropdown.classList.remove('opacity-0','scale-95','pointer-events-none');profileDropdown.classList.add('opacity-100','scale-100');if(profileChevron)profileChevron.classList.add('rotate-180');profileTrigger.setAttribute('aria-expanded','true');}function closeProfileDropdown(){profileDropdown.classList.remove('opacity-100','scale-100');profileDropdown.classList.add('opacity-0','scale-95','pointer-events-none');if(profileChevron)profileChevron.classList.remove('rotate-180');profileTrigger.setAttribute('aria-expanded','false');setTimeout(function(){if(profileTrigger.getAttribute('aria-expanded')==='false'){profileDropdown.classList.add('hidden');}},200);}function toggleProfileDropdown(){const isExpanded=profileTrigger.getAttribute('aria-expanded')==='true';if(isExpanded){closeProfileDropdown();}else{openProfileDropdown();}}profileTrigger.addEventListener('click',function(e){e.stopPropagation();toggleProfileDropdown();});document.addEventListener('click',function(e){if(profileWrapper&&!profileWrapper.contains(e.target)){if(profileTrigger.getAttribute('aria-expanded')==='true'){closeProfileDropdown();}}});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&profileTrigger.getAttribute('aria-expanded')==='true'){closeProfileDropdown();}});})();</script>
+
+
+
+</body></html>

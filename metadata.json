@@ -1,0 +1,6 @@
+{
+  "name": "سامانه جامع مدیریت یکپارچه پتروشیمی آپادانا (A-IMS)",
+  "description": "سامانه جامع مدیریت یکپارچه پتروشیمی آپادانا خلیج فارس (A-IMS) برای پایش بلادرنگ ممیزی، کنترل مدارک مهندسی EDMS، مدیریت ریسک، CAPA و استانداردهای ISO.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
