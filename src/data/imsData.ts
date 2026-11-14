@@ -1,4 +1,5 @@
 import {
+  AccessLevelDefinition,
   AuditTrailEntry,
   CapaItem,
   DistributionMatrixRow,
@@ -6,6 +7,7 @@ import {
   NotificationItem,
   ObsoleteDocRecord,
   OperationalModuleConfig,
+  OrgAccessAssignment,
   RbacGroupDef,
   RbacPermissionDef,
   RevisionItem,
@@ -35,6 +37,89 @@ export function exportToCsv(filename: string, headers: string[], rows: (string |
   const link = document.createElement('a');
   link.href = url;
   link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+export function exportToExcel(
+  filename: string,
+  sheetName: string,
+  headers: string[],
+  rows: (string | number)[][]
+) {
+  const escXml = (val: string | number) =>
+    String(val ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+  const safeSheet = escXml(sheetName).slice(0, 31) || 'Sheet1';
+  const headerCells = headers
+    .map((h) => `<Cell ss:StyleID="hdr"><Data ss:Type="String">${escXml(h)}</Data></Cell>`)
+    .join('');
+
+  const dataRows = rows
+    .map(
+      (r) =>
+        `<Row>${r
+          .map((cell) => {
+            const isNum = typeof cell === 'number' && Number.isFinite(cell);
+            return `<Cell ss:StyleID="cell"><Data ss:Type="${isNum ? 'Number' : 'String'}">${escXml(cell)}</Data></Cell>`;
+          })
+          .join('')}</Row>`
+    )
+    .join('');
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Styles>
+    <Style ss:ID="Default" ss:Name="Normal">
+      <Alignment ss:Horizontal="Right" ss:Vertical="Center"/>
+      <Font ss:FontName="Tahoma" ss:Size="10" ss:Color="#142C43"/>
+    </Style>
+    <Style ss:ID="hdr">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+      <Font ss:FontName="Tahoma" ss:Size="10" ss:Bold="1" ss:Color="#FFFFFF"/>
+      <Interior ss:Color="#142C43" ss:Pattern="Solid"/>
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>
+        <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>
+        <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>
+        <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CBD5E1"/>
+      </Borders>
+    </Style>
+    <Style ss:ID="cell">
+      <Alignment ss:Horizontal="Right" ss:Vertical="Center" ss:WrapText="1"/>
+      <Font ss:FontName="Tahoma" ss:Size="10" ss:Color="#1E293B"/>
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>
+        <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>
+        <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>
+        <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#E2E8F0"/>
+      </Borders>
+    </Style>
+  </Styles>
+  <Worksheet ss:Name="${safeSheet}" ss:RightToLeft="1">
+    <Table>
+      <Row ss:Height="26">${headerCells}</Row>
+      ${dataRows}
+    </Table>
+  </Worksheet>
+</Workbook>`;
+
+  const blob = new Blob(['\uFEFF' + xml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename.endsWith('.xls') ? filename : `${filename}.xls`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -196,9 +281,9 @@ export const INITIAL_DOCUMENTS: ImsDocument[] = [
     status: 'نیازمند بازنگری',
     management: 'مدیریت کنترل کیفیت',
     unit: 'آزمایشگاه مرکزی',
-    registeredAt: '۱۴۰۱/۰۹/۰۲',
-    reviewAt: '۱۴۰۳/۰۹/۰۲',
-    expiresAt: '۱۴۰۳/۰۹/۲۰',
+    registeredAt: '۱۴۰۱/۰۸/۰۵',
+    reviewAt: '۱۴۰۳/۰۸/۰۵',
+    expiresAt: '۱۴۰۳/۰۸/۰۵',
     confidentiality: 'داخلی (C2)',
     isoStandards: ['ISO 9001:2015', 'ISO/IEC 17025'],
     owner: 'دکتر آرش پارسا',
@@ -302,6 +387,7 @@ export const INITIAL_REVISIONS: RevisionItem[] = [
     newHighlight: 'به‌صورت آنلاین با سنسور مادون قرمز (IR) با ثبت دائم در سیستم SCADA و سنجش پرتابل در هر شیفت کاری (هر ۴ ساعت)',
     newTextSuffix: 'الزامی است.',
     newNote: 'الزام جدید: صدور پروانه الکترونیکی کار گرم مطابق فرآیند یکپارچه IMS به همراه تست گاز لحظه‌ای الصاق گردد.',
+    changeSummary: 'بازنگری کلی فصل‌های ایمنی اتمسفر انفجاری، جایگزینی پایش دستی گاز متان با سیستم آنلاین مادون قرمز (IR) متصل به SCADA، به‌روزرسانی چک‌لیست تست گاز در پروانه کار گرم و اصلاح نمودار توالی راه‌اندازی مشعل‌های ۱ و ۲.',
   },
   {
     id: 'rev-2',
@@ -327,6 +413,7 @@ export const INITIAL_REVISIONS: RevisionItem[] = [
     newHighlight: '۶۰۰ مترمکعب بر ساعت با کنترل خودکار از اتاق کنترل DCS و قفل ایمنی فشار برگشتی',
     newTextSuffix: 'تنظیم می‌گردد.',
     newNote: 'پیوست چک‌لیست تست سیستم قطع اضطراری (Marine ESD) پیش از اتصال فلنج الزامی شد.',
+    changeSummary: 'اصلاح کامل فرآیند بارگیری و نمونه‌گیری متانول صادراتی در اسکله پس از نصب بازوی لودینگ جدید، به‌روزرسانی حداکثر دبی مجاز فاز آغازین، و الحاق دستورالعمل تست و قفل ایمنی سیستم قطع اضطراری (Marine ESD).',
   },
   {
     id: 'rev-3',
@@ -352,6 +439,7 @@ export const INITIAL_REVISIONS: RevisionItem[] = [
     newHighlight: 'R² ≥ 0.9990 به صورت هفتگی و پیش از هر سری آنالیز محموله صادراتی',
     newTextSuffix: 'کنترل و ثبت شود.',
     newNote: 'بند اقدام اصلاحی CAPA-89: ثبت خودکار عدم قطعیت اندازه‌گیری در نرم‌افزار LIMS مجتمع.',
+    changeSummary: 'بازنگری جامع دستور کار کالیبراسیون کروماتوگرافی گازی (GC) مطابق ممیزی ISO/IEC 17025، تشدید معیار همبستگی منحنی کالیبراسیون و دوره‌های کنترل هفتگی، و افزودن رویه ثبت خودکار عدم قطعیت در LIMS.',
   },
   {
     id: 'rev-4',
@@ -377,6 +465,7 @@ export const INITIAL_REVISIONS: RevisionItem[] = [
     newHighlight: 'حداکثر ۳۵ میلی‌گرم بر لیتر با پایش پیوسته سنسور TOC خروجی',
     newTextSuffix: 'تعیین می‌شود.',
     newNote: 'انطباق کامل با بخشنامه جدید سازمان حفاظت محیط زیست منطقه ویژه انرژی پارس.',
+    changeSummary: 'به‌روزرسانی برنامه مدیریت پساب صنعتی و بازیافت آب برج خنک‌کننده پس از راه‌اندازی واحد RO جدید، اصلاح حدود مجاز پارامترهای COD و TDS خروجی و افزودن الزام پایش پیوسته سنسور TOC.',
   },
 ];
 
@@ -432,6 +521,7 @@ export const INITIAL_WORKFLOW_DOCS: WorkflowDoc[] = [
       },
     ],
     tabGroup: 'my-inbox',
+    requestType: 'new',
   },
   {
     id: 'wf-2',
@@ -476,6 +566,7 @@ export const INITIAL_WORKFLOW_DOCS: WorkflowDoc[] = [
       },
     ],
     tabGroup: 'my-inbox',
+    requestType: 'revision',
   },
   {
     id: 'wf-3',
@@ -520,6 +611,7 @@ export const INITIAL_WORKFLOW_DOCS: WorkflowDoc[] = [
       },
     ],
     tabGroup: 'my-inbox',
+    requestType: 'revision',
   },
   {
     id: 'wf-4',
@@ -564,6 +656,7 @@ export const INITIAL_WORKFLOW_DOCS: WorkflowDoc[] = [
       },
     ],
     tabGroup: 'referred',
+    requestType: 'revision',
   },
   {
     id: 'wf-5',
@@ -607,6 +700,7 @@ export const INITIAL_WORKFLOW_DOCS: WorkflowDoc[] = [
       },
     ],
     tabGroup: 'approved',
+    requestType: 'revision',
   },
 ];
 
@@ -1903,4 +1997,181 @@ export const INITIAL_USERS: UserAccount[] = [
     ],
   },
 ];
+
+export const INITIAL_ACCESS_LEVELS: AccessLevelDefinition[] = [
+  {
+    id: 'lvl-c1',
+    code: 'C1',
+    name: 'عمومی (Public)',
+    baseTier: 'C1',
+    description: 'دسترسی پایه به خط‌مشی‌ها، دستورالعمل‌های عمومی ایمنی سایت و مستندات همگانی مجتمع برای کلیه پرسنل و پیمانکاران مجاز.',
+    tone: 'tertiary',
+    allowPublicDocs: true,
+    allowControlledPrint: true,
+    requiresMfa: false,
+    isSystemDefault: true,
+  },
+  {
+    id: 'lvl-c2',
+    code: 'C2',
+    name: 'داخلی / سازمانی (Internal)',
+    baseTier: 'C2',
+    description: 'دسترسی استاندارد پرسنل و کارشناسان واحدهای عملیاتی و ستادی به روش‌های اجرایی (SOP) و فرم‌های جاری واحدها.',
+    tone: 'secondary',
+    allowPublicDocs: true,
+    allowControlledPrint: true,
+    requiresMfa: true,
+    isSystemDefault: true,
+  },
+  {
+    id: 'lvl-c3',
+    code: 'C3',
+    name: 'محرمانه فنی (Confidential)',
+    baseTier: 'C3',
+    description: 'محدود به سرپرستان، مهندسان فرآیند، بازرسی فنی و تیم HSE برای اسناد حساس فرآیندی، تغییرات MOC و دستورالعمل‌های بحرانی.',
+    tone: 'warning',
+    allowPublicDocs: true,
+    allowControlledPrint: true,
+    requiresMfa: true,
+    isSystemDefault: true,
+  },
+  {
+    id: 'lvl-c4',
+    code: 'C4',
+    name: 'فوق‌محرمانه راهبری (Top Secret)',
+    baseTier: 'C4',
+    description: 'بالاترین سطح دسترسی ویژه مدیریت عالی، راهبر IMS و حراست؛ شامل نقشه‌های استراتژیک لایسنسور (P&ID) و اسناد محرمانه هیئت‌مدیره.',
+    tone: 'critical',
+    allowPublicDocs: true,
+    allowControlledPrint: false,
+    requiresMfa: true,
+    isSystemDefault: true,
+  },
+];
+
+export const INITIAL_ORG_ACCESS_ASSIGNMENTS: OrgAccessAssignment[] = [
+  // Managements
+  {
+    id: 'org-mgmt-1',
+    entityType: 'management',
+    name: 'مدیریت تضمین کیفیت و IMS',
+    accessLevelId: 'lvl-c4',
+    updatedAt: '۱۴۰۳/۰۸/۲۰',
+    updatedBy: 'مهندس مهران کاظمی',
+  },
+  {
+    id: 'org-mgmt-2',
+    entityType: 'management',
+    name: 'مدیریت بهره‌برداری و تولید',
+    accessLevelId: 'lvl-c3',
+    updatedAt: '۱۴۰۳/۰۸/۲۰',
+    updatedBy: 'مهندس مهران کاظمی',
+  },
+  {
+    id: 'org-mgmt-3',
+    entityType: 'management',
+    name: 'مدیریت HSE و پدافند غیرعامل',
+    accessLevelId: 'lvl-c3',
+    updatedAt: '۱۴۰۳/۰۸/۲۰',
+    updatedBy: 'مهندس مهران کاظمی',
+  },
+  {
+    id: 'org-mgmt-4',
+    entityType: 'management',
+    name: 'مدیریت نت و تعمیرات',
+    accessLevelId: 'lvl-c2',
+    updatedAt: '۱۴۰۳/۰۸/۲۰',
+    updatedBy: 'مهندس مهران کاظمی',
+  },
+  {
+    id: 'org-mgmt-5',
+    entityType: 'management',
+    name: 'هیئت مدیره و مدیریت عامل',
+    accessLevelId: 'lvl-c4',
+    updatedAt: '۱۴۰۳/۰۸/۲۰',
+    updatedBy: 'دکتر بهمن پارسا',
+  },
+  {
+    id: 'org-mgmt-6',
+    entityType: 'management',
+    name: 'مدیریت بازرگانی و تأمین کالا',
+    accessLevelId: 'lvl-c2',
+    updatedAt: '۱۴۰۳/۰۸/۲۰',
+    updatedBy: 'مهندس مهران کاظمی',
+  },
+  {
+    id: 'org-mgmt-7',
+    entityType: 'management',
+    name: 'مدیریت مهندسی و پروژه‌ها',
+    accessLevelId: 'lvl-c3',
+    updatedAt: '۱۴۰۳/۰۸/۲۰',
+    updatedBy: 'مهندس مهران کاظمی',
+  },
+  // Operational & Staff Units
+  ...Object.entries(ORG_UNITS_BY_MANAGEMENT).flatMap(([mgmt, units]) =>
+    units.map((u, idx) => ({
+      id: `org-unit-${mgmt}-${idx}`,
+      entityType: 'unit' as const,
+      name: u,
+      parentName: mgmt,
+      accessLevelId:
+        mgmt.includes('هیئت مدیره') || u.includes('حراست') || u.includes('کنترل اسناد')
+          ? 'lvl-c4'
+          : mgmt.includes('بهره‌برداری') || mgmt.includes('HSE') || mgmt.includes('مهندسی')
+          ? 'lvl-c3'
+          : mgmt.includes('بازرگانی')
+          ? 'lvl-c1'
+          : 'lvl-c2',
+      updatedAt: '۱۴۰۳/۰۸/۲۰',
+      updatedBy: 'مهندس مهران کاظمی',
+    }))
+  ),
+  // Organizations & External Partners
+  {
+    id: 'org-ext-1',
+    entityType: 'organization',
+    name: 'مجتمع پتروشیمی آپادانا خلیج فارس (سازمان اصلی)',
+    parentName: 'شرکت بهره‌بردار اصلی',
+    accessLevelId: 'lvl-c3',
+    updatedAt: '۱۴۰۳/۰۸/۲۴',
+    updatedBy: 'دکتر بهمن پارسا',
+  },
+  {
+    id: 'org-ext-2',
+    entityType: 'organization',
+    name: 'هلدینگ صنایع پتروشیمی خلیج فارس',
+    parentName: 'شرکت مادر / حاکمیتی',
+    accessLevelId: 'lvl-c4',
+    updatedAt: '۱۴۰۳/۰۸/۲۴',
+    updatedBy: 'دکتر بهمن پارسا',
+  },
+  {
+    id: 'org-ext-3',
+    entityType: 'organization',
+    name: 'پیمانکاران تعمیرات اساسی (OR) و نگهداری سایت',
+    parentName: 'سازمان همکار و پیمانکاری',
+    accessLevelId: 'lvl-c1',
+    updatedAt: '۱۴۰۳/۰۸/۲۲',
+    updatedBy: 'مهندس حمید دهداری',
+  },
+  {
+    id: 'org-ext-4',
+    entityType: 'organization',
+    name: 'موسسه ممیزی بین‌المللی SGS / TUV',
+    parentName: 'نهاد صدور گواهینامه ایزو',
+    accessLevelId: 'lvl-c2',
+    updatedAt: '۱۴۰۳/۰۸/۱۹',
+    updatedBy: 'مهندس مهران کاظمی',
+  },
+  {
+    id: 'org-ext-5',
+    entityType: 'organization',
+    name: 'اداره حفاظت محیط زیست و پدافند غیرعامل عسلویه',
+    parentName: 'سازمان نظارتی و قانونی',
+    accessLevelId: 'lvl-c2',
+    updatedAt: '۱۴۰۳/۰۸/۱۸',
+    updatedBy: 'مهندس مهران کاظمی',
+  },
+];
+
 

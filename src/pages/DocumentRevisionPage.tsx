@@ -1,33 +1,220 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { exportToCsv } from '../data/imsData';
-import { AttachedRevisionFile, ImsDocument, RevisionItem, RouteId } from '../types/ims';
+import { AttachedRevisionFile, ImsDocument, RevisionItem, RouteId, UserAccount, WorkflowStageActor } from '../types/ims';
 
 interface DocumentRevisionPageProps {
   documents: ImsDocument[];
   revisions: RevisionItem[];
+  users: UserAccount[];
   onAddRevision: (item: RevisionItem) => void;
   onUpdateRevision: (id: string, patch: Partial<RevisionItem>) => void;
+  onExtendDocument?: (
+    docId: string,
+    nextReviewAt: string,
+    nextExpiresAt: string,
+    years: number,
+    auditNote: string,
+    revisionId?: string
+  ) => void;
   onNavigate: (route: RouteId) => void;
   onNotify: (title: string, message?: string, type?: 'success' | 'info' | 'warning' | 'error') => void;
 }
+
+const CURRENT_JALALI_DATE = '۱۴۰۳/۰۸/۲۴';
+const REVIEW_WINDOW_DAYS = 60;
+
+const ISO_EXTENSION_CRITERIA = [
+  {
+    id: 'no-moc',
+    clause: 'ISO 9001 (6.3) • ISO 45001 (8.1.3)',
+    title: 'عدم تغییر در فرآیند، تجهیزات، مواد یا شرایط عملیاتی (MOC)',
+    detail: 'طی دوره اعتبار گذشته هیچ تغییر مهندسی یا عملیاتی مؤثر بر مفاد این مستند ثبت نشده است.',
+  },
+  {
+    id: 'legal-iso',
+    clause: 'ISO 14001 / 45001 (6.1.3)',
+    title: 'انطباق کامل با آخرین ویرایش استانداردهای ISO و الزامات قانونی',
+    detail: 'کلیه ارجاعات قانونی، زیست‌محیطی، ایمنی و استانداردهای مرجع سند همچنان معتبر و به‌روز هستند.',
+  },
+  {
+    id: 'no-capa',
+    clause: 'ISO 9001 (10.2)',
+    title: 'نبود عدم انطباق باز، ممیزی ردشده یا CAPA مرتبط با مفاد سند',
+    detail: 'در ممیزی‌های داخلی/خارجی و تحلیل حوادث، ناکارآمدی یا مغایرتی در متن فعلی گزارش نشده است.',
+  },
+  {
+    id: 'meta-links',
+    clause: 'ISO 9001 (7.5.3.2)',
+    title: 'صحت مالکیت سازمانی، کدگذاری و ارجاعات بین‌اسنادی',
+    detail: 'واحد متولی، مسئولین تصویب و تمامی فرم‌ها و دستورالعمل‌های پیوست معتبر و بدون لینک منسوخ هستند.',
+  },
+] as const;
+
+const ISO_STANDARD_POLICIES = [
+  {
+    docGroup: 'خط‌مشی‌ها و نظامنامه‌ها (POL / MN)',
+    cycleLabel: 'هر ۳ سال یک‌بار (۳۶ ماه)',
+    defaultYears: 3,
+    clause: 'ISO 9001:2015 بند ۵.۲ و ۹.۳',
+    rule: 'هم‌راستا با بازنگری مدیریت سالانه؛ تمدید فقط با تایید نماینده مدیریت و عدم تغییر خط‌مشی کلان مجتمع.',
+  },
+  {
+    docGroup: 'روش‌های اجرایی و فرآیندها (SOP / PR)',
+    cycleLabel: 'هر ۲ سال یک‌بار (۲۴ ماه)',
+    defaultYears: 2,
+    clause: 'ISO 9001/14001/45001 بند ۷.۵.۳',
+    rule: 'بازبینی کامل انطباق فرآیندی و نبود MOC باز؛ تمدید مشروط به تایید مالک فرآیند و تضمین کیفیت.',
+  },
+  {
+    docGroup: 'دستورالعمل‌های عملیاتی و HSE (WI)',
+    cycleLabel: 'هر ۱ تا ۲ سال (عملیات بحرانی: سالانه)',
+    defaultYears: 2,
+    clause: 'ISO 45001:2018 بند ۶.۱.۲ و ۸.۱.۳',
+    rule: 'دستورالعمل‌های ایمنی/تجهیزات پرخطر هر ۱۲ ماه و عمومی هر ۲۴ ماه؛ هر تغییر فنی مستلزم ویرایش فوری است.',
+  },
+  {
+    docGroup: 'فرم‌ها و سوابق کنترلی (FRM)',
+    cycleLabel: 'هر ۲ سال یا هم‌زمان با SOP بالادست',
+    defaultYears: 2,
+    clause: 'ISO 9001:2015 بند ۷.۵.۳.۲',
+    rule: 'کنترل کاربردی بودن فیلدها، کد فرم و تطابق با فرآیند جاری پیش از تمدید دوره بعدی.',
+  },
+];
+
+const toEnglishDigits = (input: string): string =>
+  input
+    .replace(/[۰-۹]/g, (d) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
+    .replace(/[٠-٩]/g, (d) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+
+const toPersianDigits = (input: string | number): string =>
+  String(input).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[Number(d)]);
+
+const parseJalaliToDays = (dateStr: string): number | null => {
+  const en = toEnglishDigits(dateStr).trim();
+  const match = en.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const monthOffset =
+    month <= 6 ? (month - 1) * 31 : 6 * 31 + (month - 7) * 30;
+  return year * 365 + monthOffset + day;
+};
+
+const addYearsToJalali = (dateStr: string, years: number): string => {
+  const en = toEnglishDigits(dateStr).trim();
+  const match = en.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+  if (!match) return dateStr;
+  const nextYear = Number(match[1]) + years;
+  const month = match[2].padStart(2, '0');
+  const day = match[3].padStart(2, '0');
+  return toPersianDigits(`${nextYear}/${month}/${day}`);
+};
+
+const getDefaultCycleYears = (docTypeCode: string): number => {
+  if (docTypeCode === 'POL' || docTypeCode === 'MN') return 3;
+  return 2;
+};
 
 const parseRevNumber = (version: string): number => {
   const match = version.match(/(\d+)/);
   return match ? Number(match[1]) : 0;
 };
 
+const formatUserActor = (u?: UserAccount): string =>
+  u ? `${u.firstName} ${u.lastName} (${u.roleTitle})` : '';
+
+const CANONICAL_WORKFLOW_STEPS = [
+  'گام ۱: تهیه‌کننده',
+  'گام ۲: تاییدکننده فنی',
+  'گام ۳: تصویب‌کننده انطباق',
+  'گام ۴: تصویب نهایی',
+] as const;
+
+const buildWorkflowFromDocument = (doc: ImsDocument | undefined, users: UserAccount[]): WorkflowStageActor[] => {
+  const chain = doc?.signoffChain || [];
+  const fallbackActors = [
+    doc?.owner || formatUserActor(users[0]) || 'مهندس مهران کاظمی',
+    formatUserActor(users[1] || users[0]) || 'مهندس علی رضوانی',
+    formatUserActor(users[0]) || 'مهندس مهران کاظمی (مدیر تضمین کیفیت و سرممیز IMS)',
+    formatUserActor(users[6] || users[0]) || 'مدیرعامل / مدیر مجتمع',
+  ];
+
+  let actors: [string, string, string, string];
+  if (chain.length >= 4) {
+    actors = [
+      chain[0]?.actor || fallbackActors[0],
+      chain[1]?.actor || fallbackActors[1],
+      chain[2]?.actor || fallbackActors[2],
+      chain[3]?.actor || fallbackActors[3],
+    ];
+  } else if (chain.length === 3) {
+    const thirdRole = chain[2]?.role || '';
+    const isThirdCompliance = thirdRole.includes('انطباق') || thirdRole.includes('IMS');
+    actors = isThirdCompliance
+      ? [
+          chain[0]?.actor || fallbackActors[0],
+          chain[1]?.actor || fallbackActors[1],
+          chain[2]?.actor || fallbackActors[2],
+          fallbackActors[3],
+        ]
+      : [
+          chain[0]?.actor || fallbackActors[0],
+          chain[1]?.actor || fallbackActors[1],
+          fallbackActors[2],
+          chain[2]?.actor || fallbackActors[3],
+        ];
+  } else if (chain.length === 2) {
+    const secondRole = chain[1]?.role || '';
+    const isSecondCompliance = secondRole.includes('انطباق') || secondRole.includes('IMS');
+    actors = isSecondCompliance
+      ? [
+          chain[0]?.actor || fallbackActors[0],
+          fallbackActors[1],
+          chain[1]?.actor || fallbackActors[2],
+          fallbackActors[3],
+        ]
+      : [
+          chain[0]?.actor || fallbackActors[0],
+          fallbackActors[1],
+          fallbackActors[2],
+          chain[1]?.actor || fallbackActors[3],
+        ];
+  } else if (chain.length === 1) {
+    actors = [
+      chain[0]?.actor || fallbackActors[0],
+      fallbackActors[1],
+      fallbackActors[2],
+      fallbackActors[3],
+    ];
+  } else {
+    actors = [fallbackActors[0], fallbackActors[1], fallbackActors[2], fallbackActors[3]];
+  }
+
+  return CANONICAL_WORKFLOW_STEPS.map((step, idx) => ({
+    step,
+    actor: actors[idx],
+    originalActor: actors[idx],
+    replaced: false,
+  }));
+};
+
 export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
   documents,
   revisions,
+  users,
   onAddRevision,
   onUpdateRevision,
+  onExtendDocument,
   onNavigate,
   onNotify,
 }) => {
   const diffSectionRef = useRef<HTMLElement>(null);
+  const periodicSectionRef = useRef<HTMLElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const revisionFileInputRef = useRef<HTMLInputElement>(null);
+  const sectionFileInputRef = useRef<HTMLInputElement>(null);
 
   const [tabFilter, setTabFilter] = useState<'all' | 'overdue' | 'moc' | 'capa'>('all');
   const [codeQuery, setCodeQuery] = useState('');
@@ -36,6 +223,23 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
   const [stateFilter, setStateFilter] = useState('');
   const [selectedDiffId, setSelectedDiffId] = useState<string>(revisions[0]?.id || 'rev-1');
 
+  const [periodicFilter, setPeriodicFilter] = useState<'all' | 'expired' | 'soon' | 'valid'>('all');
+  const [showIsoPolicyGuide, setShowIsoPolicyGuide] = useState(false);
+  const [extensionModalState, setExtensionModalState] = useState<{
+    open: boolean;
+    doc: ImsDocument | null;
+    revisionId?: string;
+    years: number;
+    checks: Record<string, boolean>;
+    auditNote: string;
+  }>({
+    open: false,
+    doc: null,
+    years: 2,
+    checks: {},
+    auditNote: '',
+  });
+
   const [showNewModal, setShowNewModal] = useState(false);
   const [selectedDocId, setSelectedDocId] = useState<string>(documents[0]?.id || '');
   const [docDropdownOpen, setDocDropdownOpen] = useState(false);
@@ -43,6 +247,24 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
   const [attachedFiles, setAttachedFiles] = useState<AttachedRevisionFile[]>([]);
   const [replaceOnApproval, setReplaceOnApproval] = useState(true);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [isEditingSummary, setIsEditingSummary] = useState(false);
+  const [editedSummaryDraft, setEditedSummaryDraft] = useState('');
+
+  const userOptions = useMemo(
+    () =>
+      users.map((u) => ({
+        id: u.id,
+        label: formatUserActor(u),
+      })),
+    [users]
+  );
+
+  const [workflowActors, setWorkflowActors] = useState<WorkflowStageActor[]>(() =>
+    buildWorkflowFromDocument(documents[0], users)
+  );
+  const [slaDays, setSlaDays] = useState<3 | 5 | 10>(5);
+  const [manualStepIndex, setManualStepIndex] = useState<number | null>(null);
+  const [manualNameDraft, setManualNameDraft] = useState('');
 
   const [newForm, setNewForm] = useState(() => {
     const firstDoc = documents[0];
@@ -117,6 +339,9 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
       title: doc.title,
       dept: doc.unit || doc.management || prev.dept,
     }));
+    setWorkflowActors(buildWorkflowFromDocument(doc, users));
+    setManualStepIndex(null);
+    setManualNameDraft('');
     setDocDropdownOpen(false);
     setDocSearchQuery('');
   };
@@ -169,6 +394,38 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
     setAttachedFiles((prev) => prev.filter((f) => f.id !== id));
   };
 
+  const handleSectionFilePick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const fileList = e.target.files;
+    if (!fileList || fileList.length === 0 || !activeDiff) return;
+    const added: AttachedRevisionFile[] = Array.from(fileList).map((file, idx) => ({
+      id: `revfile-${Date.now()}-${idx}`,
+      name: file.name,
+      size: formatFileSize(file.size),
+      type: detectFileType(file.name),
+      uploadedAt: '۱۴۰۳/۰۸/۲۴ - هم‌اکنون',
+    }));
+    const nextFiles = [...(activeDiff.attachedFiles || []), ...added];
+    onUpdateRevision(activeDiff.id, {
+      attachedFiles: nextFiles,
+      replaceOnApproval: activeDiff.replaceOnApproval ?? true,
+    });
+    e.target.value = '';
+    onNotify(
+      `${added.length.toLocaleString('fa-IR')} فایل به درخواست بازنگری اضافه شد`,
+      `فایل‌های تغییریافته برای ${activeDiff.code} ذخیره و در کارتابل تایید قابل مشاهده است.`,
+      'success'
+    );
+  };
+
+  const handleRemoveActiveDiffFile = (fileId: string) => {
+    if (!activeDiff) return;
+    const nextFiles = (activeDiff.attachedFiles || []).filter((f) => f.id !== fileId);
+    onUpdateRevision(activeDiff.id, {
+      attachedFiles: nextFiles.length > 0 ? nextFiles : undefined,
+    });
+    onNotify('فایل پیوست حذف شد', `فایل از لیست پیوست‌های ${activeDiff.code} حذف گردید.`, 'info');
+  };
+
   const openNewRevisionModal = () => {
     const doc = selectedBaseDoc || documents[0];
     if (doc) {
@@ -181,7 +438,10 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
         dept: doc.unit || doc.management || prev.dept,
         reasonText: '',
       }));
+      setWorkflowActors(buildWorkflowFromDocument(doc, users));
     }
+    setManualStepIndex(null);
+    setManualNameDraft('');
     setDocDropdownOpen(false);
     setDocSearchQuery('');
     setAttachedFiles([]);
@@ -208,20 +468,165 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
 
   const handleSelectDiff = (id: string) => {
     setSelectedDiffId(id);
+    setIsEditingSummary(false);
     diffSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
-  const handleExtendWithoutChange = (rev: RevisionItem) => {
+  const startEditSummary = (rev: RevisionItem) => {
+    setEditedSummaryDraft(rev.changeSummary || rev.newHighlight || '');
+    setIsEditingSummary(true);
+  };
+
+  const handleSaveSummaryEdit = (rev: RevisionItem) => {
+    const trimmed = editedSummaryDraft.trim();
+    if (!trimmed) {
+      onNotify('شرح تغییرات نمی‌تواند خالی باشد', 'لطفاً شرح خلاصه تغییرات پیشنهادی را وارد نمایید.', 'warning');
+      return;
+    }
     onUpdateRevision(rev.id, {
-      progress: 100,
-      workflowState: 'تمدید اعتبار ۲ ساله بدون تغییر (تایید شد)',
-      overdueDays: undefined,
+      changeSummary: trimmed,
+      newHighlight: trimmed,
     });
-    onNotify(
-      `تمدید اعتبار ۲ ساله ${rev.code}`,
-      'وضعیت سند بدون تغییر محتوایی به مدت ۲ سال آینده در مخزن EDMS تمدید شد.',
-      'success'
-    );
+    setIsEditingSummary(false);
+    onNotify('شرح تغییرات پیشنهادی به‌روزرسانی شد', `توضیحات بازنگری ${rev.code} ذخیره گردید.`, 'success');
+  };
+
+  const todayDays = useMemo(() => parseJalaliToDays(CURRENT_JALALI_DATE) || 0, []);
+
+  const periodicWatchlist = useMemo(() => {
+    return documents
+      .filter((d) => d.status !== 'منسوخ')
+      .map((doc) => {
+        const reviewDays = parseJalaliToDays(doc.reviewAt);
+        const expiresDays = parseJalaliToDays(doc.expiresAt);
+        const targetDays =
+          reviewDays !== null && expiresDays !== null
+            ? Math.min(reviewDays, expiresDays)
+            : reviewDays ?? expiresDays ?? todayDays + 365;
+        const deltaDays = targetDays - todayDays;
+        const bucket: 'expired' | 'soon' | 'valid' =
+          deltaDays <= 0 ? 'expired' : deltaDays <= REVIEW_WINDOW_DAYS ? 'soon' : 'valid';
+        const isReviewWindowOpen = bucket === 'expired' || bucket === 'soon';
+        const cycleYears = getDefaultCycleYears(doc.docTypeCode);
+        return {
+          doc,
+          deltaDays,
+          bucket,
+          isReviewWindowOpen,
+          cycleYears,
+        };
+      })
+      .sort((a, b) => a.deltaDays - b.deltaDays);
+  }, [documents, todayDays]);
+
+  const expiredDocsCount = useMemo(
+    () => periodicWatchlist.filter((item) => item.bucket === 'expired').length,
+    [periodicWatchlist]
+  );
+
+  const soonDocsCount = useMemo(
+    () => periodicWatchlist.filter((item) => item.bucket === 'soon').length,
+    [periodicWatchlist]
+  );
+
+  const filteredWatchlist = useMemo(() => {
+    if (periodicFilter === 'all') return periodicWatchlist;
+    return periodicWatchlist.filter((item) => item.bucket === periodicFilter);
+  }, [periodicWatchlist, periodicFilter]);
+
+  const openPeriodicExtensionModal = (doc: ImsDocument, revisionId?: string) => {
+    const reviewDays = parseJalaliToDays(doc.reviewAt);
+    const expiresDays = parseJalaliToDays(doc.expiresAt);
+    const targetDays =
+      reviewDays !== null && expiresDays !== null
+        ? Math.min(reviewDays, expiresDays)
+        : reviewDays ?? expiresDays ?? todayDays + 365;
+    const deltaDays = targetDays - todayDays;
+
+    if (deltaDays > REVIEW_WINDOW_DAYS) {
+      onNotify(
+        'سند هنوز وارد پنجره بازنگری دوره‌ای نشده است',
+        `طبق استاندارد کنترل مستندات ISO، تمدید اعتبار دوره‌ای از ${REVIEW_WINDOW_DAYS.toLocaleString('fa-IR')} روز پیش از سررسید (${(deltaDays - REVIEW_WINDOW_DAYS).toLocaleString('fa-IR')} روز دیگر) فعال می‌شود.`,
+        'info'
+      );
+      return;
+    }
+
+    const defaultYears = getDefaultCycleYears(doc.docTypeCode);
+    setExtensionModalState({
+      open: true,
+      doc,
+      revisionId,
+      years: defaultYears,
+      checks: {
+        'no-moc': false,
+        'legal-iso': false,
+        'no-capa': false,
+        'meta-links': false,
+      },
+      auditNote: '',
+    });
+  };
+
+  const openRevisionForDocument = (doc: ImsDocument) => {
+    setSelectedDocId(doc.id);
+    setNewForm((prev) => ({
+      ...prev,
+      code: doc.code,
+      currentRevNum: parseRevNumber(doc.version),
+      title: doc.title,
+      dept: doc.unit || doc.management || prev.dept,
+      triggerCategory: 'overdue',
+      triggerRef: `سررسید بازنگری دوره‌ای (${doc.reviewAt})`,
+      reasonText: `بازنگری دوره‌ای مستند ${doc.code} به دلیل فرا رسیدن تاریخ انقضا/سررسید (${doc.reviewAt}) و اعمال اصلاحات مورد نیاز.`,
+    }));
+    setWorkflowActors(buildWorkflowFromDocument(doc, users));
+    setManualStepIndex(null);
+    setManualNameDraft('');
+    setAttachedFiles([]);
+    setReplaceOnApproval(true);
+    setShowNewModal(true);
+  };
+
+  const allCriteriaChecked = ISO_EXTENSION_CRITERIA.every((c) => Boolean(extensionModalState.checks[c.id]));
+
+  const handleConfirmPeriodicExtension = (e: React.FormEvent) => {
+    e.preventDefault();
+    const targetDoc = extensionModalState.doc;
+    if (!targetDoc) return;
+    if (!allCriteriaChecked) {
+      onNotify(
+        'تایید شرایط استاندارد ISO الزامی است',
+        'برای تمدید اعتبار بدون تغییر محتوا، باید هر ۴ شرط استاندارد بازنگری دوره‌ای بررسی و تایید شوند.',
+        'warning'
+      );
+      return;
+    }
+    const nextReviewAt = addYearsToJalali(CURRENT_JALALI_DATE, extensionModalState.years);
+    const nextExpiresAt = addYearsToJalali(CURRENT_JALALI_DATE, extensionModalState.years);
+    if (onExtendDocument) {
+      onExtendDocument(
+        targetDoc.id,
+        nextReviewAt,
+        nextExpiresAt,
+        extensionModalState.years,
+        extensionModalState.auditNote,
+        extensionModalState.revisionId
+      );
+    } else if (extensionModalState.revisionId) {
+      onUpdateRevision(extensionModalState.revisionId, {
+        progress: 100,
+        workflowState: `تمدید اعتبار ${extensionModalState.years.toLocaleString('fa-IR')} ساله بدون تغییر (تایید ISO)`,
+        overdueDays: undefined,
+      });
+    }
+    setExtensionModalState({
+      open: false,
+      doc: null,
+      years: 2,
+      checks: {},
+      auditNote: '',
+    });
   };
 
   const handleExportMatrix = () => {
@@ -264,6 +669,7 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
       capa: 'اقدام اصلاحی CAPA',
       iso: 'الزامات استاندارد ISO',
     };
+    const replacedCount = workflowActors.filter((w) => w.replaced).length;
     const item: RevisionItem = {
       id: `rev-${Date.now()}`,
       code: currentCode,
@@ -276,7 +682,7 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
       triggerRef: newForm.triggerRef || 'ارجاع سیستمی IMS',
       triggerCategory: newForm.triggerCategory,
       dept: newForm.dept,
-      owner: 'مهندس مهران کاظمی',
+      owner: workflowActors[0]?.actor || 'مهندس مهران کاظمی',
       ownerRole: 'مدیر تضمین کیفیت و IMS',
       progress: 25,
       workflowState: 'مرحله ۱: تدوین اصلاحیه پیش‌نویس',
@@ -284,16 +690,24 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
       oldRevDate: selectedBaseDoc?.registeredAt || '۱۴۰۱/۰۸/۲۰',
       oldText: 'متن پیشین قبل از اعمال اصلاحیه فنی مطابق ویرایش مصوب قبلی:',
       oldHighlight: 'نیاز به بازبینی مطابق پارامترهای جدید بهره‌برداری',
-      newTextPrefix: 'اصلاحیه پیشنهادی جدید:',
+      newTextPrefix: '',
       newHighlight: newForm.reasonText.trim() || 'به‌روزرسانی دستورالعمل بر اساس تغییرات مهندسی و الزامات ایمنی ۱۴۰۳',
-      newTextSuffix: 'جهت طرح در کمیته فنی.',
+      newTextSuffix: '',
       newNote:
         attachedFiles.length > 0
-          ? `${attachedFiles.length.toLocaleString('fa-IR')} فایل سند تغییریافته پیوست شده و به کارتابل تایید ارجاع گردید.`
+          ? `${attachedFiles.length.toLocaleString('fa-IR')} فایل سند تغییریافته پیوست شده و با زنجیره ۴ مرحله‌ای تایید ارسال گردید.${
+              replacedCount > 0 ? ` (${replacedCount.toLocaleString('fa-IR')} فرد جایگزین به‌روزرسانی شد)` : ''
+            }`
+          : replacedCount > 0
+          ? `ثبت‌شده از کارتابل بازنگری همراه با به‌روزرسانی ${replacedCount.toLocaleString('fa-IR')} نفر در زنجیره تایید.`
           : 'ثبت‌شده از طریق کارتابل درخواست بازنگری جدید.',
+      changeSummary:
+        newForm.reasonText.trim() || 'به‌روزرسانی و بازنگری سند مطابق درخواست تغییرات ثبت‌شده در کارتابل.',
       sourceDocId: selectedBaseDoc?.id,
       attachedFiles: attachedFiles.length > 0 ? attachedFiles : undefined,
       replaceOnApproval,
+      workflowActors,
+      slaDays,
     };
     onAddRevision(item);
     setSelectedDiffId(item.id);
@@ -302,7 +716,7 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
     setShowNewModal(false);
     onNotify(
       'درخواست بازنگری جدید ثبت شد',
-      `${item.code} (${item.currentRev}) → ${item.targetRev} به کارتابل بازنگری و جریان تایید ارسال گردید.`,
+      `${item.code} (${item.currentRev}) → ${item.targetRev} با زنجیره تایید ۴ گامی به کارتابل بازنگری و جریان تایید ارسال گردید.`,
       'success'
     );
   };
@@ -341,6 +755,30 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
           >
             <span className="material-symbols-outlined !text-[17px]">post_add</span>
             ثبت درخواست بازنگری جدید
+          </button>
+          <button
+            type="button"
+            onClick={() => periodicSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-xs font-bold text-amber-950 inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <span className="material-symbols-outlined !text-[17px] text-warning-capa">event_repeat</span>
+            پایش سررسید و مکانیزم تمدید دوره‌ای
+            {(expiredDocsCount + soonDocsCount) > 0 && (
+              <span className="font-label-code px-1.5 py-0.5 rounded-full bg-critical-hse text-white text-[10px]">
+                {(expiredDocsCount + soonDocsCount).toLocaleString('fa-IR')}
+              </span>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setShowIsoPolicyGuide((v) => !v);
+              periodicSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
+            className="px-4 py-2.5 rounded-xl border border-secondary/40 bg-sky-50/70 hover:bg-sky-100 text-xs font-bold text-secondary inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+          >
+            <span className="material-symbols-outlined !text-[17px]">policy</span>
+            ضوابط استاندارد ISO بازنگری
           </button>
           <button
             type="button"
@@ -470,6 +908,246 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
         >
           ارسال یادداشت اخطار به سرپرستان واحد
         </button>
+      </section>
+
+      {/* Periodic Expiry Monitoring & ISO Review Policy Mechanism */}
+      <section
+        ref={periodicSectionRef}
+        className="bg-white rounded-2xl border border-border-hairline overflow-hidden shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.04)]"
+      >
+        <div className="p-4 sm:p-5 border-b border-border-hairline bg-surface-container-low/50 space-y-3">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div className="flex items-start gap-2.5">
+              <span className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 text-warning-capa flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined">event_repeat</span>
+              </span>
+              <div>
+                <h2 className="text-sm font-extrabold text-primary flex flex-wrap items-center gap-2">
+                  مکانیزم پایش سررسید، بازنگری دوره‌ای و تمدید اعتبار مستندات
+                  {expiredDocsCount > 0 && (
+                    <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-red-50 text-critical-hse border border-red-200">
+                      {expiredDocsCount.toLocaleString('fa-IR')} سند سررسید گذشته
+                    </span>
+                  )}
+                  {soonDocsCount > 0 && (
+                    <span className="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-warning-capa border border-amber-200">
+                      {soonDocsCount.toLocaleString('fa-IR')} سند در آستانه انقضا
+                    </span>
+                  )}
+                </h2>
+                <p className="text-[11px] text-on-surface-variant mt-0.5">
+                  طبق رویه استاندارد ISO، پنجره مجاز بازنگری و تمدید اعتبار از{' '}
+                  <strong className="text-primary">{REVIEW_WINDOW_DAYS.toLocaleString('fa-IR')} روز پیش از تاریخ سررسید/انقضا</strong>{' '}
+                  (وضعیت زرد یا قرمز) روشن می‌شود تا از تمدید زودهنگام پیش از موعد جلوگیری گردد.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setShowIsoPolicyGuide((v) => !v)}
+                className={`px-3 py-1.5 rounded-xl border text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer transition-colors ${
+                  showIsoPolicyGuide
+                    ? 'bg-secondary text-white border-secondary'
+                    : 'bg-white border-border-hairline text-secondary hover:bg-sky-50'
+                }`}
+              >
+                <span className="material-symbols-outlined !text-[16px]">gavel</span>
+                {showIsoPolicyGuide ? 'بستن ضوابط استاندارد ISO' : 'مشاهده شرایط استاندارد بازدیدها (ISO)'}
+              </button>
+            </div>
+          </div>
+
+          {/* ISO Standard Review Criteria Drawer */}
+          {showIsoPolicyGuide && (
+            <div className="rounded-2xl border border-sky-200 bg-white p-4 space-y-4 text-xs animate-modal-enter">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border-hairline pb-2.5">
+                <div className="font-extrabold text-primary flex items-center gap-2">
+                  <span className="material-symbols-outlined text-secondary !text-[19px]">verified_user</span>
+                  ضوابط و شرایط استاندارد بازنگری دوره‌ای اطلاعات مدون (ISO 9001 • ISO 14001 • ISO 45001)
+                </div>
+                <span className="font-label-code text-[10.5px] px-2.5 py-0.5 rounded-full bg-sky-50 text-secondary font-bold">
+                  Clause 7.5.3 & 8.1.3 (MOC)
+                </span>
+              </div>
+
+              <div className="rounded-xl bg-sky-50/70 border border-sky-200 p-3 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                <div className="flex items-center gap-2 font-bold text-primary">
+                  <span className="material-symbols-outlined !text-[18px] text-secondary">date_range</span>
+                  قانون پنجره مجاز بازنگری دوره‌ای (Standard Review Window):
+                </div>
+                <span className="text-on-surface-variant">
+                  شروع پنجره بررسی و تمدید از{' '}
+                  <strong className="text-secondary">{REVIEW_WINDOW_DAYS.toLocaleString('fa-IR')} روز پیش از سررسید</strong> (هشدار زرد در ۶۰ روز مانده، وضعیت بحرانی قرمز پس از تاریخ سررسید) تا پیش از آن دکمه تمدید قفل است.
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {ISO_STANDARD_POLICIES.map((policy) => (
+                  <div
+                    key={policy.docGroup}
+                    className="rounded-xl border border-border-hairline bg-surface-container-low/50 p-3 space-y-1.5"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-bold text-primary">{policy.docGroup}</span>
+                      <span className="px-2 py-0.5 rounded-md bg-sky-50 text-secondary font-bold text-[10.5px] shrink-0">
+                        {policy.cycleLabel}
+                      </span>
+                    </div>
+                    <div className="font-label-code text-[10.5px] text-tertiary font-bold">{policy.clause}</div>
+                    <p className="text-[11px] text-on-surface-variant leading-5">{policy.rule}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-xl bg-amber-50/70 border border-amber-200 p-3.5 space-y-2">
+                <div className="font-bold text-amber-950 flex items-center gap-1.5">
+                  <span className="material-symbols-outlined !text-[17px] text-warning-capa">checklist_rtl</span>
+                  شرایط چهارگانه الزامی پیش از تمدید اعتبار بدون تغییر محتوا (یا الزام به تدوین ویرایش جدید):
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {ISO_EXTENSION_CRITERIA.map((c, idx) => (
+                    <div key={c.id} className="bg-white rounded-lg border border-amber-100 px-3 py-2">
+                      <div className="font-bold text-primary">
+                        {(idx + 1).toLocaleString('fa-IR')}. {c.title}
+                      </div>
+                      <div className="text-[10.5px] text-on-surface-variant mt-0.5">{c.detail}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Filter Pills for Watchlist */}
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs">
+              {[
+                { id: 'all', label: `کل اسناد تحت پایش (${periodicWatchlist.length.toLocaleString('fa-IR')})` },
+                { id: 'expired', label: `سررسید گذشته / منقضی (${expiredDocsCount.toLocaleString('fa-IR')})` },
+                {
+                  id: 'soon',
+                  label: `پنجره بازنگری ≤ ${REVIEW_WINDOW_DAYS.toLocaleString('fa-IR')} روز (${soonDocsCount.toLocaleString('fa-IR')})`,
+                },
+                {
+                  id: 'valid',
+                  label: `دارای اعتبار (${(periodicWatchlist.length - expiredDocsCount - soonDocsCount).toLocaleString('fa-IR')})`,
+                },
+              ].map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setPeriodicFilter(t.id as typeof periodicFilter)}
+                  className={`px-3 py-1.5 rounded-full font-bold transition-colors cursor-pointer ${
+                    periodicFilter === t.id
+                      ? 'bg-primary text-white'
+                      : 'bg-white border border-border-hairline text-on-surface-variant hover:text-primary'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+            <span className="text-[11px] text-outline">
+              تاریخ مبنای پایش سامانه: <strong className="font-label-code text-primary">{CURRENT_JALALI_DATE}</strong>
+            </span>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full min-w-[980px] text-right border-collapse">
+            <thead>
+              <tr className="bg-surface-container-low text-[11px] font-bold text-primary border-b border-border-hairline">
+                <th className="py-2.5 px-4">کد و عنوان مستند</th>
+                <th className="py-2.5 px-4">دوره استاندارد</th>
+                <th className="py-2.5 px-4">تاریخ ثبت / سررسید بازنگری</th>
+                <th className="py-2.5 px-4">وضعیت انقضا و بازنگری</th>
+                <th className="py-2.5 px-4 text-center">اقدام بازنگری دوره‌ای</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border-hairline/70 text-xs">
+              {filteredWatchlist.map(({ doc, deltaDays, bucket, isReviewWindowOpen, cycleYears }) => (
+                <tr
+                  key={doc.id}
+                  className={`hover:bg-surface-container-low/50 transition-colors ${
+                    bucket === 'expired' ? 'bg-red-50/35' : bucket === 'soon' ? 'bg-amber-50/25' : ''
+                  }`}
+                >
+                  <td className="py-3 px-4">
+                    <div className="flex items-center gap-2">
+                      <span className="font-label-code font-extrabold text-primary" dir="ltr">
+                        {doc.code}
+                      </span>
+                      <span className="font-label-code px-1.5 py-0.5 rounded bg-surface-container text-[10px] font-bold text-primary">
+                        {doc.version}
+                      </span>
+                    </div>
+                    <div className="font-semibold text-primary mt-0.5 line-clamp-1">{doc.title}</div>
+                    <div className="text-[10.5px] text-on-surface-variant">{doc.unit} • مالک: {doc.owner}</div>
+                  </td>
+                  <td className="py-3 px-4 whitespace-nowrap">
+                    <span className="px-2.5 py-1 rounded-lg bg-surface-container-low border border-border-hairline font-bold text-primary text-[11px]">
+                      {cycleYears.toLocaleString('fa-IR')} ساله ({doc.docTypeCode})
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 whitespace-nowrap font-label-code text-[11px]">
+                    <div className="text-on-surface-variant">ثبت: {doc.registeredAt}</div>
+                    <div className="font-bold text-primary mt-0.5">سررسید بازنگری: {doc.reviewAt}</div>
+                    <div className="text-outline">انقضا: {doc.expiresAt}</div>
+                  </td>
+                  <td className="py-3 px-4 whitespace-nowrap">
+                    {bucket === 'expired' ? (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-50 text-critical-hse border border-red-200 text-[11px] font-bold">
+                        <span className="material-symbols-outlined !text-[14px]">error</span>
+                        {Math.abs(deltaDays).toLocaleString('fa-IR')} روز گذشته از سررسید
+                      </span>
+                    ) : bucket === 'soon' ? (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 text-warning-capa border border-amber-200 text-[11px] font-bold">
+                        <span className="material-symbols-outlined !text-[14px]">schedule</span>
+                        {deltaDays.toLocaleString('fa-IR')} روز مانده به بازنگری
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-tertiary border border-emerald-200 text-[11px] font-bold">
+                        <span className="material-symbols-outlined !text-[14px]">verified</span>
+                        معتبر ({deltaDays.toLocaleString('fa-IR')} روز باقی‌مانده)
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-3 px-4 whitespace-nowrap">
+                    <div className="flex flex-col items-center gap-1">
+                      <button
+                        type="button"
+                        disabled={!isReviewWindowOpen}
+                        onClick={() => openPeriodicExtensionModal(doc)}
+                        title={
+                          isReviewWindowOpen
+                            ? 'باز شدن پنجره بررسی استاندارد و تمدید اعتبار'
+                            : `فعال‌سازی از ${REVIEW_WINDOW_DAYS.toLocaleString('fa-IR')} روز پیش از سررسید (${(deltaDays - REVIEW_WINDOW_DAYS).toLocaleString('fa-IR')} روز دیگر)`
+                        }
+                        className={`px-3 py-1.5 rounded-lg border text-[11px] font-bold inline-flex items-center gap-1 transition-colors ${
+                          isReviewWindowOpen
+                            ? 'bg-primary hover:bg-secondary text-white border-primary shadow-xs cursor-pointer'
+                            : 'bg-surface-container-low text-outline border-border-hairline opacity-60 cursor-not-allowed'
+                        }`}
+                      >
+                        <span className="material-symbols-outlined !text-[15px]">
+                          {isReviewWindowOpen ? 'fact_check' : 'lock_clock'}
+                        </span>
+                        بررسی دوره‌ای و تمدید اعتبار
+                      </button>
+                      {!isReviewWindowOpen && (
+                        <span className="text-[10px] text-outline">
+                          فعال در {(deltaDays - REVIEW_WINDOW_DAYS).toLocaleString('fa-IR')} روز آینده (پنجره ۶۰ روزه)
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       {/* Filter & Revision Table */}
@@ -652,17 +1330,9 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
                       <button
                         type="button"
                         onClick={() => handleSelectDiff(rev.id)}
-                        className="px-2.5 py-1.5 rounded-lg border border-secondary text-secondary hover:bg-sky-50 font-label-code text-[11px] font-bold cursor-pointer"
+                        className="px-2.5 py-1.5 rounded-lg border border-secondary text-secondary hover:bg-sky-50 text-[11px] font-bold cursor-pointer"
                       >
-                        Diff
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleExtendWithoutChange(rev)}
-                        className="px-2.5 py-1.5 rounded-lg border border-border-hairline hover:bg-emerald-50 hover:text-tertiary text-on-surface-variant text-[11px] font-semibold cursor-pointer"
-                        title="تمدید اعتبار ۲ ساله بدون تغییر"
-                      >
-                        تمدید ۲ ساله
+                        شرح تغییرات
                       </button>
                     </div>
                   </td>
@@ -673,7 +1343,7 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
         </div>
       </section>
 
-      {/* Inline Comparative Diff Viewer */}
+      {/* Revision Proposed Summary & Version Attachments */}
       {activeDiff && (
         <section
           ref={diffSectionRef}
@@ -682,11 +1352,11 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-border-hairline pb-3">
             <div>
               <h2 className="text-sm font-bold text-primary flex items-center gap-2">
-                <span className="material-symbols-outlined text-secondary">compare</span>
-                پیش‌نمایش برخط تطبیق ویرایش‌ها (Document Revision Diff)
+                <span className="material-symbols-outlined text-secondary">summarize</span>
+                شرح تغییرات پیشنهادی و مستندات پیوست ویرایش
               </h2>
               <p className="text-[11px] text-on-surface-variant mt-0.5">
-                بررسی خط‌به‌خط تغییرات ویرایش پیشنهادی با نگارش جاری مستند
+                خلاصه تغییرات ثبت‌شده هنگام درخواست بازنگری به‌همراه وضعیت نسخه مصوب فعلی و فایل‌های اصلاح‌شده
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -694,70 +1364,131 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
                 {activeDiff.code} ({activeDiff.currentRev} → {activeDiff.targetRev})
               </span>
               <span className="text-xs font-bold px-3 py-1 rounded-full bg-sky-50 text-secondary border border-sky-200">
-                {activeDiff.diffSection}
+                {activeDiff.triggerLabel}
               </span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 text-xs">
-            {/* Old Revision */}
-            <div className="rounded-2xl border border-red-200 bg-red-50/30 p-4 space-y-2.5">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-critical-hse flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-critical-hse" />
-                  متن نگارش فعلی ({activeDiff.currentRev})
-                </span>
-                <span className="font-label-code text-[11px] text-outline">تاریخ مصوب: {activeDiff.oldRevDate}</span>
+          {/* Revision Context Strip */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+            <div className="rounded-xl border border-border-hairline bg-surface-container-low/60 px-3.5 py-2.5">
+              <div className="text-[10.5px] text-outline">نگارش مصوب فعلی</div>
+              <div className="font-bold text-primary mt-0.5 flex items-center gap-2">
+                <span className="font-label-code">{activeDiff.currentRev}</span>
+                <span className="text-[10.5px] font-normal text-on-surface-variant">({activeDiff.oldRevDate})</span>
               </div>
-              <p className="leading-7 text-on-surface bg-white p-3.5 rounded-xl border border-red-100">
-                {activeDiff.oldText}{' '}
-                <span className="bg-[#fee2e2] text-red-900 line-through px-1.5 py-0.5 rounded font-semibold">
-                  {activeDiff.oldHighlight}
-                </span>{' '}
-                انجام می‌گیرد.
-              </p>
             </div>
-
-            {/* New Revision */}
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50/30 p-4 space-y-2.5">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-tertiary flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-tertiary" />
-                  متن پیشنهادی ویرایش جدید ({activeDiff.targetRev})
-                </span>
-                <span className="text-[11px] font-bold text-secondary">{activeDiff.triggerRef}</span>
+            <div className="rounded-xl border border-border-hairline bg-surface-container-low/60 px-3.5 py-2.5">
+              <div className="text-[10.5px] text-outline">نگارش و کد پیشنهادی</div>
+              <div className="font-label-code font-bold text-secondary mt-0.5" dir="ltr">
+                {activeDiff.suggestedCode} ({activeDiff.targetRev})
               </div>
-              <div className="leading-7 text-on-surface bg-white p-3.5 rounded-xl border border-emerald-100 space-y-2">
-                <p>
-                  {activeDiff.newTextPrefix}{' '}
-                  <span className="bg-[#dcfce7] text-emerald-950 px-1.5 py-0.5 rounded font-bold">
-                    {activeDiff.newHighlight}
-                  </span>{' '}
-                  {activeDiff.newTextSuffix}
-                </p>
-                <p className="text-[11.5px] font-semibold text-tertiary border-t border-emerald-100 pt-2">
-                  {activeDiff.newNote}
-                </p>
+            </div>
+            <div className="rounded-xl border border-border-hairline bg-surface-container-low/60 px-3.5 py-2.5">
+              <div className="text-[10.5px] text-outline">مسئول و واحد متولی</div>
+              <div className="font-bold text-primary mt-0.5 truncate">
+                {activeDiff.owner} • {activeDiff.dept}
+              </div>
+            </div>
+            <div className="rounded-xl border border-border-hairline bg-surface-container-low/60 px-3.5 py-2.5">
+              <div className="text-[10.5px] text-outline">مرجع و وضعیت جاری</div>
+              <div className="font-bold text-primary mt-0.5 truncate">
+                {activeDiff.triggerRef} ({activeDiff.progress.toLocaleString('fa-IR')}٪)
               </div>
             </div>
           </div>
 
-          {activeDiff.attachedFiles && activeDiff.attachedFiles.length > 0 && (
-            <div className="rounded-2xl border border-sky-200 bg-sky-50/40 p-4 space-y-2.5 text-xs">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="font-bold text-primary flex items-center gap-1.5">
-                  <span className="material-symbols-outlined !text-[18px] text-secondary">folder_zip</span>
-                  فایل‌های سند تغییریافته پیوست‌شده ({activeDiff.attachedFiles.length.toLocaleString('fa-IR')} مورد)
+          {/* Proposed Change Summary Card */}
+          <div className="rounded-2xl border border-border-hairline bg-surface-container-low/40 p-4 space-y-3 text-xs">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="font-bold text-primary flex items-center gap-2">
+                <span className="material-symbols-outlined !text-[18px] text-secondary">edit_note</span>
+                شرح تغییرات پیشنهادی کارشناس
+              </div>
+              {!isEditingSummary ? (
+                <button
+                  type="button"
+                  onClick={() => startEditSummary(activeDiff)}
+                  className="px-2.5 py-1 rounded-lg border border-border-hairline bg-white hover:bg-surface-container-low text-[11px] font-semibold text-primary inline-flex items-center gap-1 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined !text-[14px]">edit</span>
+                  ویرایش / تکمیل شرح
+                </button>
+              ) : (
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingSummary(false)}
+                    className="px-2.5 py-1 rounded-lg border border-border-hairline bg-white text-[11px] font-semibold text-on-surface-variant cursor-pointer"
+                  >
+                    انصراف
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSaveSummaryEdit(activeDiff)}
+                    className="px-3 py-1 rounded-lg bg-primary text-white text-[11px] font-bold cursor-pointer"
+                  >
+                    ذخیره شرح
+                  </button>
                 </div>
-                <div className="flex items-center gap-2">
-                  {activeDiff.replaceOnApproval && (
-                    <span className="px-2.5 py-1 rounded-full bg-white border border-sky-200 text-[10.5px] font-bold text-secondary">
-                      {activeDiff.progress === 100
-                        ? 'تصویب نهایی انجام و جایگزین ریویژن قبلی شد'
-                        : 'آماده جایگزینی با ریویژن قبلی پس از تایید نهایی'}
-                    </span>
-                  )}
-                  {activeDiff.progress < 100 && (
+              )}
+            </div>
+
+            {isEditingSummary ? (
+              <textarea
+                rows={4}
+                value={editedSummaryDraft}
+                onChange={(e) => setEditedSummaryDraft(e.target.value)}
+                placeholder="شرح کامل یا خلاصه سرفصل‌های تغییر در ویرایش جدید..."
+                className="w-full p-3.5 rounded-xl border border-secondary bg-white text-xs text-primary leading-7 focus:outline-none"
+              />
+            ) : (
+              <div className="p-4 rounded-xl bg-white border border-border-hairline leading-7 text-on-surface whitespace-pre-line">
+                {activeDiff.changeSummary || activeDiff.newHighlight}
+              </div>
+            )}
+
+            {activeDiff.newNote && (
+              <div className="flex items-start gap-2 text-[11.5px] font-semibold text-tertiary px-1">
+                <span className="material-symbols-outlined !text-[16px] shrink-0 mt-0.5">info</span>
+                <span>{activeDiff.newNote}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Attached Revised Files & Future File-Level Comparison Groundwork */}
+          <div className="rounded-2xl border border-sky-200 bg-sky-50/40 p-4 space-y-3 text-xs">
+            <input
+              ref={sectionFileInputRef}
+              type="file"
+              multiple
+              accept=".pdf,.doc,.docx,.xlsx,.xls,.dwg"
+              onChange={handleSectionFilePick}
+              className="hidden"
+            />
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="font-bold text-primary flex items-center gap-1.5">
+                <span className="material-symbols-outlined !text-[18px] text-secondary">folder_zip</span>
+                اسناد تغییریافته پیوست‌شده ({(activeDiff.attachedFiles?.length || 0).toLocaleString('fa-IR')} مورد)
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {activeDiff.replaceOnApproval && (
+                  <span className="px-2.5 py-1 rounded-full bg-white border border-sky-200 text-[10.5px] font-bold text-secondary">
+                    {activeDiff.progress === 100
+                      ? 'تصویب نهایی انجام و جایگزین ریویژن قبلی شد'
+                      : 'آماده جایگزینی با ریویژن قبلی پس از تایید نهایی'}
+                  </span>
+                )}
+                {activeDiff.progress < 100 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => sectionFileInputRef.current?.click()}
+                      className="px-3 py-1.5 rounded-lg bg-white hover:bg-sky-100 text-secondary border border-secondary/40 text-[11px] font-bold inline-flex items-center gap-1 cursor-pointer transition-colors"
+                    >
+                      <span className="material-symbols-outlined !text-[15px]">upload_file</span>
+                      افزودن فایل تغییریافته
+                    </button>
                     <button
                       type="button"
                       onClick={() => onNavigate('documents-approval-workflow')}
@@ -766,14 +1497,17 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
                       <span className="material-symbols-outlined !text-[14px]">fact_check</span>
                       رفتن به کارتابل تایید و جایگزینی
                     </button>
-                  )}
-                </div>
+                  </>
+                )}
               </div>
+            </div>
+
+            {activeDiff.attachedFiles && activeDiff.attachedFiles.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {activeDiff.attachedFiles.map((file) => (
                   <div
                     key={file.id}
-                    className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-white border border-border-hairline"
+                    className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl bg-white border border-border-hairline"
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="font-label-code uppercase px-2 py-0.5 rounded bg-sky-50 text-secondary font-bold text-[10px] shrink-0">
@@ -783,12 +1517,43 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
                         {file.name}
                       </span>
                     </div>
-                    <span className="text-[10.5px] text-outline shrink-0">{file.size}</span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="text-[10.5px] text-outline">{file.size}</span>
+                      {activeDiff.progress < 100 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveActiveDiffFile(file.id)}
+                          className="p-1 rounded-md text-critical-hse hover:bg-red-50 cursor-pointer"
+                          title="حذف فایل پیوست"
+                        >
+                          <span className="material-symbols-outlined !text-[15px]">delete</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="rounded-xl bg-white/80 border border-dashed border-sky-200 px-4 py-3 text-[11.5px] text-on-surface-variant flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined !text-[18px] text-secondary shrink-0">upload_file</span>
+                  <span>
+                    هنوز فایل تغییریافته‌ای برای این درخواست پیوست نشده است. می‌توانید فایل‌های نسخه اصلاح‌شده را همین‌جا اضافه کنید.
+                  </span>
+                </div>
+                {activeDiff.progress < 100 && (
+                  <button
+                    type="button"
+                    onClick={() => sectionFileInputRef.current?.click()}
+                    className="px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-secondary border border-sky-200 text-[11px] font-bold inline-flex items-center gap-1 cursor-pointer shrink-0"
+                  >
+                    <span className="material-symbols-outlined !text-[15px]">add</span>
+                    انتخاب فایل
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </section>
       )}
 
@@ -797,7 +1562,7 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
         <div className="fixed inset-0 z-[90] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-[2px]">
           <form
             onSubmit={handleCreateRevision}
-            className="animate-modal-enter w-full max-w-2xl bg-white rounded-2xl border border-border-hairline shadow-2xl overflow-visible"
+            className="animate-modal-enter w-full max-w-3xl bg-white rounded-2xl border border-border-hairline shadow-2xl overflow-visible"
           >
             <div className="px-6 py-4 bg-primary text-white rounded-t-2xl flex items-center justify-between">
               <h3 className="text-sm font-bold">ثبت درخواست بازنگری و ویرایش جدید</h3>
@@ -1010,6 +1775,215 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
                 />
               </div>
 
+              {/* 4-Step Approval Workflow Chain (inherited from base document with replacement option) */}
+              <div className="pt-3 border-t border-border-hairline space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <div className="font-bold text-primary flex items-center gap-1.5">
+                      <span className="material-symbols-outlined !text-[18px] text-secondary">account_tree</span>
+                      پیکربندی زنجیره تایید ۴ گامی (بارگذاری‌شده از فرمت اولیه سند)
+                    </div>
+                    <p className="text-[11px] text-on-surface-variant mt-0.5">
+                      افراد ثبت‌شده در شناسنامه اولیه به‌صورت خودکار وارد شده‌اند؛ در صورت خروج فرد از مجتمع می‌توانید نفر جایگزین را انتخاب یا نام جدید وارد نمایید.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[11px] text-on-surface-variant">سقف SLA:</span>
+                    <select
+                      value={slaDays}
+                      onChange={(e) => setSlaDays(Number(e.target.value) as 3 | 5 | 10)}
+                      className="px-2.5 py-1 rounded-lg border border-border-hairline bg-surface-container-low text-[11px] font-bold text-primary"
+                    >
+                      <option value={3}>۳ روز کاری</option>
+                      <option value={5}>۵ روز کاری</option>
+                      <option value={10}>۱۰ روز کاری</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {workflowActors.map((item, idx) => {
+                    const isChanged = Boolean(item.originalActor && item.actor !== item.originalActor);
+                    const isInUserOptions = userOptions.some((opt) => opt.label === item.actor);
+                    const isOrigInUserOptions = item.originalActor
+                      ? userOptions.some((opt) => opt.label === item.originalActor)
+                      : true;
+                    const isManualOpen = manualStepIndex === idx;
+
+                    return (
+                      <div
+                        key={item.step}
+                        className={`p-3 rounded-xl border space-y-2 transition-colors ${
+                          isChanged
+                            ? 'bg-amber-50/50 border-amber-200'
+                            : 'bg-surface-container-low border-border-hairline'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-1.5">
+                          <span className="text-[11px] font-bold text-secondary">{item.step}</span>
+                          <div className="flex items-center gap-1">
+                            {isChanged ? (
+                              <>
+                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-warning-capa">
+                                  جایگزین شده
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const next = [...workflowActors];
+                                    next[idx] = {
+                                      ...next[idx],
+                                      actor: next[idx].originalActor || next[idx].actor,
+                                      replaced: false,
+                                    };
+                                    setWorkflowActors(next);
+                                    if (manualStepIndex === idx) {
+                                      setManualStepIndex(null);
+                                      setManualNameDraft('');
+                                    }
+                                  }}
+                                  className="text-[10px] font-bold text-secondary hover:underline cursor-pointer"
+                                  title="بازگردانی به نفر ثبت‌شده در فرمت اولیه"
+                                >
+                                  بازگردانی
+                                </button>
+                              </>
+                            ) : (
+                              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-emerald-50 text-tertiary border border-emerald-200">
+                                از فرمت اولیه
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {!isManualOpen ? (
+                          <div className="space-y-1.5">
+                            <select
+                              value={item.actor}
+                              onChange={(e) => {
+                                if (e.target.value === '__MANUAL__') {
+                                  setManualStepIndex(idx);
+                                  setManualNameDraft('');
+                                  return;
+                                }
+                                const nextVal = e.target.value;
+                                const next = [...workflowActors];
+                                next[idx] = {
+                                  ...next[idx],
+                                  actor: nextVal,
+                                  replaced: Boolean(next[idx].originalActor && nextVal !== next[idx].originalActor),
+                                };
+                                setWorkflowActors(next);
+                              }}
+                              className="w-full px-2.5 py-1.5 rounded-lg border border-border-hairline bg-white text-[11px] font-semibold text-primary focus:outline-none focus:border-secondary cursor-pointer"
+                            >
+                              {item.originalActor && !isOrigInUserOptions && (
+                                <option value={item.originalActor}>
+                                  {item.originalActor} (ثبت‌شده در فرمت اولیه)
+                                </option>
+                              )}
+                              {!isInUserOptions && item.actor !== item.originalActor && (
+                                <option value={item.actor}>
+                                  {item.actor} (جایگزین جدید)
+                                </option>
+                              )}
+                              {userOptions.map((opt) => (
+                                <option key={opt.id} value={opt.label}>
+                                  {opt.label}
+                                </option>
+                              ))}
+                              <option value="__MANUAL__">+ درج دستی نام فرد جدید (خارج از لیست)...</option>
+                            </select>
+
+                            <div className="flex items-center justify-between gap-2 text-[10px]">
+                              {isChanged && item.originalActor ? (
+                                <span className="text-on-surface-variant truncate" title={item.originalActor}>
+                                  فرد قبلی: <span className="line-through">{item.originalActor}</span>
+                                </span>
+                              ) : (
+                                <span className="text-outline">منطبق با چرخه اولیه سند</span>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setManualStepIndex(idx);
+                                  setManualNameDraft('');
+                                }}
+                                className="text-secondary hover:underline font-bold inline-flex items-center gap-0.5 shrink-0 cursor-pointer"
+                              >
+                                <span className="material-symbols-outlined !text-[13px]">person_edit</span>
+                                تغییر / نام جدید
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="space-y-1.5">
+                            <input
+                              type="text"
+                              value={manualNameDraft}
+                              onChange={(e) => setManualNameDraft(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  const trimmed = manualNameDraft.trim();
+                                  if (!trimmed) return;
+                                  const next = [...workflowActors];
+                                  next[idx] = {
+                                    ...next[idx],
+                                    actor: trimmed,
+                                    replaced: Boolean(next[idx].originalActor && trimmed !== next[idx].originalActor),
+                                  };
+                                  setWorkflowActors(next);
+                                  setManualStepIndex(null);
+                                  setManualNameDraft('');
+                                }
+                              }}
+                              placeholder="نام و سمت فرد جدید (مثلاً: مهندس فرهاد شریفی - رئیس واحد)"
+                              className="w-full px-2.5 py-1.5 rounded-lg border border-secondary bg-white text-[11px] font-semibold text-primary focus:outline-none"
+                              autoFocus
+                            />
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setManualStepIndex(null);
+                                  setManualNameDraft('');
+                                }}
+                                className="px-2 py-1 rounded-md border border-border-hairline bg-white text-[10.5px] font-semibold text-on-surface-variant cursor-pointer"
+                              >
+                                انصراف
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const trimmed = manualNameDraft.trim();
+                                  if (!trimmed) {
+                                    onNotify('نام فرد جدید را وارد کنید', 'لطفاً نام و سمت فرد جایگزین را بنویسید.', 'warning');
+                                    return;
+                                  }
+                                  const next = [...workflowActors];
+                                  next[idx] = {
+                                    ...next[idx],
+                                    actor: trimmed,
+                                    replaced: Boolean(next[idx].originalActor && trimmed !== next[idx].originalActor),
+                                  };
+                                  setWorkflowActors(next);
+                                  setManualStepIndex(null);
+                                  setManualNameDraft('');
+                                }}
+                                className="px-2.5 py-1 rounded-md bg-primary text-white text-[10.5px] font-bold cursor-pointer"
+                              >
+                                ثبت فرد جایگزین
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Modified / Revised Document Files Upload Section */}
               <div className="pt-3 border-t border-border-hairline space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -1120,6 +2094,187 @@ export const DocumentRevisionPage: React.FC<DocumentRevisionPageProps> = ({
               </button>
               <button type="submit" className="px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold cursor-pointer">
                 ثبت درخواست بازنگری
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+      {/* Dedicated Periodic Review & ISO Validity Extension Modal */}
+      {extensionModalState.open && extensionModalState.doc && (
+        <div className="fixed inset-0 z-[95] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-[2px]">
+          <form
+            onSubmit={handleConfirmPeriodicExtension}
+            className="animate-modal-enter w-full max-w-2xl bg-white rounded-2xl border border-border-hairline shadow-2xl overflow-hidden"
+          >
+            <div className="px-6 py-4 bg-primary text-white flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined">event_repeat</span>
+                <div>
+                  <h3 className="text-sm font-bold">مکانیزم بررسی دوره‌ای و تمدید اعتبار مستند (طبق استاندارد ISO)</h3>
+                  <div className="font-label-code text-[11px] text-primary-fixed mt-0.5" dir="ltr">
+                    {extensionModalState.doc.code} • {extensionModalState.doc.version}
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setExtensionModalState((prev) => ({ ...prev, open: false }))}
+                className="cursor-pointer"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4 text-xs max-h-[75vh] overflow-y-auto custom-scrollbar">
+              {/* Document Summary */}
+              <div className="rounded-xl border border-border-hairline bg-surface-container-low p-3.5 space-y-1.5">
+                <div className="font-bold text-primary text-[13px]">{extensionModalState.doc.title}</div>
+                <div className="flex flex-wrap items-center gap-3 text-[11px] text-on-surface-variant">
+                  <span>ثبت/بازنگری قبلی: <strong className="font-label-code text-primary">{extensionModalState.doc.registeredAt}</strong></span>
+                  <span>سررسید فعلی: <strong className="font-label-code text-critical-hse">{extensionModalState.doc.reviewAt}</strong></span>
+                  <span>انقضای فعلی: <strong className="font-label-code text-primary">{extensionModalState.doc.expiresAt}</strong></span>
+                </div>
+              </div>
+
+              {/* Selectable Extension Period (NOT locked to 2 years) */}
+              <div className="space-y-2">
+                <label className="block font-bold text-primary">
+                  انتخاب دوره تمدید اعتبار جدید (مطابق سطح ریسک و نوع سند)
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {[
+                    { years: 1, title: '۱ ساله (۱۲ ماهه)', subtitle: 'عملیات پرریسک HSE' },
+                    { years: 2, title: '۲ ساله (۲۴ ماهه)', subtitle: 'استاندارد SOP / WI / FRM' },
+                    { years: 3, title: '۳ ساله (۳۶ ماهه)', subtitle: 'خط‌مشی و نظامنامه' },
+                    { years: 5, title: '۵ ساله (۶۰ ماهه)', subtitle: 'اسناد مرجع بلندمدت' },
+                  ].map((opt) => (
+                    <button
+                      key={opt.years}
+                      type="button"
+                      onClick={() => setExtensionModalState((prev) => ({ ...prev, years: opt.years }))}
+                      className={`p-2.5 rounded-xl border text-right transition-colors cursor-pointer ${
+                        extensionModalState.years === opt.years
+                          ? 'border-secondary bg-sky-50/70 ring-2 ring-secondary/15'
+                          : 'border-border-hairline bg-white hover:bg-surface-container-low'
+                      }`}
+                    >
+                      <div className="font-extrabold text-primary">{opt.title}</div>
+                      <div className="text-[10px] text-on-surface-variant mt-0.5">{opt.subtitle}</div>
+                    </button>
+                  ))}
+                </div>
+                <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl bg-emerald-50/60 border border-emerald-200 text-[11px]">
+                  <span className="text-primary font-semibold">تاریخ سررسید و انقضای محاسبه‌شده جدید:</span>
+                  <span className="font-label-code font-extrabold text-tertiary">
+                    {addYearsToJalali(CURRENT_JALALI_DATE, extensionModalState.years)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Mandatory ISO Conditions Checklist */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="font-bold text-primary">
+                    احراز شرایط چهارگانه استاندارد ISO برای تمدید بدون ویرایش *
+                  </label>
+                  <span className="text-[10.5px] font-bold text-secondary">
+                    {Object.values(extensionModalState.checks).filter(Boolean).length.toLocaleString('fa-IR')} از ۴ شرط تایید شده
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  {ISO_EXTENSION_CRITERIA.map((criterion) => {
+                    const checked = Boolean(extensionModalState.checks[criterion.id]);
+                    return (
+                      <label
+                        key={criterion.id}
+                        className={`flex items-start gap-2.5 p-3 rounded-xl border cursor-pointer transition-colors ${
+                          checked
+                            ? 'bg-emerald-50/50 border-emerald-200'
+                            : 'bg-white border-border-hairline hover:bg-surface-container-low/50'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(e) =>
+                            setExtensionModalState((prev) => ({
+                              ...prev,
+                              checks: { ...prev.checks, [criterion.id]: e.target.checked },
+                            }))
+                          }
+                          className="w-4 h-4 mt-0.5 accent-tertiary rounded shrink-0"
+                        />
+                        <div className="space-y-0.5 flex-1">
+                          <div className="flex flex-wrap items-center justify-between gap-1">
+                            <span className="font-bold text-primary">{criterion.title}</span>
+                            <span className="font-label-code text-[10px] font-bold text-secondary">
+                              {criterion.clause}
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-on-surface-variant leading-5">{criterion.detail}</div>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Redirect Hint if Conditions Are Not Met */}
+              {!allCriteriaChecked && (
+                <div className="rounded-xl bg-amber-50 border border-amber-200 p-3 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                  <span className="text-amber-950 font-semibold">
+                    در صورتی که هر یک از شروط فوق برقرار نیست، سند نباید تمدید شود و باید درخواست ویرایش جدید ثبت گردد:
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const target = extensionModalState.doc;
+                      setExtensionModalState((prev) => ({ ...prev, open: false }));
+                      if (target) openRevisionForDocument(target);
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-primary text-white font-bold inline-flex items-center gap-1 cursor-pointer shrink-0"
+                  >
+                    <span className="material-symbols-outlined !text-[14px]">edit_document</span>
+                    ایجاد درخواست ویرایش جدید
+                  </button>
+                </div>
+              )}
+
+              <div>
+                <label className="block font-bold text-primary mb-1.5">
+                  صورت‌جلسه / یادداشت کارشناس بازدید دوره‌ای (ثبت در تاریخچه سند)
+                </label>
+                <textarea
+                  rows={2}
+                  value={extensionModalState.auditNote}
+                  onChange={(e) =>
+                    setExtensionModalState((prev) => ({ ...prev, auditNote: e.target.value }))
+                  }
+                  placeholder="مثال: بازدید فنی با حضور سرپرست بهره‌برداری انجام و انطباق کامل با خط‌مشی و تجهیزات جاری تایید گردید..."
+                  className="w-full px-3 py-2 rounded-xl border border-border-hairline focus:outline-none focus:border-secondary"
+                />
+              </div>
+            </div>
+
+            <div className="px-6 py-3.5 bg-surface-container-low border-t border-border-hairline flex flex-wrap items-center justify-between gap-2">
+              <button
+                type="button"
+                onClick={() => setExtensionModalState((prev) => ({ ...prev, open: false }))}
+                className="px-4 py-2 rounded-xl border border-border-hairline bg-white text-xs font-semibold cursor-pointer"
+              >
+                انصراف
+              </button>
+              <button
+                type="submit"
+                disabled={!allCriteriaChecked}
+                className={`px-5 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition-colors ${
+                  allCriteriaChecked
+                    ? 'bg-tertiary hover:bg-primary text-white cursor-pointer'
+                    : 'bg-surface-container text-outline cursor-not-allowed'
+                }`}
+              >
+                <span className="material-symbols-outlined !text-[16px]">verified</span>
+                تایید عدم تغییر و تمدید {extensionModalState.years.toLocaleString('fa-IR')} ساله اعتبار
               </button>
             </div>
           </form>

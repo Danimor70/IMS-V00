@@ -1,47 +1,63 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { ConfirmModal } from '../components/ConfirmModal';
 import {
+  INITIAL_ACCESS_LEVELS,
   ORG_MANAGEMENTS,
   ORG_UNITS_BY_MANAGEMENT,
   RBAC_GROUPS,
   RBAC_PERMISSION_DEFS,
   ROLE_PERMISSION_PRESETS,
 } from '../data/imsData';
-import { RbacLevel, RouteId, UserAccount, UserAccountStatus } from '../types/ims';
+import {
+  AccessLevelDefinition,
+  RbacLevel,
+  RouteId,
+  UserAccount,
+  UserAccountStatus,
+} from '../types/ims';
 
 interface UserDetailPermissionsPageProps {
   users: UserAccount[];
   selectedUserId: string;
+  accessLevels?: AccessLevelDefinition[];
   onSelectUser: (id: string) => void;
   onUpdateUser: (id: string, patch: Partial<UserAccount>, auditAction?: string) => void;
+  onAssignUserAccessLevel?: (userId: string, levelId: string) => void;
   onDeleteUser: (id: string) => void;
   onNavigate: (route: RouteId) => void;
+  onBackToDirectory?: () => void;
   onNotify: (title: string, message?: string, type?: 'success' | 'info' | 'warning' | 'error') => void;
+  embedded?: boolean;
 }
 
-const TAG_TONE_CLASSES: Record<string, string> = {
-  primary: 'bg-primary text-white',
-  tertiary: 'bg-emerald-50 text-tertiary border border-emerald-200',
-  warning: 'bg-amber-50 text-warning-capa border border-amber-200',
-  secondary: 'bg-sky-50 text-secondary border border-sky-200',
-  critical: 'bg-red-50 text-critical-hse border border-red-200',
+const getUserEffectiveLevelId = (u: UserAccount, levels: AccessLevelDefinition[]): string => {
+  if (u.accessLevelId && levels.some((l) => l.id === u.accessLevelId)) {
+    return u.accessLevelId;
+  }
+  const byTier = levels.find((l) => l.code === u.securityLevel || l.baseTier === u.securityLevel);
+  return byTier?.id || levels[0]?.id || 'lvl-c1';
 };
 
 export const UserDetailPermissionsPage: React.FC<UserDetailPermissionsPageProps> = ({
   users,
   selectedUserId,
+  accessLevels = INITIAL_ACCESS_LEVELS,
   onSelectUser,
   onUpdateUser,
+  onAssignUserAccessLevel,
   onDeleteUser,
   onNavigate,
+  onBackToDirectory,
   onNotify,
+  embedded = false,
 }) => {
   const user = useMemo(
-    () => users.find((u) => u.id === selectedUserId) || users[1] || users[0],
+    () => users.find((u) => u.id === selectedUserId) || users[0],
     [users, selectedUserId]
   );
 
   const [draftPermissions, setDraftPermissions] = useState<string[]>(user?.permissions || []);
+  const [innerTab, setInnerTab] = useState<'matrix' | 'audit'>('matrix');
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
 
@@ -86,10 +102,10 @@ export const UserDetailPermissionsPage: React.FC<UserDetailPermissionsPageProps>
         <p className="text-sm font-bold text-primary">کاربری برای نمایش یافت نشد.</p>
         <button
           type="button"
-          onClick={() => onNavigate('users-list')}
+          onClick={() => (onBackToDirectory ? onBackToDirectory() : onNavigate('users-list'))}
           className="px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold cursor-pointer"
         >
-          بازگشت به فهرست کاربران
+          بازگشت به لیست کاربران
         </button>
       </div>
     );
@@ -102,6 +118,8 @@ export const UserDetailPermissionsPage: React.FC<UserDetailPermissionsPageProps>
   }, [draftPermissions, user.permissions]);
 
   const isSuspended = user.accountStatus === 'معلق / غیرفعال';
+  const currentLevelId = getUserEffectiveLevelId(user, accessLevels);
+  const currentLevelObj = accessLevels.find((l) => l.id === currentLevelId) || accessLevels[0];
 
   const togglePermission = (permId: string) => {
     setDraftPermissions((prev) =>
@@ -130,7 +148,7 @@ export const UserDetailPermissionsPage: React.FC<UserDetailPermissionsPageProps>
         : 'operator';
     const preset = ROLE_PERMISSION_PRESETS[presetKey];
     setDraftPermissions(preset.permissions);
-    onNotify('الگوی پیش‌فرض سمت اعمال شد', `${preset.label} بارگذاری گردید؛ برای ثبت نهایی دکمه ذخیره را بزنید.`, 'info');
+    onNotify('الگوی پیش‌فرض نقش اعمال شد', `${preset.label} بارگذاری شد؛ برای ثبت نهایی دکمه ذخیره را بزنید.`, 'info');
   };
 
   const handleSavePermissions = () => {
@@ -140,24 +158,24 @@ export const UserDetailPermissionsPage: React.FC<UserDetailPermissionsPageProps>
         permissions: draftPermissions,
         lastAccessReview: '۱۴۰۳/۰۸/۲۴ توسط مهران کاظمی',
       },
-      `به‌روزرسانی ماتریس سطوح دسترسی RBAC (${draftPermissions.length.toLocaleString('fa-IR')} از ${RBAC_PERMISSION_DEFS.length.toLocaleString('fa-IR')} مجوز فعال)`
+      `به‌روزرسانی دسترسی‌های ریز (${draftPermissions.length.toLocaleString('fa-IR')} از ${RBAC_PERMISSION_DEFS.length.toLocaleString('fa-IR')} مجوز فعال)`
     );
     onNotify(
-      'سطوح دسترسی با موفقیت ذخیره شد',
-      `تغییرات ماتریس RBAC برای ${user.honorific} ${user.firstName} ${user.lastName} به‌صورت بلادرنگ اعمال گردید.`,
+      'سطوح دسترسی ذخیره شد',
+      `مجوزهای دقیق برای ${user.honorific} ${user.firstName} ${user.lastName} اعمال گردید.`,
       'success'
     );
   };
 
   const handleToggleLockAccount = () => {
-    const nextStatus: UserAccountStatus = isSuspended ? 'فعال / دارای توکن امنیتی C3' : 'معلق / غیرفعال';
+    const nextStatus: UserAccountStatus = isSuspended ? 'فعال / برخط' : 'معلق / غیرفعال';
     onUpdateUser(
       user.id,
       { accountStatus: nextStatus },
-      isSuspended ? 'رفع قفل موقت و بازگشایی حساب کاربری' : 'قفل موقت حساب کاربری توسط راهبر امنیت IMS'
+      isSuspended ? 'رفع تعلیق و فعال‌سازی مجدد حساب کاربری' : 'قفل موقت حساب کاربری توسط ادمین سامانه'
     );
     onNotify(
-      isSuspended ? 'حساب کاربری بازگشایی شد' : 'حساب کاربری موقتاً قفل شد',
+      isSuspended ? 'حساب کاربری فعال شد' : 'حساب کاربری موقتاً قفل شد',
       `وضعیت حساب ${user.firstName} ${user.lastName} تغییر یافت.`,
       isSuspended ? 'success' : 'warning'
     );
@@ -166,12 +184,12 @@ export const UserDetailPermissionsPage: React.FC<UserDetailPermissionsPageProps>
   const handleResetPassword = () => {
     onUpdateUser(
       user.id,
-      { forcePasswordChange: true, securityBadge: 'OTP بازنشانی' },
-      'بازنشانی گذرواژه و ابطال نشست‌های قبلی مطابق NIST 800-63B'
+      { forcePasswordChange: true, securityBadge: 'تغییر رمز' },
+      'بازنشانی گذرواژه و ابطال نشست‌های قبلی'
     );
     onNotify(
-      'گذرواژه کاربر بازنشانی شد',
-      `لینک و کد OTP یک‌بارمصرف به شماره ${user.mobile} ارسال و در لاگ امنیتی ثبت گردید.`,
+      'گذرواژه بازنشانی شد',
+      `کد یک‌بارمصرف به شماره ${user.mobile} ارسال و تغییر رمز در ورود بعدی الزامی شد.`,
       'info'
     );
   };
@@ -194,36 +212,56 @@ export const UserDetailPermissionsPage: React.FC<UserDetailPermissionsPageProps>
         rbacLevel: editForm.rbacLevel,
         ptwPrivilege: editForm.ptwPrivilege.trim(),
       },
-      'به‌روزرسانی اطلاعات هویتی و زنجیره گزارش‌دهی کاربر'
+      'به‌روزرسانی اطلاعات هویتی و جایگاه سازمانی کاربر'
     );
     setShowEditModal(false);
     onNotify('اطلاعات کاربر ذخیره شد', 'مشخصات پروفایل با موفقیت به‌روزرسانی گردید.', 'success');
   };
 
+  const handleGeneralTierChange = (levelId: string) => {
+    if (onAssignUserAccessLevel) {
+      onAssignUserAccessLevel(user.id, levelId);
+      return;
+    }
+    const target = accessLevels.find((l) => l.id === levelId);
+    if (!target) return;
+    onUpdateUser(
+      user.id,
+      {
+        accessLevelId: target.id,
+        securityLevel: target.baseTier,
+        lastAccessReview: '۱۴۰۳/۰۸/۲۴ توسط مهران کاظمی',
+      },
+      `تغییر سطح دسترسی کلی به «${target.code} - ${target.name}»`
+    );
+    onNotify('سطح دسترسی کلی تغییر یافت', `سطح «${target.code} · ${target.name}» برای کاربر ثبت شد.`, 'success');
+  };
+
   return (
-    <div className="space-y-6 pb-8">
-      {/* Breadcrumb & Command Bar */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+    <div className="space-y-4">
+      {/* Top User Selector & Action Strip */}
+      <div className="bg-white rounded-2xl border border-border-hairline p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            type="button"
-            onClick={() => onNavigate('users-list')}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-border-hairline hover:bg-surface-container-low text-xs font-bold text-primary transition-colors cursor-pointer"
-          >
-            <span className="material-symbols-outlined !text-[17px]">arrow_forward</span>
-            بازگشت به فهرست کاربران و تنظیمات
-          </button>
-          <span className="text-outline">/</span>
-          <span className="font-label-code text-xs font-bold text-secondary">UID: {user.personnelCode}</span>
+          {!embedded && (
+            <button
+              type="button"
+              onClick={() => (onBackToDirectory ? onBackToDirectory() : onNavigate('users-list'))}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-border-hairline hover:bg-surface-container-low text-xs font-bold text-primary cursor-pointer"
+            >
+              <span className="material-symbols-outlined !text-[16px]">arrow_forward</span>
+              لیست کاربران
+            </button>
+          )}
+          <label className="text-xs font-bold text-on-surface-variant">انتخاب کاربر:</label>
           <select
             value={user.id}
             onChange={(e) => onSelectUser(e.target.value)}
-            aria-label="تعویض سریع کاربر"
-            className="mr-2 px-3 py-1.5 rounded-xl bg-white border border-border-hairline text-xs font-bold text-primary focus:outline-none focus:border-secondary cursor-pointer"
+            aria-label="انتخاب کاربر جهت تنظیم دسترسی"
+            className="px-3 py-2 rounded-xl bg-surface-container-low border border-border-hairline text-xs font-bold text-primary focus:outline-none focus:border-secondary cursor-pointer min-w-[240px]"
           >
             {users.map((u) => (
               <option key={u.id} value={u.id}>
-                {u.honorific} {u.firstName} {u.lastName} ({u.personnelCode})
+                {u.honorific} {u.firstName} {u.lastName} ({u.personnelCode} · {u.unit})
               </option>
             ))}
           </select>
@@ -232,478 +270,332 @@ export const UserDetailPermissionsPage: React.FC<UserDetailPermissionsPageProps>
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
+            onClick={() => setShowEditModal(true)}
+            className="px-3 py-2 rounded-xl border border-border-hairline bg-white hover:bg-surface-container-low text-primary text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer"
+          >
+            <span className="material-symbols-outlined !text-[16px] text-secondary">edit</span>
+            ویرایش مشخصات
+          </button>
+          <button
+            type="button"
+            onClick={handleResetPassword}
+            className="px-3 py-2 rounded-xl border border-border-hairline bg-white hover:bg-surface-container-low text-primary text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer"
+          >
+            <span className="material-symbols-outlined !text-[16px] text-warning-capa">vpn_key</span>
+            بازنشانی رمز
+          </button>
+          <button
+            type="button"
             onClick={handleToggleLockAccount}
-            className={`px-3.5 py-2 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
+            className={`px-3 py-2 rounded-xl border text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer ${
               isSuspended
-                ? 'bg-emerald-50 border-emerald-200 text-tertiary hover:bg-emerald-100'
-                : 'bg-amber-50 border-amber-200 text-warning-capa hover:bg-amber-100'
+                ? 'bg-emerald-50 border-emerald-200 text-tertiary'
+                : 'bg-amber-50 border-amber-200 text-warning-capa'
             }`}
           >
-            <span className="material-symbols-outlined !text-[17px]">
+            <span className="material-symbols-outlined !text-[16px]">
               {isSuspended ? 'lock_open' : 'lock'}
             </span>
-            {isSuspended ? 'فعال‌سازی مجدد حساب' : 'قفل موقت حساب'}
+            {isSuspended ? 'رفع تعلیق' : 'قفل حساب'}
           </button>
-
           <button
             type="button"
             onClick={() => setConfirmDeleteOpen(true)}
-            className="px-3.5 py-2 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-critical-hse text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="px-3 py-2 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 text-critical-hse text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer"
           >
-            <span className="material-symbols-outlined !text-[17px]">delete</span>
-            حذف کاربر
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setShowEditModal(true)}
-            className="px-3.5 py-2 rounded-xl border border-border-hairline bg-white hover:bg-surface-container-low text-primary text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
-          >
-            <span className="material-symbols-outlined !text-[17px] text-secondary">edit_note</span>
-            ویرایش اطلاعات
-          </button>
-
-          <button
-            type="button"
-            onClick={handleSavePermissions}
-            className="px-5 py-2 rounded-xl bg-tertiary hover:bg-emerald-800 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
-          >
-            <span className="material-symbols-outlined !text-[17px]">save</span>
-            ذخیره سطوح دسترسی
+            <span className="material-symbols-outlined !text-[16px]">delete</span>
+            حذف
           </button>
         </div>
       </div>
 
-      {/* Main Page Title Section */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-5 sm:p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] text-center">
-        <h1 className="text-lg sm:text-xl font-extrabold text-primary">
-          پروفایل، مشخصات هویتی و ماتریس دسترسی کاربر
-        </h1>
-      </section>
-
-      {/* Primary User Identity Card */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] space-y-5">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-border-hairline">
-          <div className="flex items-start sm:items-center gap-4">
-            <div className="relative w-16 h-16 rounded-2xl bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
-              <span className="material-symbols-outlined !text-[32px]">badge</span>
-              <span className="absolute -bottom-1 -left-1 w-6 h-6 rounded-full bg-tertiary text-white border-2 border-white flex items-center justify-center">
-                <span className="material-symbols-outlined !text-[13px]">verified_user</span>
-              </span>
+      {/* Compact User Qualification Summary */}
+      <section className="bg-white rounded-2xl border border-border-hairline p-5 space-y-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border-hairline">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center font-extrabold text-sm shrink-0">
+              {user.firstName.charAt(0)}.{user.lastName.charAt(0)}
             </div>
-            <div className="space-y-1.5">
+            <div>
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-lg sm:text-xl font-extrabold text-primary">
+                <h2 className="text-base font-extrabold text-primary">
                   {user.honorific} {user.firstName} {user.lastName}
                 </h2>
+                <span className="font-label-code text-[11px] font-bold text-secondary">
+                  {user.personnelCode} · {user.username}
+                </span>
                 <span
-                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold ${
                     isSuspended
-                      ? 'bg-red-50 text-critical-hse border-red-200'
-                      : 'bg-emerald-50 text-tertiary border-emerald-200'
+                      ? 'bg-red-50 text-critical-hse'
+                      : 'bg-emerald-50 text-tertiary'
                   }`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full ${isSuspended ? 'bg-critical-hse' : 'bg-tertiary'}`} />
                   {user.accountStatus}
                 </span>
-                <span className="font-label-code px-2.5 py-1 rounded-full bg-secondary-container/70 text-primary text-[11px] font-bold">
-                  ID: {user.username}
-                </span>
               </div>
-              <p className="text-xs text-on-surface-variant">
-                {user.roleTitle} • {user.management} • {user.siteLocation}
+              <p className="text-xs text-on-surface-variant mt-1">
+                {user.roleTitle} — {user.management} / {user.unit}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <div className="px-4 py-2.5 rounded-xl bg-surface-container-low border border-border-hairline text-center">
-              <div className="text-[10.5px] text-on-surface-variant">مجوزهای فعال</div>
-              <div className="text-sm font-extrabold text-primary mt-0.5 tabular-nums">
-                {draftPermissions.length.toLocaleString('fa-IR')} از{' '}
-                {RBAC_PERMISSION_DEFS.length.toLocaleString('fa-IR')}
+          <div className="flex items-center gap-4 text-xs shrink-0">
+            <div className="text-center px-3 py-1.5 rounded-xl bg-surface-container-low border border-border-hairline">
+              <div className="text-[10.5px] text-on-surface-variant">سطح دسترسی کلی</div>
+              <div className="font-bold text-primary mt-0.5">
+                {currentLevelObj?.code} · {currentLevelObj?.name}
               </div>
             </div>
-            <div className="px-4 py-2.5 rounded-xl bg-surface-container-low border border-border-hairline text-center">
-              <div className="text-[10.5px] text-on-surface-variant">سطح امنیتی RBAC</div>
-              <div className="font-label-code text-sm font-extrabold text-secondary mt-0.5">{user.rbacLevel}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* 8 Data Boxes */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-          <div className="p-3.5 rounded-xl bg-surface-container-low/70 border border-border-hairline">
-            <div className="text-[11px] text-on-surface-variant">نام و نام خانوادگی</div>
-            <div className="text-xs sm:text-[13px] font-extrabold text-primary mt-1">
-              {user.firstName} {user.lastName}
-            </div>
-          </div>
-          <div className="p-3.5 rounded-xl bg-surface-container-low/70 border border-border-hairline">
-            <div className="text-[11px] text-on-surface-variant">شماره پرسنلی پتروشیمی</div>
-            <div className="font-label-code text-xs sm:text-[13px] font-extrabold text-primary mt-1">
-              {user.personnelCode}
-            </div>
-          </div>
-          <div className="p-3.5 rounded-xl bg-surface-container-low/70 border border-border-hairline">
-            <div className="text-[11px] text-on-surface-variant">شماره تماس همراه و داخلی</div>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="font-label-code text-xs sm:text-[13px] font-bold text-primary" dir="ltr">
-                {user.mobile}
-              </span>
-              <span className="px-2 py-0.5 rounded-md bg-secondary-container/70 text-[10.5px] font-bold text-secondary tabular-nums">
-                داخلی {user.extension}
-              </span>
-            </div>
-          </div>
-          <div className="p-3.5 rounded-xl bg-surface-container-low/70 border border-border-hairline">
-            <div className="text-[11px] text-on-surface-variant">نام کاربری سامانه</div>
-            <div className="font-label-code text-xs sm:text-[13px] font-extrabold text-secondary mt-1">
-              {user.username}
-            </div>
-          </div>
-          <div className="p-3.5 rounded-xl bg-surface-container-low/70 border border-border-hairline">
-            <div className="text-[11px] text-on-surface-variant">حوزه مدیریت کلان</div>
-            <div className="text-xs sm:text-[13px] font-bold text-primary mt-1">{user.management}</div>
-          </div>
-          <div className="p-3.5 rounded-xl bg-surface-container-low/70 border border-border-hairline">
-            <div className="text-[11px] text-on-surface-variant">واحد فرآیندی مستقر</div>
-            <div className="text-xs sm:text-[13px] font-bold text-primary mt-1">{user.unit}</div>
-          </div>
-          <div className="p-3.5 rounded-xl bg-surface-container-low/70 border border-border-hairline">
-            <div className="text-[11px] text-on-surface-variant">مدیر مستقیم (سطح ۱)</div>
-            <div className="text-xs font-bold text-primary mt-1">{user.directManager}</div>
-          </div>
-          <div className="p-3.5 rounded-xl bg-surface-container-low/70 border border-border-hairline">
-            <div className="text-[11px] text-on-surface-variant">سرپرست مستقیم شیفت</div>
-            <div className="text-xs font-bold text-primary mt-1">{user.directSupervisor}</div>
-          </div>
-        </div>
-
-        {/* MFA & Password Security Banner */}
-        <div className="p-4 rounded-xl bg-surface-container-low border border-border-hairline flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-start sm:items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined !text-[20px]">shield_lock</span>
-            </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-extrabold text-primary">
-                  وضعیت گذرواژه و احراز هویت دو مرحله‌ای (MFA)
-                </span>
-                <span
-                  className={`px-2 py-0.5 rounded-full text-[10.5px] font-bold ${
-                    user.mfaEnabled && !user.forcePasswordChange
-                      ? 'bg-emerald-100 text-tertiary'
-                      : 'bg-amber-100 text-warning-capa'
-                  }`}
-                >
-                  {user.mfaEnabled && !user.forcePasswordChange ? 'انطباق کامل' : 'نیازمند اقدام کاربر'}
-                </span>
+            <div className="text-center px-3 py-1.5 rounded-xl bg-surface-container-low border border-border-hairline">
+              <div className="text-[10.5px] text-on-surface-variant">مجوزهای ریز فعال</div>
+              <div className="font-extrabold text-tertiary mt-0.5 tabular-nums">
+                {draftPermissions.length.toLocaleString('fa-IR')} از {RBAC_PERMISSION_DEFS.length.toLocaleString('fa-IR')}
               </div>
-              <p className="text-[11px] text-on-surface-variant mt-0.5">
-                آخرین تغییر رمز: ۳۰ روز پیش • رمز قوی مطابق الزام NIST 800-63B • {user.hardwareTokenType}
-              </p>
             </div>
           </div>
-
-          <button
-            type="button"
-            onClick={handleResetPassword}
-            className="px-4 py-2 rounded-xl bg-white border border-border-hairline hover:bg-surface-container text-primary text-xs font-bold flex items-center gap-1.5 shrink-0 cursor-pointer"
-          >
-            <span className="material-symbols-outlined !text-[17px] text-secondary">vpn_key</span>
-            بازنشانی رمز عبور
-          </button>
-        </div>
-      </section>
-
-      {/* 3 Operational Context Cards */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-2xl border border-border-hairline p-4 flex items-center gap-3.5 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)]">
-          <div className="w-11 h-11 rounded-xl bg-sky-50 text-secondary flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined !text-[22px]">engineering</span>
-          </div>
-          <div>
-            <div className="text-[11px] text-on-surface-variant">مجوز پروانه کار (PTW)</div>
-            <div className="text-xs sm:text-[13px] font-extrabold text-primary mt-0.5">{user.ptwPrivilege}</div>
-          </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-border-hairline p-4 flex items-center gap-3.5 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)]">
-          <div className="w-11 h-11 rounded-xl bg-emerald-50 text-tertiary flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined !text-[22px]">verified</span>
+        {/* Clean Single-Row Metadata */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+          <div className="px-3.5 py-2.5 rounded-xl bg-surface-container-low/60">
+            <span className="text-[11px] text-on-surface-variant block">تماس و داخلی</span>
+            <span className="font-label-code font-bold text-primary mt-0.5 inline-block" dir="ltr">
+              {user.mobile}
+            </span>
+            <span className="text-[11px] text-secondary font-semibold mr-2">داخلی {user.extension}</span>
           </div>
-          <div>
-            <div className="text-[11px] text-on-surface-variant">اعتبار امضای دیجیتال IMS</div>
-            <div className="text-xs sm:text-[13px] font-extrabold text-primary mt-0.5">
+          <div className="px-3.5 py-2.5 rounded-xl bg-surface-container-low/60">
+            <span className="text-[11px] text-on-surface-variant block">مدیر مستقیم / سرپرست</span>
+            <span className="font-semibold text-primary mt-0.5 block truncate">{user.directManager}</span>
+          </div>
+          <div className="px-3.5 py-2.5 rounded-xl bg-surface-container-low/60">
+            <span className="text-[11px] text-on-surface-variant block">احراز صلاحیت و PTW</span>
+            <span className="font-semibold text-primary mt-0.5 block truncate">{user.ptwPrivilege}</span>
+          </div>
+          <div className="px-3.5 py-2.5 rounded-xl bg-surface-container-low/60">
+            <span className="text-[11px] text-on-surface-variant block">امنیت و امضای دیجیتال</span>
+            <span className="font-semibold text-primary mt-0.5 block truncate">
+              {user.mfaEnabled ? 'MFA فعال · ' : 'بدون MFA · '}
               {user.digitalSignatureValidity}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-border-hairline p-4 flex items-center gap-3.5 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)]">
-          <div className="w-11 h-11 rounded-xl bg-surface-container-low text-primary flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined !text-[22px]">event_available</span>
-          </div>
-          <div>
-            <div className="text-[11px] text-on-surface-variant">آخرین بازنگری دسترسی‌ها</div>
-            <div className="text-xs sm:text-[13px] font-extrabold text-primary mt-0.5">{user.lastAccessReview}</div>
+            </span>
           </div>
         </div>
       </section>
 
-      {/* 16-Checkbox RBAC Permissions Matrix */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] space-y-5">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-surface-container-low text-primary flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined !text-[22px]">admin_panel_settings</span>
+      {/* Dual Access Level Control Bar (General + Granular) */}
+      <section className="bg-white rounded-2xl border border-border-hairline p-5 space-y-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4 border-b border-border-hairline">
+          {/* 1. General Access Tier */}
+          <div className="p-4 rounded-xl bg-surface-container-low/60 border border-border-hairline space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <label className="text-xs font-extrabold text-primary flex items-center gap-1.5">
+                <span className="material-symbols-outlined !text-[18px] text-secondary">shield_lock</span>
+                سطح دسترسی کلی (عمومی، داخلی، محرمانه و...)
+              </label>
+              <span className="text-[10.5px] text-on-surface-variant">تعیین محرمانگی اسناد قابل مشاهده</span>
             </div>
-            <div>
-              <h2 className="text-sm sm:text-base font-extrabold text-primary">
-                ماتریس مجوزها و سطوح دسترسی به بخش‌ها و فرآیندهای سازمان (RBAC Permissions)
-              </h2>
-              <p className="text-xs text-on-surface-variant mt-0.5">
-                کنار هر بخش چک‌باکس فعال/غیرفعال قرار دارد تا بتوانید دسترسی کاربر به فرآیندها، استانداردها و ماژول‌های پتروشیمی آپادانا را اعطا یا سلب نمایید.
-              </p>
-            </div>
+            <select
+              value={currentLevelId}
+              onChange={(e) => handleGeneralTierChange(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl border border-border-hairline bg-white text-xs font-bold text-primary focus:outline-none focus:border-secondary cursor-pointer"
+            >
+              {accessLevels.map((lvl) => (
+                <option key={lvl.id} value={lvl.id}>
+                  {lvl.code} — {lvl.name}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
-            <button
-              type="button"
-              onClick={handleSelectAll}
-              className="px-3 py-1.5 rounded-lg border border-border-hairline bg-surface-container-low hover:bg-surface-container text-xs font-bold text-primary flex items-center gap-1.5 cursor-pointer"
-            >
-              <span className="material-symbols-outlined !text-[16px] text-tertiary">done_all</span>
-              انتخاب همه
-            </button>
-            <button
-              type="button"
-              onClick={handleClearAll}
-              className="px-3 py-1.5 rounded-lg border border-border-hairline bg-surface-container-low hover:bg-surface-container text-xs font-bold text-on-surface-variant flex items-center gap-1.5 cursor-pointer"
-            >
-              <span className="material-symbols-outlined !text-[16px]">remove_done</span>
-              لغو همه
-            </button>
-            <button
-              type="button"
-              onClick={handleApplyRoleDefault}
-              className="px-3 py-1.5 rounded-lg border border-secondary/30 bg-secondary-container/40 hover:bg-secondary-container text-xs font-bold text-secondary flex items-center gap-1.5 cursor-pointer"
-            >
-              <span className="material-symbols-outlined !text-[16px]">auto_fix_high</span>
-              پیش‌فرض سمت سازمانی
-            </button>
+          {/* 2. Role Preset & Quick Matrix Controls */}
+          <div className="p-4 rounded-xl bg-surface-container-low/60 border border-border-hairline space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-extrabold text-primary flex items-center gap-1.5">
+                <span className="material-symbols-outlined !text-[18px] text-tertiary">tune</span>
+                الگوی نقش و کنترل سریع دسترسی‌های ریز
+              </span>
+              <span className="font-label-code text-[11px] font-bold text-secondary">{user.rbacLevel}</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={handleApplyRoleDefault}
+                className="px-3 py-2 rounded-xl border border-secondary/30 bg-white hover:bg-secondary-container/40 text-xs font-bold text-secondary cursor-pointer"
+              >
+                اعمال پیش‌فرض نقش
+              </button>
+              <button
+                type="button"
+                onClick={handleSelectAll}
+                className="px-3 py-2 rounded-xl border border-border-hairline bg-white hover:bg-surface-container text-xs font-bold text-primary cursor-pointer"
+              >
+                انتخاب همه
+              </button>
+              <button
+                type="button"
+                onClick={handleClearAll}
+                className="px-3 py-2 rounded-xl border border-border-hairline bg-white hover:bg-surface-container text-xs font-bold text-on-surface-variant cursor-pointer"
+              >
+                لغو همه
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Render Groups A, B, C */}
-        <div className="space-y-5">
-          {RBAC_GROUPS.map((group) => {
-            const perms = RBAC_PERMISSION_DEFS.filter((p) => p.groupId === group.id);
-            const activeInGroup = perms.filter((p) => draftPermissions.includes(p.id)).length;
+        {/* Clean Inner Sub-Tabs: Granular Matrix vs Audit Log */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="inline-flex p-1 rounded-xl bg-surface-container-low border border-border-hairline">
+            <button
+              type="button"
+              onClick={() => setInnerTab('matrix')}
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
+                innerTab === 'matrix' ? 'bg-primary text-white' : 'text-on-surface-variant hover:text-primary'
+              }`}
+            >
+              تعیین جزئی و ریز به ریز دسترسی‌ها ({draftPermissions.length.toLocaleString('fa-IR')})
+            </button>
+            <button
+              type="button"
+              onClick={() => setInnerTab('audit')}
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-colors ${
+                innerTab === 'audit' ? 'bg-primary text-white' : 'text-on-surface-variant hover:text-primary'
+              }`}
+            >
+              تاریخچه تغییرات و ممیزی امنیتی ({user.auditLogs.length.toLocaleString('fa-IR')})
+            </button>
+          </div>
 
-            return (
-              <div
-                key={group.id}
-                className="rounded-2xl border border-border-hairline bg-surface-container-low/35 p-4 sm:p-5 space-y-4"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                        group.tone === 'tertiary'
-                          ? 'bg-emerald-50 text-tertiary'
-                          : group.tone === 'secondary'
-                          ? 'bg-sky-50 text-secondary'
-                          : 'bg-white border border-border-hairline text-primary'
-                      }`}
-                    >
-                      <span className="material-symbols-outlined !text-[20px]">{group.icon}</span>
+          {innerTab === 'matrix' && isDirty && (
+            <span className="text-[11px] font-bold text-warning-capa">
+              تغییرات ذخیره‌نشده دارید
+            </span>
+          )}
+        </div>
+
+        {innerTab === 'matrix' ? (
+          <div className="space-y-4">
+            {RBAC_GROUPS.map((group) => {
+              const perms = RBAC_PERMISSION_DEFS.filter((p) => p.groupId === group.id);
+              const activeInGroup = perms.filter((p) => draftPermissions.includes(p.id)).length;
+
+              return (
+                <div
+                  key={group.id}
+                  className="rounded-xl border border-border-hairline bg-surface-container-low/30 p-4 space-y-3"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5">
+                      <span className="material-symbols-outlined !text-[19px] text-primary">{group.icon}</span>
+                      <div>
+                        <h3 className="text-xs font-extrabold text-primary">{group.title}</h3>
+                        <p className="text-[11px] text-on-surface-variant">{group.subtitle}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xs sm:text-sm font-extrabold text-primary">{group.title}</h3>
-                      <p className="text-[11px] text-on-surface-variant">{group.subtitle}</p>
-                    </div>
+                    <span className="text-[11px] font-bold text-primary tabular-nums">
+                      {activeInGroup.toLocaleString('fa-IR')} / {perms.length.toLocaleString('fa-IR')} فعال
+                    </span>
                   </div>
 
-                  <span className="px-3 py-1 rounded-full bg-white border border-border-hairline text-[11px] font-bold text-primary tabular-nums">
-                    {activeInGroup.toLocaleString('fa-IR')} از {perms.length.toLocaleString('fa-IR')} دسترسی فعال
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-                  {perms.map((perm) => {
-                    const checked = draftPermissions.includes(perm.id);
-                    return (
-                      <label
-                        key={perm.id}
-                        className={`p-3.5 rounded-xl border transition-all flex items-start gap-3 cursor-pointer select-none ${
-                          checked
-                            ? 'bg-white border-primary/45 shadow-xs ring-1 ring-primary/10'
-                            : 'bg-white/70 border-border-hairline hover:bg-white'
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => togglePermission(perm.id)}
-                          className="mt-0.5 w-4 h-4 accent-primary rounded cursor-pointer shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2">
-                            <span className="text-xs font-extrabold text-primary leading-5">{perm.title}</span>
-                            {perm.tag && (
-                              <span
-                                className={`px-2 py-0.5 rounded-md text-[10px] font-bold shrink-0 ${
-                                  TAG_TONE_CLASSES[perm.tagTone || 'primary']
-                                }`}
-                              >
-                                {perm.tag}
-                              </span>
-                            )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5">
+                    {perms.map((perm) => {
+                      const checked = draftPermissions.includes(perm.id);
+                      return (
+                        <label
+                          key={perm.id}
+                          className={`p-3 rounded-xl border transition-all flex items-start gap-2.5 cursor-pointer select-none ${
+                            checked
+                              ? 'bg-white border-primary/50 ring-1 ring-primary/10'
+                              : 'bg-white/60 border-border-hairline hover:bg-white'
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => togglePermission(perm.id)}
+                            className="mt-0.5 w-4 h-4 accent-primary rounded cursor-pointer shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-1.5">
+                              <span className="text-xs font-bold text-primary leading-5">{perm.title}</span>
+                              {perm.tag && (
+                                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-surface-container-low text-on-surface-variant shrink-0">
+                                  {perm.tag}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[11px] text-on-surface-variant mt-0.5 leading-4">{perm.description}</p>
                           </div>
-                          <p className="text-[11px] text-on-surface-variant mt-1 leading-4">{perm.description}</p>
-                        </div>
-                      </label>
-                    );
-                  })}
+                        </label>
+                      );
+                    })}
+                  </div>
                 </div>
+              );
+            })}
+
+            {/* Save Bar */}
+            <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-border-hairline">
+              <span className="text-xs text-on-surface-variant">
+                تغییرات پس از ذخیره بلافاصله در حساب کاربری <strong className="text-primary">{user.firstName} {user.lastName}</strong> اعمال می‌شوند.
+              </span>
+              <div className="flex items-center gap-2">
+                {isDirty && (
+                  <button
+                    type="button"
+                    onClick={() => setDraftPermissions(user.permissions)}
+                    className="px-4 py-2 rounded-xl border border-border-hairline bg-white text-xs font-bold text-on-surface-variant cursor-pointer"
+                  >
+                    بازگردانی
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={handleSavePermissions}
+                  className="px-5 py-2.5 rounded-xl bg-tertiary hover:bg-emerald-800 text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+                >
+                  <span className="material-symbols-outlined !text-[17px]">save</span>
+                  ذخیره تغییرات دسترسی
+                </button>
               </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Security Audit Log & Signature Verification */}
-      <section className="bg-white rounded-2xl border border-border-hairline p-6 shadow-[0px_10px_30px_-5px_rgba(20,44,67,0.05)] space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-secondary !text-[20px]">history</span>
-            <h2 className="text-sm sm:text-base font-extrabold text-primary">
-              ثبت لاگ تغییرات دسترسی‌ها و امضای آخرین بازنگری‌کننده (Security Audit Log)
-            </h2>
+            </div>
           </div>
-          <span className="font-label-code text-[11px] font-semibold text-on-surface-variant">
-            SHA-256 Digest: 9e8a...3fc1
-          </span>
-        </div>
-
-        <div className="overflow-x-auto border border-border-hairline rounded-xl">
-          <table className="w-full min-w-[760px] text-right border-collapse">
-            <thead>
-              <tr className="bg-surface-container-low text-[11px] font-extrabold text-primary border-b border-border-hairline">
-                <th className="py-3 px-4">تاریخ و ساعت</th>
-                <th className="py-3 px-4">عملیات ثبت‌شده</th>
-                <th className="py-3 px-4">اقدام‌کننده</th>
-                <th className="py-3 px-4">آدرس شبکه / شناسه</th>
-                <th className="py-3 px-4 text-center">وضعیت تایید</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border-hairline text-xs">
-              {user.auditLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-surface-container-low/40">
-                  <td className="py-3.5 px-4 font-label-code text-[11.5px] text-on-surface-variant whitespace-nowrap">
-                    {log.timestamp}
-                  </td>
-                  <td className="py-3.5 px-4 font-bold text-primary">{log.action}</td>
-                  <td className="py-3.5 px-4 font-bold text-secondary">{log.actor}</td>
-                  <td className="py-3.5 px-4 font-label-code text-[11.5px] text-on-surface-variant" dir="ltr">
-                    {log.ipOrSource}
-                  </td>
-                  <td className="py-3.5 px-4 text-center">
-                    <span
-                      className={`inline-block px-3 py-1 rounded-full text-[11px] font-bold ${
-                        log.statusTone === 'tertiary'
-                          ? 'bg-emerald-50 text-tertiary border border-emerald-200'
-                          : log.statusTone === 'secondary'
-                          ? 'bg-sky-50 text-secondary border border-sky-200'
-                          : log.statusTone === 'warning'
-                          ? 'bg-amber-50 text-warning-capa border border-amber-200'
-                          : 'bg-surface-container-low text-on-surface-variant border border-border-hairline'
-                      }`}
-                    >
-                      {log.statusText}
-                    </span>
-                  </td>
+        ) : (
+          <div className="overflow-x-auto border border-border-hairline rounded-xl">
+            <table className="w-full min-w-[680px] text-right border-collapse text-xs">
+              <thead>
+                <tr className="bg-surface-container-low text-[11px] font-bold text-primary border-b border-border-hairline">
+                  <th className="py-3 px-4">تاریخ و ساعت</th>
+                  <th className="py-3 px-4">رویداد ثبت‌شده</th>
+                  <th className="py-3 px-4">اقدام‌کننده</th>
+                  <th className="py-3 px-4">نشانی شبکه</th>
+                  <th className="py-3 px-4 text-center">وضعیت</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* 2 Signature Verification Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 rounded-xl bg-surface-container-low/60 border border-border-hairline flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined !text-[20px]">verified</span>
-              </div>
-              <div>
-                <div className="text-xs font-extrabold text-primary">مهندس مهران کاظمی</div>
-                <div className="text-[11px] text-on-surface-variant">مدیر تضمین کیفیت و نماینده مدیریت IMS</div>
-              </div>
-            </div>
-            <span className="font-label-code px-3 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-tertiary text-[11px] font-bold">
-              امضا شده [TOKEN_OK]
-            </span>
+              </thead>
+              <tbody className="divide-y divide-border-hairline">
+                {user.auditLogs.map((log) => (
+                  <tr key={log.id} className="hover:bg-surface-container-low/40">
+                    <td className="py-3 px-4 font-label-code text-[11px] text-on-surface-variant whitespace-nowrap">
+                      {log.timestamp}
+                    </td>
+                    <td className="py-3 px-4 font-bold text-primary">{log.action}</td>
+                    <td className="py-3 px-4 font-semibold text-secondary">{log.actor}</td>
+                    <td className="py-3 px-4 font-label-code text-[11px] text-on-surface-variant" dir="ltr">
+                      {log.ipOrSource}
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      <span className="px-2.5 py-0.5 rounded-md bg-surface-container-low text-[11px] font-bold text-primary">
+                        {log.statusText}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-
-          <div className="p-4 rounded-xl bg-surface-container-low/60 border border-border-hairline flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-secondary text-white flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined !text-[20px]">draw</span>
-              </div>
-              <div>
-                <div className="text-xs font-extrabold text-primary">مهندس حمید دهداری</div>
-                <div className="text-[11px] text-on-surface-variant">معاونت فنی و عملیاتی مجتمع آپادانا</div>
-              </div>
-            </div>
-            <span className="font-label-code px-3 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-tertiary text-[11px] font-bold">
-              امضا شده [TOKEN_OK]
-            </span>
-          </div>
-        </div>
+        )}
       </section>
-
-      {/* Sticky Bottom Save Panel */}
-      <div className="sticky bottom-4 z-20 bg-white/95 backdrop-blur-md rounded-2xl border border-border-hairline shadow-[0px_14px_34px_-10px_rgba(20,44,67,0.2)] px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-emerald-50 text-tertiary flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined !text-[20px]">verified_user</span>
-          </div>
-          <div>
-            <div className="text-xs font-extrabold text-primary">
-              {isDirty ? 'تغییرات جدید آماده ثبت و همگام‌سازی است' : 'آماده اعمال تغییرات سطح دسترسی'}
-            </div>
-            <div className="text-[11px] text-on-surface-variant">
-              تغییرات بلافاصله پس از ذخیره در نشست فعال کاربر در {user.unit} اعمال خواهد شد.
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2.5 shrink-0 self-end sm:self-center">
-          <button
-            type="button"
-            onClick={() => {
-              setDraftPermissions(user.permissions);
-              onNotify('تغییرات لغو شد', 'ماتریس به آخرین وضعیت ذخیره‌شده بازگردانده شد.', 'info');
-            }}
-            className="px-4 py-2 rounded-xl border border-border-hairline bg-white hover:bg-surface-container-low text-xs font-bold text-on-surface-variant cursor-pointer"
-          >
-            انصراف
-          </button>
-          <button
-            type="button"
-            onClick={handleSavePermissions}
-            className="px-5 py-2.5 rounded-xl bg-tertiary hover:bg-emerald-800 text-white text-xs font-bold flex items-center gap-2 shadow-sm cursor-pointer"
-          >
-            <span className="material-symbols-outlined !text-[18px]">check_circle</span>
-            ذخیره و اعمال بلادرنگ دسترسی‌ها
-          </button>
-        </div>
-      </div>
 
       {/* Inline Edit Modal */}
       {showEditModal && (
@@ -799,7 +691,7 @@ export const UserDetailPermissionsPage: React.FC<UserDetailPermissionsPageProps>
                   />
                 </div>
                 <div>
-                  <label className="block font-bold text-primary mb-1">سطح امنیتی RBAC</label>
+                  <label className="block font-bold text-primary mb-1">سطح نقش RBAC</label>
                   <select
                     value={editForm.rbacLevel}
                     onChange={(e) => setEditForm({ ...editForm, rbacLevel: e.target.value as RbacLevel })}
@@ -876,8 +768,12 @@ export const UserDetailPermissionsPage: React.FC<UserDetailPermissionsPageProps>
         onConfirm={() => {
           onDeleteUser(user.id);
           setConfirmDeleteOpen(false);
-          onNotify('حساب کاربری حذف شد', `کاربر ${user.firstName} ${user.lastName} از سیستم حذف گردید.`, 'warning');
-          onNavigate('users-list');
+          onNotify('حساب کاربری حذف شد', `${user.firstName} ${user.lastName} از سامانه حذف گردید.`, 'warning');
+          if (onBackToDirectory) {
+            onBackToDirectory();
+          } else {
+            onNavigate('users-list');
+          }
         }}
         onCancel={() => setConfirmDeleteOpen(false)}
       />

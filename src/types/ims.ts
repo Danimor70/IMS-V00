@@ -38,7 +38,8 @@ export type RouteId =
   | 'settings'
   | 'users-list'
   | 'users-create'
-  | 'users-detail';
+  | 'users-detail'
+  | 'access-levels';
 
 export type DocStatus = 'مصوب' | 'در جریان بررسی' | 'نیازمند بازنگری' | 'منسوخ' | 'پیش‌نویس';
 
@@ -56,6 +57,13 @@ export interface AttachedRevisionFile {
   size: string;
   type: 'docx' | 'pdf' | 'xlsx' | 'dwg' | 'other';
   uploadedAt: string;
+}
+
+export interface WorkflowStageActor {
+  step: string;
+  actor: string;
+  originalActor?: string;
+  replaced?: boolean;
 }
 
 export interface ImsDocument {
@@ -107,9 +115,12 @@ export interface RevisionItem {
   newHighlight: string;
   newTextSuffix: string;
   newNote: string;
+  changeSummary?: string;
   sourceDocId?: string;
   attachedFiles?: AttachedRevisionFile[];
   replaceOnApproval?: boolean;
+  workflowActors?: WorkflowStageActor[];
+  slaDays?: 3 | 5 | 10;
 }
 
 export interface WorkflowHistoryEntry {
@@ -117,7 +128,16 @@ export interface WorkflowHistoryEntry {
   role: string;
   date: string;
   note: string;
-  type: 'approved' | 'submitted' | 'returned' | 'comment';
+  type: 'approved' | 'submitted' | 'returned' | 'comment' | 'referred';
+}
+
+export interface WorkflowReferralEntry {
+  id: string;
+  assignee: string;
+  actionType: 'بررسی و اعلام نظر تخصصی' | 'اصلاح و تکمیل فنی' | 'بازبینی انطباق و HSE' | 'اقدام و تایید جایگزین';
+  note?: string;
+  date: string;
+  status: 'در انتظار اقدام' | 'تکمیل شده';
 }
 
 export interface WorkflowChecklistItem {
@@ -161,6 +181,10 @@ export interface WorkflowDoc {
   suggestedCode?: string;
   attachedFiles?: AttachedRevisionFile[];
   replaceOnApproval?: boolean;
+  workflowActors?: WorkflowStageActor[];
+  requestType?: 'new' | 'revision';
+  referrals?: WorkflowReferralEntry[];
+  ccList?: string[];
 }
 
 export type PermissionFlags = {
@@ -193,6 +217,29 @@ export interface DistributionMatrixRow {
     hedari: PermissionFlags;
     parsa: PermissionFlags;
   };
+  revisionOwners?: string[];
+  authorizedUsers?: string[];
+  publishedBy?: string;
+  publishedAt?: string;
+}
+
+export interface PendingDistributionDoc {
+  id: string;
+  workflowDocId: string;
+  code: string;
+  title: string;
+  version: string;
+  docGroup: 'SOP' | 'HSE' | 'P&ID' | 'IMS';
+  processOwner: string;
+  approvedBy: string;
+  approvedAt: string;
+  requestType: 'new' | 'revision';
+  defaultConfidentiality: 'C1 - عمومی' | 'C2 - سازمانی' | 'C3 - محرمانه فنی' | 'C4 - فوق‌محرمانه';
+  suggestedReviser: string;
+  summary?: string;
+  status: 'pending' | 'published';
+  publishedAt?: string;
+  publishedSummary?: string;
 }
 
 export interface AuditTrailEntry {
@@ -336,6 +383,7 @@ export interface UserAccount {
   username: string;
   securityBadge: string;
   securityLevel: 'C1' | 'C2' | 'C3' | 'C4';
+  accessLevelId?: string;
   rbacLevel: RbacLevel;
   accountStatus: UserAccountStatus;
   siteLocation: string;
@@ -348,5 +396,28 @@ export interface UserAccount {
   hardwareTokenType: string;
   permissions: string[];
   auditLogs: UserAuditLogEntry[];
+}
+
+export interface AccessLevelDefinition {
+  id: string;
+  code: string;
+  name: string;
+  baseTier: 'C1' | 'C2' | 'C3' | 'C4';
+  description: string;
+  tone: 'tertiary' | 'secondary' | 'warning' | 'critical' | 'primary';
+  allowPublicDocs: boolean;
+  allowControlledPrint: boolean;
+  requiresMfa: boolean;
+  isSystemDefault?: boolean;
+}
+
+export interface OrgAccessAssignment {
+  id: string;
+  entityType: 'management' | 'unit' | 'organization';
+  name: string;
+  parentName?: string;
+  accessLevelId: string;
+  updatedAt: string;
+  updatedBy: string;
 }
 

@@ -11,6 +11,8 @@ interface LayoutShellProps {
   onReadNotification: (id: string, targetRoute: RouteId) => void;
   documents: ImsDocument[];
   users?: UserAccount[];
+  currentUser?: UserAccount;
+  isAdmin?: boolean;
   onSelectUserForDetail?: (id: string) => void;
   onNotify: (title: string, message?: string, type?: 'success' | 'info' | 'warning' | 'error') => void;
   children: React.ReactNode;
@@ -35,6 +37,8 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
   onReadNotification,
   documents,
   users = [],
+  currentUser,
+  isAdmin = true,
   onSelectUserForDetail,
   onNotify,
   children,
@@ -154,18 +158,18 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
       { id: 'legal', label: 'الزامات قانونی و استانداردها', icon: 'gavel', route: 'legal' },
       { id: 'management-review', label: 'جلسات و بازنگری مدیریت', icon: 'groups', route: 'management-review' },
       { id: 'reports', label: 'گزارش‌ها و تحلیل‌های مدیریتی', icon: 'bar_chart', route: 'reports' },
-      {
-        id: 'settings',
-        label: 'مدیریت کاربران و تنظیمات',
-        icon: 'settings',
-        children: [
-          { label: 'فهرست کاربران و تنظیمات', route: 'users-list' },
-          { label: 'ثبت دستی کاربر جدید', route: 'users-create' },
-          { label: 'پروفایل و ماتریس دسترسی کاربر', route: 'users-detail' },
-        ],
-      },
+      ...(isAdmin
+        ? [
+            {
+              id: 'settings',
+              label: 'مدیریت کاربران و تنظیمات',
+              icon: 'admin_panel_settings',
+              route: 'users-list' as RouteId,
+            },
+          ]
+        : []),
     ],
-    [cartableCount]
+    [cartableCount, isAdmin]
   );
 
   const searchResults = useMemo(() => {
@@ -183,24 +187,26 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
         userId: undefined as string | undefined,
       }));
 
-    const userMatches = users
-      .filter(
-        (u) =>
-          u.firstName.toLowerCase().includes(q) ||
-          u.lastName.toLowerCase().includes(q) ||
-          `${u.firstName} ${u.lastName}`.toLowerCase().includes(q) ||
-          u.personnelCode.toLowerCase().includes(q) ||
-          u.username.toLowerCase().includes(q)
-      )
-      .slice(0, 4)
-      .map((u) => ({
-        id: u.id,
-        title: `${u.honorific} ${u.firstName} ${u.lastName}`,
-        subtitle: `${u.personnelCode} • ${u.roleTitle}`,
-        route: 'users-detail' as RouteId,
-        icon: 'badge',
-        userId: u.id as string | undefined,
-      }));
+    const userMatches = isAdmin
+      ? users
+          .filter(
+            (u) =>
+              u.firstName.toLowerCase().includes(q) ||
+              u.lastName.toLowerCase().includes(q) ||
+              `${u.firstName} ${u.lastName}`.toLowerCase().includes(q) ||
+              u.personnelCode.toLowerCase().includes(q) ||
+              u.username.toLowerCase().includes(q)
+          )
+          .slice(0, 4)
+          .map((u) => ({
+            id: u.id,
+            title: `${u.honorific} ${u.firstName} ${u.lastName}`,
+            subtitle: `${u.personnelCode} • ${u.roleTitle}`,
+            route: 'users-detail' as RouteId,
+            icon: 'badge',
+            userId: u.id as string | undefined,
+          }))
+      : [];
 
     const routeMatches: { id: string; title: string; subtitle: string; route: RouteId; icon: string; userId?: string }[] = [];
     navGroups.forEach((g) => {
@@ -215,7 +221,7 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
     });
 
     return [...userMatches, ...docMatches, ...routeMatches.slice(0, 3)];
-  }, [searchQuery, documents, users, navGroups]);
+  }, [searchQuery, documents, users, navGroups, isAdmin]);
 
   const unreadCount = notifications.filter((n) => n.unread).length;
   const filteredNotifs = notifications.filter((n) => notifFilter === 'all' || n.category === notifFilter);
@@ -273,13 +279,16 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
       {/* Navigation List */}
       <nav className="flex-1 overflow-y-auto custom-scrollbar py-3 px-2.5 space-y-1">
         {navGroups.map((group) => {
+          const isSettingsRoute = ['settings', 'users-list', 'users-create', 'users-detail', 'access-levels'].includes(
+            currentRoute
+          );
           const isGroupActive =
             (group.route && currentRoute === group.route) ||
-            (group.id === 'settings' && currentRoute === 'settings') ||
+            (group.id === 'settings' && isSettingsRoute) ||
             (group.children?.some((c) => c.route === currentRoute) ?? false);
           const isExpanded =
             !!expandedGroups[group.id] ||
-            (group.id === 'settings' && currentRoute === 'settings') ||
+            (group.id === 'settings' && isSettingsRoute) ||
             (group.children?.some((c) => c.route === currentRoute) ?? false);
 
           if (!group.children) {
@@ -602,8 +611,12 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
                 className="flex items-center gap-2.5 py-1 px-2 rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer"
               >
                 <div className="text-left hidden sm:block">
-                  <div className="text-xs font-bold text-primary leading-4">مهندس مهران کاظمی</div>
-                  <div className="text-[10.5px] text-on-surface-variant leading-4">مدیر تضمین کیفیت و IMS</div>
+                  <div className="text-xs font-bold text-primary leading-4">
+                    {currentUser ? `${currentUser.honorific} ${currentUser.firstName} ${currentUser.lastName}` : 'مهندس مهران کاظمی'}
+                  </div>
+                  <div className="text-[10.5px] text-on-surface-variant leading-4">
+                    {currentUser ? currentUser.roleTitle : 'مدیر تضمین کیفیت و IMS'}
+                  </div>
                 </div>
                 <div className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined !text-[19px]">person</span>
@@ -616,8 +629,12 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
               {showProfileMenu && (
                 <div className="absolute left-0 top-full mt-2 w-60 bg-white rounded-2xl border border-border-hairline shadow-[0px_18px_40px_-10px_rgba(20,44,67,0.2)] py-2 z-40 animate-modal-enter">
                   <div className="px-4 py-2.5 border-b border-border-hairline sm:hidden">
-                    <div className="text-xs font-bold text-primary">مهندس مهران کاظمی</div>
-                    <div className="text-[11px] text-on-surface-variant">مدیر تضمین کیفیت و IMS</div>
+                    <div className="text-xs font-bold text-primary">
+                      {currentUser ? `${currentUser.honorific} ${currentUser.firstName} ${currentUser.lastName}` : 'مهندس مهران کاظمی'}
+                    </div>
+                    <div className="text-[11px] text-on-surface-variant">
+                      {currentUser ? currentUser.roleTitle : 'مدیر تضمین کیفیت و IMS'}
+                    </div>
                   </div>
                   <button
                     type="button"
@@ -732,29 +749,41 @@ export const LayoutShell: React.FC<LayoutShellProps> = ({
             <div className="p-6 space-y-3 text-xs">
               <div className="flex items-center gap-3 pb-3 border-b border-border-hairline">
                 <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg">
-                  م.ک
+                  {currentUser ? `${currentUser.firstName.charAt(0)}.${currentUser.lastName.charAt(0)}` : 'م.ک'}
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-primary">مهندس مهران کاظمی</div>
-                  <div className="text-on-surface-variant">مدیر تضمین کیفیت و نماینده مدیریت (IMS)</div>
+                  <div className="text-sm font-bold text-primary">
+                    {currentUser ? `${currentUser.honorific} ${currentUser.firstName} ${currentUser.lastName}` : 'مهندس مهران کاظمی'}
+                  </div>
+                  <div className="text-on-surface-variant">
+                    {currentUser ? currentUser.roleTitle : 'مدیر تضمین کیفیت و نماینده مدیریت (IMS)'}
+                  </div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <div>
                   <span className="text-outline block">کد پرسنلی</span>
-                  <span className="font-label-code font-bold text-primary">۹۴۰۲۱</span>
+                  <span className="font-label-code font-bold text-primary">
+                    {currentUser?.personnelCode || 'AP-4082'}
+                  </span>
                 </div>
                 <div>
-                  <span className="text-outline block">سطح محرمانگی مجاز</span>
-                  <span className="font-bold text-tertiary">C1 تا C4 (کامل)</span>
+                  <span className="text-outline block">سطح محرمانگی و نقش</span>
+                  <span className="font-bold text-tertiary">
+                    {currentUser ? `${currentUser.securityLevel} (${currentUser.rbacLevel})` : 'C4 (L5 - Admin)'}
+                  </span>
                 </div>
                 <div>
                   <span className="text-outline block">واحد سازمانی</span>
-                  <span className="font-semibold text-on-surface">تضمین کیفیت و مهندسی سیستم‌ها</span>
+                  <span className="font-semibold text-on-surface">
+                    {currentUser?.unit || 'تضمین کیفیت و مهندسی سیستم‌ها'}
+                  </span>
                 </div>
                 <div>
                   <span className="text-outline block">امضای سخت‌افزاری</span>
-                  <span className="font-semibold text-tertiary">توکن فعال PKI</span>
+                  <span className="font-semibold text-tertiary">
+                    {currentUser?.hardwareTokenType || 'توکن فعال PKI'}
+                  </span>
                 </div>
               </div>
             </div>
